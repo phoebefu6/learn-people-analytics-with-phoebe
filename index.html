@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="People analytics for data and AI teams. A six-session Foundations track with no code (headcount and flows, attrition and its base, the hiring funnel, pay gaps and fairness, surveys as evidence, the people dashboard) and a ten-session Data and AI deep-dive in Python (the people data model, attrition as survival, regretted and benchmarked, funnel maths, pay gap decomposition on 11,301 real employers, pay equity regression, survey psychometrics, workforce planning, AI on people data and what the law forbids, the bench). Free, by Phoebe Fu.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Learn People Analytics with Phoebe">
+<meta property="og:description" content="Same 210 leavers, three attrition rates. Same pyramid, most of a pay gap. A bench on 3,000 real UK filings where hiring more women at the bottom widens the gap it was meant to close.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Learn People Analytics with Phoebe">
+<meta name="twitter:description" content="Two tracks, a constructed company and 11,301 real filings, a bench whose anti-lever widens the gap.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Learn People Analytics with Phoebe</title>
+<link rel="stylesheet" href="assets/style.css?v=3">
+<style>
+
+  .stats-row { display: flex; gap: 2.4rem; margin-top: 1.5rem; flex-wrap: wrap; }
+  .stat b { display: block; font-size: 2.1rem; font-weight: 800; line-height: 1.05; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: .72rem; opacity: .85; text-transform: uppercase; letter-spacing: .09em; font-weight: 600; }
+
+  .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+  .course-card {
+    border: 1px solid var(--hairline);
+    border-top: 4px solid var(--diff, var(--indigo));
+    border-radius: var(--radius);
+    padding: 1.2rem 1.3rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    text-decoration: none;
+    color: var(--ink);
+    background: #fff;
+    transition: box-shadow .15s ease, border-color .15s ease, transform .15s ease;
+    position: relative;
+  }
+  .course-card:hover { border-color: var(--indigo-soft); border-top-color: var(--diff, var(--indigo)); box-shadow: 0 8px 28px rgba(var(--shadow-rgb),.16); transform: translateY(-3px); }
+  .course-card .cicon { font-size: 1.7rem; line-height: 1; }
+  .course-card .cnum { font-size: .72rem; font-weight: 700; color: var(--indigo); text-transform: uppercase; letter-spacing: .1em; }
+  .course-card h3 { font-size: 1.05rem; font-weight: 800; line-height: 1.3; }
+  .course-card p { font-size: .85rem; color: var(--muted); flex: 1; }
+  .course-card .meta { display: flex; gap: .4rem; flex-wrap: wrap; }
+
+  .diff-legend { display: flex; gap: 1rem; margin-top: 1.6rem; font-size: .74rem; color: var(--muted); font-weight: 600; flex-wrap: wrap; }
+  .diff-legend i { display: inline-block; width: .85rem; height: .35rem; border-radius: 999px; margin-right: .35rem; vertical-align: middle; }
+
+  .paths { margin-top: 2.6rem; }
+  .paths h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: .3rem; }
+  .paths .plede { color: var(--muted); font-size: .92rem; margin-bottom: .8rem; }
+  .path { display: flex; gap: .55rem; align-items: center; padding: .75rem 0; border-bottom: .5px solid var(--hairline); flex-wrap: wrap; }
+  .path:last-child { border-bottom: none; }
+  .path b { min-width: 15.5rem; font-size: .9rem; }
+  .path .pstep { background: var(--indigo-50); color: var(--indigo); border-radius: 999px; padding: .16rem .68rem; font-weight: 700; font-size: .8rem; text-decoration: none; transition: all .12s ease; }
+  .path .pstep:hover { background: var(--indigo); color: #fff; }
+  .path .parr { color: var(--faint); font-weight: 700; }
+
+  .mm-section { margin-top: 1.6rem; }
+  .mm-section h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: .2rem; }
+  .mm-section .mm-lede { color: var(--muted); font-size: .92rem; margin-bottom: .4rem; }
+  .mm-wrap { border: 1px solid var(--hairline); border-radius: var(--radius); background: linear-gradient(180deg,#fff,var(--indigo-50)); padding: .6rem; overflow-x: auto; }
+  .mm-svg { width: 100%; height: auto; display: block; max-width: 60rem; margin: 0 auto; min-width: 34rem; }
+  .mm-link { cursor: pointer; text-decoration: none; }
+  .mm-node rect { transition: opacity .15s ease, filter .15s ease; }
+  .mm-node text { pointer-events: none; }
+  .mm-link:hover .mm-node rect { filter: brightness(1.06); }
+  .mm-edge { transition: opacity .15s ease; }
+
+  .not-this { border: 1px solid var(--hairline); border-left: 4px solid var(--clay); border-radius: var(--radius); background: #fff; padding: 1.1rem 1.3rem; margin-top: 1.2rem; }
+  .not-this h3 { font-size: .95rem; font-weight: 800; margin-bottom: .5rem; }
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn with Phoebe · Data &amp; Analytics</div>
+    <h1>Learn <span class="accent">People Analytics</span> with Phoebe</h1>
+    <p class="sub">People analytics has a reputation for being soft and is the opposite: every number describes a person who can be counted exactly, so there is no excuse for a rate without its base or a table nobody asked "who is missing" of. These sixteen sessions teach the discipline twice: once as habits anyone can use with no code, on a constructed company whose 210 leavers give three defensible attrition rates, and once as numbers you compute, on 11,301 real employers' pay gap filings. The running finding: at the median employer most of the reported gap is the pyramid, women being 56 percent of the bottom pay band and 40 of the top, and the lever every well-meaning plan reaches for, hire more women, widens the gap when they are hired at the bottom. The bench in the last session fits the ladder live and lets you pull that lever both ways.</p>
+    <div class="stats-row">
+      <div class="stat"><b data-count="16">16</b><span>sessions, two tracks</span></div>
+      <div class="stat"><b data-count="11301">11,301</b><span>real employers read</span></div>
+      <div class="stat"><b data-count="3000">3,000</b><span>on the bench</span></div>
+      <div class="stat"><b data-count="3">3</b><span>bases, one attrition</span></div>
+      <div class="stat"><b data-count="45">45</b><span>min per session</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section">
+    <div class="paths" style="margin-top:0">
+      <h2>Foundations track 🧭 <span style="font-size:.85rem;font-weight:600;color:var(--muted)">· six sessions, no code</span></h2>
+      <p class="plede">For anyone who reads a people dashboard, argues for a headcount, or is handed a pay gap figure in a meeting. Stocks and flows, a rate and its base, the funnel, pay and fairness, surveys as evidence, and the dashboard. Apex, the running company, is constructed and every page says so; the pay gap filings are real.</p>
+    </div>
+    <div class="course-grid">
+      <a class="course-card" href="courses/a1-headcount-and-flows.html" style="--diff:#5B8C5A"><span class="cicon">🚰</span><span class="cnum">Foundations session 1 · start here</span><h3>Headcount is a stock, attrition is a flow</h3><p>The identity every dashboard must satisfy, the three bases that turn 210 leavers into 20.5, 22.3 or 24.4 percent, and the photograph problem: an HR export holds only the people who survived to be in it.</p><span class="meta"><span class="pill amber">▶ Start here</span></span></a>
+      <a class="course-card" href="courses/a2-attrition-needs-a-base.html" style="--diff:#5B8C5A"><span class="cicon">📐</span><span class="cnum">Foundations session 2</span><h3>An attrition rate needs a base</h3><p>Annualising and what it assumes, rates by entity and department where Sales lost half its people and R&amp;D 7 of 94, small bases that lie, "regretted" as a choice, and a real national benchmark read correctly.</p><span class="meta"><span class="pill">the base under the rate</span></span></a>
+      <a class="course-card" href="courses/a3-the-hiring-funnel.html" style="--diff:#5B8C5A"><span class="cicon">🔻</span><span class="cnum">Foundations session 3</span><h3>The hiring funnel</h3><p>Stages, what each ratio is a ratio of, the two clocks, and adverse impact as one metric with the simulator left to the AI + HR course. Two studies on what names and discretion do to hiring.</p><span class="meta"><span class="pill">a base under every stage</span></span></a>
+      <a class="course-card" href="courses/a4-pay-gaps-and-fairness.html" style="--diff:#5B8C5A"><span class="cicon">⚖️</span><span class="cnum">Foundations session 4</span><h3>Pay, gaps and fairness</h3><p>A pay gap is not equal pay. The six figures every UK employer files, 11,315 of them, the pyramid that produces most of the median gap, and the hiring drive that widens it.</p><span class="meta"><span class="pill">composition vs pay</span></span></a>
+      <a class="course-card" href="courses/a5-surveys-as-evidence.html" style="--diff:#5B8C5A"><span class="cicon">📋</span><span class="cnum">Foundations session 5</span><h3>Surveys as evidence</h3><p>Who answers and who does not, why a five-point average is not a temperature, the anonymity threshold, the engagement figure that drifted 23 to 20 across three editions, and two folk claims with no source.</p><span class="meta"><span class="pill">the response funnel</span></span></a>
+      <a class="course-card" href="courses/a6-the-people-dashboard.html" style="--diff:#5B8C5A"><span class="cicon">🧾</span><span class="cnum">Foundations session 6</span><h3>The people dashboard</h3><p>One stock and one flow per row, each with its base and date, the honest sentence per row, the metric that became a target, and the fence around what the law says may not be computed.</p><span class="meta"><span class="pill">a base on every row</span></span></a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="paths" style="margin-top:0">
+      <h2>Data and AI deep-dive track 🔬 <span style="font-size:.85rem;font-weight:600;color:var(--muted)">· ten sessions, Python</span></h2>
+      <p class="plede">For the people who own the export and have to defend the number. The three-table model, survival on a snapshot and why it lies, regretted and benchmarked attrition, funnel maths, the pay gap decomposed on 11,301 real filings, pay equity regression, survey psychometrics, workforce planning, what the law forbids, and a bench that refits the ladder live.</p>
+    </div>
+    <div class="course-grid">
+      <a class="course-card" href="courses/p1-the-people-data-model.html" style="--diff:#FBBF24"><span class="cicon">🗂️</span><span class="cnum">Deep-dive session 1 · start here</span><h3>The people data model</h3><p>Employee, position, event. Which table you were given and the test that tells you, headcount as a function of a date, the identity asserted in code, three bases printed together.</p><span class="meta"><span class="pill amber">▶ Start here</span></span></a>
+      <a class="course-card" href="courses/p2-attrition-survival.html" style="--diff:#FBBF24"><span class="cicon">📉</span><span class="cnum">Deep-dive session 2</span><h3>Attrition as survival</h3><p>Tenure as time-to-event, censoring, Kaplan-Meier by hand, and the survivor-table bias measured: 94 percent at one year is too high because nobody who left before the snapshot is in the table.</p><span class="meta"><span class="pill">the photograph bias</span></span></a>
+      <a class="course-card" href="courses/p3-regretted-and-benchmarked.html" style="--diff:#FBBF24"><span class="cicon">🏷️</span><span class="cnum">Deep-dive session 3</span><h3>Regretted, and benchmarked</h3><p>Eleven reason categories and the classification that makes 65 percent regretted, departments with their bases, and 120 months of real quits rates fetched from a public API with no key.</p><span class="meta"><span class="pill">monthly is not annual</span></span></a>
+      <a class="course-card" href="courses/p4-funnel-maths.html" style="--diff:#FBBF24"><span class="cicon">🔻</span><span class="cnum">Deep-dive session 4</span><h3>Funnel maths and adverse impact</h3><p>Conversion per stage, the impact ratio, the four-fifths rule of thumb and the audit New York requires, computed on a constructed funnel, with the simulator left where it lives.</p><span class="meta"><span class="pill">print both rates</span></span></a>
+      <a class="course-card" href="courses/p5-pay-gap-decomposition.html" style="--diff:#FBBF24"><span class="cicon">🪜</span><span class="cnum">Deep-dive session 5</span><h3>Pay gap decomposition on 11,301 employers</h3><p>The filing, the pyramid, the ladder fitted by least squares, composition-only gaps against reported ones, the third of employers who report less than their pyramid, and the placebo.</p><span class="meta"><span class="pill">the ladder</span></span></a>
+      <a class="course-card" href="courses/p6-pay-equity-regression.html" style="--diff:#FBBF24"><span class="cicon">📈</span><span class="cnum">Deep-dive session 6</span><h3>Pay equity regression</h3><p>Within-band pay on constructed salaries, log pay on grade, tenure and sex, the Oaxaca-Blinder split, and why explained is not the same as justified.</p><span class="meta"><span class="pill">explained is not justified</span></span></a>
+      <a class="course-card" href="courses/p7-survey-psychometrics.html" style="--diff:#FBBF24"><span class="cicon">🧪</span><span class="cnum">Deep-dive session 7</span><h3>Survey psychometrics</h3><p>Reliability computed on constructed responses with a planted bad item, response bias, the anonymity threshold, and the engagement figure by edition.</p><span class="meta"><span class="pill">alpha, computed</span></span></a>
+      <a class="course-card" href="courses/p8-workforce-planning.html" style="--diff:#FBBF24"><span class="cicon">🧮</span><span class="cnum">Deep-dive session 8</span><h3>Workforce planning</h3><p>The stock-flow model with a plan on it, hiring need as growth plus replacement, Apex's real counts as inputs, and scenarios as ranges rather than points.</p><span class="meta"><span class="pill">growth plus replacement</span></span></a>
+      <a class="course-card" href="courses/p9-ai-on-people-data.html" style="--diff:#FBBF24"><span class="cicon">🚧</span><span class="cnum">Deep-dive session 9</span><h3>AI on people data, and what the law forbids</h3><p>GDPR Articles 9 and 22, the EU AI Act's Annex III, New York's audit law, the recruiting tool that learned the past, and discretion against the test.</p><span class="meta"><span class="pill">the fence</span></span></a>
+      <a class="course-card" href="courses/p10-the-pay-gap-bench.html" style="--diff:#F87171"><span class="cicon">🎛️</span><span class="cnum">Deep-dive session 10 · bench night</span><h3>The pay gap bench, and defending a number</h3><p>3,000 real employers, the pyramid, the ladder fitted live, composition against reported, the anti-lever pulled both ways, the break button, and the sentence. Final scorecard.</p><span class="meta"><span class="pill amber">★ the bench</span><span class="pill">🔒 final scorecard</span></span></a>
+    </div>
+    <div class="diff-legend">
+      <span><i style="background:#5B8C5A"></i>foundations</span>
+      <span><i style="background:#FBBF24"></i>core</span>
+      <span><i style="background:#F87171"></i>bench night</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="paths" style="margin-top:0">
+      <h2>Your passport 🎫</h2>
+      <p class="plede">Clear all three quiz questions in a session and it gets stamped. Sixteen stamps means you can reconcile a headcount bridge, write a rate with its base, say who is missing from a table, and defend a pay gap figure by saying what it is made of. Stamps live in this browser only.</p>
+    </div>
+    <div class="pp-strip"></div>
+  </section>
+
+  <section class="section">
+    <div class="not-this">
+      <h3>What this is not, so you land in the right place 🧭</h3>
+      <table class="clean">
+        <tr><th>If your question is</th><th>Go here instead</th></tr>
+        <tr><td>How do I run a fair screening process, and what does the four-fifths rule do to a shortlist?</td><td><a href="https://phoebefu6.github.io/learn-ai-hr-with-phoebe/">AI + HR ↗</a></td></tr>
+        <tr><td>How do I rate, calibrate and talk about performance?</td><td><a href="https://phoebefu6.github.io/learn-performance-management-with-phoebe/">Performance Management ↗</a></td></tr>
+        <tr><td>How do I set goals that measure fairly?</td><td><a href="https://phoebefu6.github.io/learn-okr-with-phoebe/">OKRs and Fair Measurement ↗</a></td></tr>
+        <tr><td>What does the data protection law actually require of me?</td><td><a href="https://phoebefu6.github.io/learn-gdpr-with-phoebe/">GDPR ↗</a> · <a href="https://phoebefu6.github.io/learn-pdpa-dnc-with-phoebe/">PDPA ↗</a> · <a href="https://phoebefu6.github.io/learn-ai-governance-with-phoebe/">AI Governance ↗</a></td></tr>
+        <tr><td>How do I prove that a change caused the attrition to fall?</td><td><a href="https://phoebefu6.github.io/learn-causal-inference-with-phoebe/">Causal Inference ↗</a> · <a href="https://phoebefu6.github.io/learn-experimentation-with-phoebe/">Experimentation ↗</a></td></tr>
+        <tr><td><strong>I own people numbers, or I am handed them, and I want to know what each one is made of and defend it.</strong></td><td><strong>you are in the right place</strong></td></tr>
+      </table>
+      <p style="margin-top:.7rem;font-size:.86rem;color:var(--muted)"><strong>People analytics as a counting discipline.</strong> The company is constructed; the filings are real; where a figure comes from a paper or a law the page names it, and where a claim has no measured source the page says that instead of repeating it.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="paths">
+      <h2>Choose your path 🗺️</h2>
+      <p class="plede">Three doors into the same conviction: a people number has a stock, a flow, a base and a date, and a table has people missing from it.</p>
+      <div class="path"><b>🧭 I read the dashboard and do not code</b>
+        <a class="pstep" href="courses/a1-headcount-and-flows.html">F1</a><span class="parr">→</span><a class="pstep" href="courses/a2-attrition-needs-a-base.html">F2</a><span class="parr">→</span><a class="pstep" href="courses/a3-the-hiring-funnel.html">F3</a><span class="parr">→</span><a class="pstep" href="courses/a4-pay-gaps-and-fairness.html">F4</a><span class="parr">→</span><a class="pstep" href="courses/a5-surveys-as-evidence.html">F5</a><span class="parr">→</span><a class="pstep" href="courses/a6-the-people-dashboard.html">F6</a>
+        <span style="font-size:.82rem;color:var(--muted)">the six habits, the real filings, no code</span>
+      </div>
+      <div class="path"><b>🔬 I own the export and must defend the number</b>
+        <a class="pstep" href="courses/p1-the-people-data-model.html">D1</a><span class="parr">→</span><a class="pstep" href="courses/p2-attrition-survival.html">D2</a><span class="parr">→</span><a class="pstep" href="courses/p3-regretted-and-benchmarked.html">D3</a><span class="parr">→</span><a class="pstep" href="courses/p5-pay-gap-decomposition.html">D5</a><span class="parr">→</span><a class="pstep" href="courses/p10-the-pay-gap-bench.html">D10</a>
+        <span style="font-size:.82rem;color:var(--muted)">the model, survival, the benchmark, the decomposition, the bench</span>
+      </div>
+      <div class="path"><b>⚖️ I am accountable for fairness and the law</b>
+        <a class="pstep" href="courses/a4-pay-gaps-and-fairness.html">F4</a><span class="parr">→</span><a class="pstep" href="courses/p4-funnel-maths.html">D4</a><span class="parr">→</span><a class="pstep" href="courses/p6-pay-equity-regression.html">D6</a><span class="parr">→</span><a class="pstep" href="courses/p9-ai-on-people-data.html">D9</a><span class="parr">→</span><a class="pstep" href="courses/p10-the-pay-gap-bench.html">D10</a>
+        <span style="font-size:.82rem;color:var(--muted)">gaps, impact ratios, same-level pay, the fence, the bench</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="paths" style="margin-top:0">
+      <h2>What is honest here 🧾</h2>
+      <p class="plede">The pay gap spine is real public data, recomputed for these pages and refitted live on the bench. The company is constructed and says so on every page. Where a figure comes from a paper, a law or a statistics office, the page names it and says whether it was read at source.</p>
+    </div>
+    <table class="clean">
+      <tr><th>Claim</th><th>Status</th></tr>
+      <tr><td>Every filing count, median, band share, ladder, R2 and placebo figure</td><td><strong>Really computed</strong> from the gov.uk gender pay gap service's 2024 filings (Open Government Licence v3.0); the bench recomputes the deterministic numbers in the browser exactly as the offline build does</td></tr>
+      <tr><td>The composition-only gap and the anti-lever figures</td><td><strong>Modelled</strong> under a ladder fitted by least squares and equal pay within a band, labelled so wherever they appear</td></tr>
+      <tr><td>Whether any employer's residual is pay rather than hours or structure</td><td><strong>Not claimed.</strong> The filing shows nothing inside a band</td></tr>
+      <tr><td>The US quits rates</td><td><strong>Really fetched</strong> from the Bureau of Labor Statistics public API on 26 September 2026; monthly, US, voluntary quits, and the page says why that is not an annual rate</td></tr>
+      <tr><td>Apex, its 1,071 staff, its 210 leavers, its funnel, salaries and survey</td><td><strong>Constructed,</strong> generated with a seed, and the page says so each time</td></tr>
+      <tr><td>The papers, the regulations and the statistics office figures</td><td><strong>Named with year, journal and volume,</strong> and the page says whether each was read at source or through a summary</td></tr>
+      <tr><td>"People leave managers, not companies" and "replacing someone costs 1.5 to 2 times salary"</td><td><strong>Not claimed.</strong> Neither has a measured source; the page says so</td></tr>
+    </table>
+  </section>
+
+  <section class="section mm-section">
+    <h2>The knowledge map 🧠</h2>
+    <p class="mm-lede">Both tracks at a glance - hover a session to spotlight its concepts, click any node to jump in.</p>
+    <div class="mm-wrap"><div id="mindmap"></div></div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>learn-people-analytics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span>Neighbours on the shelf: <a href="https://phoebefu6.github.io/learn-ai-hr-with-phoebe/">AI + HR ↗</a> &nbsp;·&nbsp; <a href="https://phoebefu6.github.io/learn-customer-retention-with-phoebe/">Customer Retention ↗</a> &nbsp;·&nbsp; <a href="https://phoebefu6.github.io/learn-performance-management-with-phoebe/">Performance Management ↗</a></span>
+  </footer>
+
+</main>
+
+<script>
+window.MINDMAP_DATA = {
+  "title": "People\nanalytics",
+  "centerColor": "#4F1521",
+  "sessions": [
+    {
+      "label": "Headcount is a stock,\nattrition is a flow",
+      "href": "courses/a1-headcount-and-flows.html",
+      "color": "#5B8C5A",
+      "concepts": [
+        {
+          "label": "The identity",
+          "href": "courses/a1-headcount-and-flows.html"
+        },
+        {
+          "label": "Three bases, one flow",
+          "href": "courses/a1-headcount-and-flows.html"
+        },
+        {
+          "label": "Who is not in the table",
+          "href": "courses/a1-headcount-and-flows.html"
+        }
+      ]
+    },
+    {
+      "label": "An attrition rate\nneeds a base",
+      "href": "courses/a2-attrition-needs-a-base.html",
+      "color": "#5B8C5A",
+      "concepts": [
+        {
+          "label": "Annualised means assumed",
+          "href": "courses/a2-attrition-needs-a-base.html"
+        },
+        {
+          "label": "Small bases lie",
+          "href": "courses/a2-attrition-needs-a-base.html"
+        },
+        {
+          "label": "Regretted is a choice",
+          "href": "courses/a2-attrition-needs-a-base.html"
+        }
+      ]
+    },
+    {
+      "label": "The hiring\nfunnel",
+      "href": "courses/a3-the-hiring-funnel.html",
+      "color": "#5B8C5A",
+      "concepts": [
+        {
+          "label": "A base under every stage",
+          "href": "courses/a3-the-hiring-funnel.html"
+        },
+        {
+          "label": "Two clocks",
+          "href": "courses/a3-the-hiring-funnel.html"
+        },
+        {
+          "label": "Adverse impact, one metric",
+          "href": "courses/a3-the-hiring-funnel.html"
+        }
+      ]
+    },
+    {
+      "label": "Pay, gaps\nand fairness",
+      "href": "courses/a4-pay-gaps-and-fairness.html",
+      "color": "#5B8C5A",
+      "concepts": [
+        {
+          "label": "A gap is not equal pay",
+          "href": "courses/a4-pay-gaps-and-fairness.html"
+        },
+        {
+          "label": "The pyramid",
+          "href": "courses/a4-pay-gaps-and-fairness.html"
+        },
+        {
+          "label": "Composition vs pay",
+          "href": "courses/a4-pay-gaps-and-fairness.html"
+        }
+      ]
+    },
+    {
+      "label": "Surveys as\nevidence",
+      "href": "courses/a5-surveys-as-evidence.html",
+      "color": "#5B8C5A",
+      "concepts": [
+        {
+          "label": "Who answers",
+          "href": "courses/a5-surveys-as-evidence.html"
+        },
+        {
+          "label": "A mean is not a temperature",
+          "href": "courses/a5-surveys-as-evidence.html"
+        },
+        {
+          "label": "Folk claims, unsourced",
+          "href": "courses/a5-surveys-as-evidence.html"
+        }
+      ]
+    },
+    {
+      "label": "The people\ndashboard",
+      "href": "courses/a6-the-people-dashboard.html",
+      "color": "#5B8C5A",
+      "concepts": [
+        {
+          "label": "A base on every row",
+          "href": "courses/a6-the-people-dashboard.html"
+        },
+        {
+          "label": "The metric that became a target",
+          "href": "courses/a6-the-people-dashboard.html"
+        },
+        {
+          "label": "The fence",
+          "href": "courses/a6-the-people-dashboard.html"
+        }
+      ]
+    },
+    {
+      "label": "The people\ndata model",
+      "href": "courses/p1-the-people-data-model.html",
+      "color": "#FBBF24",
+      "concepts": [
+        {
+          "label": "Employee, position, event",
+          "href": "courses/p1-the-people-data-model.html"
+        },
+        {
+          "label": "headcount(date)",
+          "href": "courses/p1-the-people-data-model.html"
+        },
+        {
+          "label": "assert the identity",
+          "href": "courses/p1-the-people-data-model.html"
+        }
+      ]
+    },
+    {
+      "label": "Attrition as\nsurvival",
+      "href": "courses/p2-attrition-survival.html",
+      "color": "#FBBF24",
+      "concepts": [
+        {
+          "label": "Censoring",
+          "href": "courses/p2-attrition-survival.html"
+        },
+        {
+          "label": "Kaplan-Meier by hand",
+          "href": "courses/p2-attrition-survival.html"
+        },
+        {
+          "label": "The survivor-table bias",
+          "href": "courses/p2-attrition-survival.html"
+        }
+      ]
+    },
+    {
+      "label": "Regretted, and\nbenchmarked",
+      "href": "courses/p3-regretted-and-benchmarked.html",
+      "color": "#FBBF24",
+      "concepts": [
+        {
+          "label": "Eleven categories, one choice",
+          "href": "courses/p3-regretted-and-benchmarked.html"
+        },
+        {
+          "label": "Departments with bases",
+          "href": "courses/p3-regretted-and-benchmarked.html"
+        },
+        {
+          "label": "JOLTS, monthly not annual",
+          "href": "courses/p3-regretted-and-benchmarked.html"
+        }
+      ]
+    },
+    {
+      "label": "Funnel maths and\nadverse impact",
+      "href": "courses/p4-funnel-maths.html",
+      "color": "#FBBF24",
+      "concepts": [
+        {
+          "label": "Conversion per stage",
+          "href": "courses/p4-funnel-maths.html"
+        },
+        {
+          "label": "The impact ratio",
+          "href": "courses/p4-funnel-maths.html"
+        },
+        {
+          "label": "The audit's two columns",
+          "href": "courses/p4-funnel-maths.html"
+        }
+      ]
+    },
+    {
+      "label": "Pay gap\ndecomposition",
+      "href": "courses/p5-pay-gap-decomposition.html",
+      "color": "#FBBF24",
+      "concepts": [
+        {
+          "label": "The ladder, fitted",
+          "href": "courses/p5-pay-gap-decomposition.html"
+        },
+        {
+          "label": "Composition-only vs reported",
+          "href": "courses/p5-pay-gap-decomposition.html"
+        },
+        {
+          "label": "The placebo",
+          "href": "courses/p5-pay-gap-decomposition.html"
+        }
+      ]
+    },
+    {
+      "label": "Pay equity\nregression",
+      "href": "courses/p6-pay-equity-regression.html",
+      "color": "#FBBF24",
+      "concepts": [
+        {
+          "label": "Log pay on grade, tenure, sex",
+          "href": "courses/p6-pay-equity-regression.html"
+        },
+        {
+          "label": "Oaxaca-Blinder",
+          "href": "courses/p6-pay-equity-regression.html"
+        },
+        {
+          "label": "Explained is not justified",
+          "href": "courses/p6-pay-equity-regression.html"
+        }
+      ]
+    },
+    {
+      "label": "Survey\npsychometrics",
+      "href": "courses/p7-survey-psychometrics.html",
+      "color": "#FBBF24",
+      "concepts": [
+        {
+          "label": "Alpha, computed",
+          "href": "courses/p7-survey-psychometrics.html"
+        },
+        {
+          "label": "The planted bad item",
+          "href": "courses/p7-survey-psychometrics.html"
+        },
+        {
+          "label": "The anonymity threshold",
+          "href": "courses/p7-survey-psychometrics.html"
+        }
+      ]
+    },
+    {
+      "label": "Workforce\nplanning",
+      "href": "courses/p8-workforce-planning.html",
+      "color": "#FBBF24",
+      "concepts": [
+        {
+          "label": "The tank with a plan",
+          "href": "courses/p8-workforce-planning.html"
+        },
+        {
+          "label": "Growth plus replacement",
+          "href": "courses/p8-workforce-planning.html"
+        },
+        {
+          "label": "Scenarios as ranges",
+          "href": "courses/p8-workforce-planning.html"
+        }
+      ]
+    },
+    {
+      "label": "AI on people data,\nand the law",
+      "href": "courses/p9-ai-on-people-data.html",
+      "color": "#FBBF24",
+      "concepts": [
+        {
+          "label": "GDPR 9 and 22",
+          "href": "courses/p9-ai-on-people-data.html"
+        },
+        {
+          "label": "Annex III, Local Law 144",
+          "href": "courses/p9-ai-on-people-data.html"
+        },
+        {
+          "label": "The tool that learned the past",
+          "href": "courses/p9-ai-on-people-data.html"
+        }
+      ]
+    },
+    {
+      "label": "The pay gap\nbench",
+      "href": "courses/p10-the-pay-gap-bench.html",
+      "color": "#F87171",
+      "concepts": [
+        {
+          "label": "Four rungs, live",
+          "href": "courses/p10-the-pay-gap-bench.html"
+        },
+        {
+          "label": "The anti-lever, both ways",
+          "href": "courses/p10-the-pay-gap-bench.html"
+        },
+        {
+          "label": "The sentence for the meeting",
+          "href": "courses/p10-the-pay-gap-bench.html"
+        }
+      ]
+    }
+  ]
+};
+</script>
+<script src="assets/mindmap.js?v=1"></script>
+<script src="assets/app.js?v=1"></script>
+</body>
+</html>

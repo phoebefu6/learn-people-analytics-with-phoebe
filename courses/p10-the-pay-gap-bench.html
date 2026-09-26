@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Deep-dive session 10 of 10. The pay gap bench: 3,000 real UK employers' 2024 filings, the pyramid, a band pay ladder fitted live, composition-only gaps against reported ones, an employer-size filter, the anti-lever that adds women where they widen the gap, the break button that shuffles the bands, and the sentence that defends a people number in a meeting.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="The pay gap bench, and defending a number - learn people analytics with phoebe">
+<meta property="og:description" content="Deep-dive session 10 of 10. Same 3,000 employers, four rungs, one anti-lever that widens the gap it was pulled to close.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/courses/p10-the-pay-gap-bench.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The pay gap bench, and defending a number - learn people analytics with phoebe">
+<meta name="twitter:description" content="Deep-dive session 10 of 10. The pyramid, the ladder, the anti-lever, the break button. Every number computed live.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Deep-dive session 10 · The pay gap bench, and defending a number - learn people analytics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-people-analytics-with-phoebe</a> / Deep-dive session 10 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn People Analytics with Phoebe · Deep-dive session 10 of 10</div>
+    <h1>The pay gap bench, and <span class="accent">defending a number</span></h1>
+    <p class="sub">Nine sessions have built one habit: before a people number is believed, ask what it is a count of, what it is divided by, and who is missing from the table. Tonight the habit meets 3,000 real employers. Every one of them filed a gender pay gap in 2024, and every one of them filed the shape of its pay pyramid alongside it. The bench fits, live, the band pay ladder that best explains the reported gaps from the pyramid alone, and shows how much of what a company reports is who sits where rather than who is paid what at the same level. Then it pulls the lever every well-meaning plan reaches for, hire more women, and shows that at the bottom of the pyramid it widens the reported gap it was pulled to close. Then the break button, because a number you cannot make disappear is a number you do not understand. And then the sentence.</p>
+    <div class="chip-row">
+      <span class="chip level">🔴 Bench night</span>
+      <span class="chip audience">HR analysts, people data teams, and the leaders they report to</span>
+      <span class="chip audience">Browser only, no code needed</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:3">3-14 · Reading the pyramid</span>
+      <span class="a3" style="flex:6">14-40 · The bench, then the sentence</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we start</h2>
+    </div>
+    <p class="lede">A bench is not a dashboard. A dashboard shows a number; a bench lets you break it. Everything on this page is recomputed from the same 3,000 filings, sampled from the 11,301 usable ones the UK service published for 2024, the moment you touch a control. The employers are real and named in the data; no page names one as good or bad, because the point is the mechanism every one of them shares, not any one of them.</p>
+
+    <div class="legend">
+      <span class="pill">🎫 Clear all three quiz questions to stamp your passport</span>
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">★ Bench = every number computed in your browser</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> A pyramid you can read in one glance, the difference between a gap made of composition and a gap made of pay, the anti-lever you can name when somebody proposes it, and one sentence for a leader that carries the number, what it is made of, and what the filing cannot show.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the pyramid and the ladder</span>
+      <h2>Reading the pyramid</h2>
+      <span class="tag concept">8 min live</span>
+    </div>
+    <p class="lede">A UK filing carries four pairs of numbers: the share of men and women in each of four equal-sized pay bands. At the median employer, women are 56 percent of the bottom band and 40 percent of the top, and 81 percent of employers have more women at the bottom than at the top. Give each band a relative pay level, a ladder, and the pyramid alone produces a gap, before anybody in it is paid differently from a colleague at the same level.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn pyramid of four pay bands, bottom to top, each split into a women part and a men part: 56 percent women at the bottom, 53 in the lower middle, 47 in the upper middle, 40 at the top. Beside it a ladder with four rungs labelled 1, 1.2, 1.45 and 2.8, the fitted relative pay of the bands. An arrow from pyramid and ladder together points to a box reading composition-only gap 9.8 percent, next to a box reading reported 11.0 percent.">
+        <defs>
+          <filter id="d10aSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="61" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d10aHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d10aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d10aH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d10aL { font: 600 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d10aS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d10aB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d10aV { font: 800 18px Inter, sans-serif; fill: #4F1521; }
+          .d10aW { font: 800 12px Inter, sans-serif; fill: #FFFFFF; }
+          .d10aN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d10aH" x="30" y="26">THE PYRAMID, THE LADDER, AND THE GAP THEY MAKE TOGETHER</text>
+        <text class="d10aS" x="30" y="44">median employer of 11,301 filings, 2024 · women's share hatched, men's white · ladder fitted on all filings</text>
+
+        <g filter="url(#d10aSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- four bands, equal size, women hatched from the left -->
+          <rect x="60" y="230" width="300" height="40" rx="3" transform="rotate(-0.4 210 250)" fill="#FFFFFF"/>
+          <rect x="60" y="230" width="168" height="40" rx="3" fill="url(#d10aHc)" stroke="none"/>
+          <rect x="60" y="180" width="300" height="40" rx="3" transform="rotate(0.4 210 200)" fill="#FFFFFF"/>
+          <rect x="60" y="180" width="158" height="40" rx="3" fill="url(#d10aHc)" stroke="none"/>
+          <rect x="60" y="130" width="300" height="40" rx="3" transform="rotate(-0.3 210 150)" fill="#FFFFFF"/>
+          <rect x="60" y="130" width="141" height="40" rx="3" fill="url(#d10aHc)" stroke="none"/>
+          <rect x="60" y="80" width="300" height="40" rx="3" transform="rotate(0.5 210 100)" fill="#FFFFFF"/>
+          <rect x="60" y="80" width="120" height="40" rx="3" fill="url(#d10aHc)" stroke="none"/>
+          <!-- the ladder -->
+          <path d="M440 280 L440 70 M500 280 L500 70" stroke-width="2.5"/>
+          <path d="M440 250 L500 250 M440 200 L500 200 M440 150 L500 150 M440 100 L500 100" stroke="#3D6B2E" stroke-width="3"/>
+          <!-- arrows to the result -->
+          <path d="M370 175 L430 175" marker-end="url(#d10aAr)"/>
+          <path d="M510 175 L580 175" marker-end="url(#d10aAr)"/>
+          <rect x="590" y="130" width="120" height="90" rx="8" transform="rotate(-0.5 650 175)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="730" y="130" width="120" height="90" rx="8" transform="rotate(0.4 790 175)" fill="#F9EEF0"/>
+        </g>
+
+        <text class="d10aL" x="70" y="256">bottom band</text>
+        <text class="d10aB" x="236" y="256">56% women</text>
+        <text class="d10aL" x="70" y="206">lower middle</text>
+        <text class="d10aB" x="236" y="206">53% women</text>
+        <text class="d10aL" x="70" y="156">upper middle</text>
+        <text class="d10aB" x="236" y="156">47% women</text>
+        <text class="d10aL" x="70" y="106">top band</text>
+        <text class="d10aB" x="236" y="106">40% women</text>
+        <text class="d10aS" x="60" y="296">equal-sized bands by hourly pay</text>
+
+        <text class="d10aS" x="512" y="254">1.00</text>
+        <text class="d10aS" x="512" y="204">1.20</text>
+        <text class="d10aS" x="512" y="154">1.45</text>
+        <text class="d10aS" x="512" y="104">2.80</text>
+        <text class="d10aL" x="440" y="300">the fitted ladder</text>
+        <text class="d10aS" x="440" y="316">relative band pay</text>
+
+        <text class="d10aS" x="602" y="152">composition-only</text>
+        <text class="d10aV" x="650" y="184" text-anchor="middle">9.8%</text>
+        <text class="d10aS" x="602" y="206">median, modelled</text>
+        <text class="d10aS" x="742" y="152">reported</text>
+        <text class="d10aV" x="790" y="184" text-anchor="middle">11.0%</text>
+        <text class="d10aS" x="742" y="206">median, as filed</text>
+
+        <text class="d10aN" x="30" y="332">Most of the median filing is the pyramid. The rest, about 2 points, is pay inside the bands, the ladder being steeper than fitted, or hours the filing cannot see.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the ladder is fitted, not published; it is the one that best explains 11,301 reported gaps from their pyramids alone</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Composition and pay: the two things a gap is made of<span class="mini">5 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A reported gap compares the average (or median) hourly pay of all women with that of all men. Two mechanisms feed it. <strong>Composition:</strong> if women sit lower in the pyramid, their average is lower even when every band pays everyone the same. <strong>Within-band pay:</strong> if a woman and a man in the same band are paid differently, the gap moves without the pyramid moving. The filing publishes the pyramid and the gap, and nothing about within-band pay, so the second can only be read as what is left after the first.</p>
+        <p>The ladder is what turns a pyramid into a number. Nobody publishes band pay, so the bench fits the relative pay of the four bands that best explains the reported mean gaps across all 11,301 filings: <strong>1 / 1.20 / 1.45 / 2.80.</strong> Under it, composition alone explains R2 0.353 of the variance in reported gaps and produces a median composition-only gap of 9.8 percent against a reported median of 11.0. A third of employers report <em>less</em> than their pyramid alone would, which says within-band pay at those employers runs the other way, or their ladder is flatter than the fitted one.</p>
+        <p>What the ladder is not: a pay scale. It is a statement about UK filings as a whole, and the bench lets you refit it on any subset so that you can see how much it moves. On the 3,000-row sample it comes out 1 / 1.3 / 1.5 / 3.0, close and not identical, which is the honest amount of uncertainty to carry.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Why "explained by composition" is not "justified"<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Decomposing a gap into composition and within-band pay is the filing-level cousin of the Oaxaca-Blinder decomposition taught in session 6, and it carries the same trap: the "explained" part is explained by <em>where women are</em>, which is itself the thing most pay-equity work is about. A company whose gap is entirely composition has no within-band pay problem and a very large question about why its top band is 40 percent women. The decomposition tells you which question to ask. It does not answer it, and it does not say the gap is fine.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="section" id="bench">
+    <div class="section-kicker">
+      <span class="klabel">Build-along · the bench</span>
+      <h2>Four rungs, computed in front of you</h2>
+      <span class="tag demo">★ 20 min · the main event</span>
+    </div>
+    <p class="lede">Work the rungs in order. Read the pyramid, then fit the ladder and read how much it explains, then set composition against reported. Filter to one employer size and watch which numbers move. Then press the anti-lever and read where the women were added. Then press the break button. Say out loud what changed each time.</p>
+
+    <div id="pa-bench"></div>
+
+    <div class="callout tip">
+      <p><strong>Read it in this order.</strong> The pyramid's bottom and top shares, then the ladder and its R2, then the composition-only median against the reported one. The first five tiles are computed from the filings and carry "computed". The last tile is the anti-lever's projection and carries "modelled", because it assumes the fitted ladder and equal pay inside every band, and no employer has actually done it.</p>
+    </div>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three bars for the median employer's modelled gap. As filed: 9.6 percent. After adding women equal to 10 percent of headcount into the bottom band: 14.9 percent, a taller red bar. After adding the same women into the top band: minus 3.2 percent, a bar below the line. A lever doodle beside them.">
+        <defs>
+          <filter id="d10bSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="67" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d10bHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d10bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d10bH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d10bL { font: 600 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d10bS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d10bB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d10bR { font: 800 11px Inter, sans-serif; fill: #991B1B; }
+          .d10bV { font: 800 20px Inter, sans-serif; fill: #4F1521; }
+          .d10bN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d10bH" x="30" y="26">THE ANTI-LEVER: THE SAME WOMEN, TWO PLACES</text>
+        <text class="d10bS" x="340" y="26">median employer · women equal to 10 percent of headcount added · modelled under the fitted ladder</text>
+
+        <g filter="url(#d10bSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M60 190 L600 190"/>
+          <rect x="90" y="132" width="120" height="58" rx="4" transform="rotate(-0.4 150 161)" fill="url(#d10bHc)"/>
+          <rect x="270" y="101" width="120" height="89" rx="4" transform="rotate(0.4 330 145)" fill="#FEF2F2" stroke="#991B1B"/>
+          <rect x="450" y="190" width="120" height="19" rx="4" transform="rotate(-0.3 510 200)" fill="#3D6B2E" stroke="#3D6B2E"/>
+          <!-- lever doodle -->
+          <path d="M660 210 L790 150" stroke="#991B1B" stroke-width="3"/>
+          <path d="M725 180 L725 226" stroke-width="3"/>
+          <path d="M695 226 L755 226" stroke-width="3"/>
+          <circle cx="790" cy="150" r="8" fill="#FEF2F2" stroke="#991B1B"/>
+        </g>
+
+        <text class="d10bV" x="150" y="124" text-anchor="middle">9.6%</text>
+        <text class="d10bL" x="150" y="216" text-anchor="middle">as filed</text>
+        <text class="d10bV" x="330" y="92" text-anchor="middle">14.9%</text>
+        <text class="d10bR" x="330" y="216" text-anchor="middle">added at the bottom band</text>
+        <text class="d10bV" x="510" y="240" text-anchor="middle">-3.2%</text>
+        <text class="d10bB" x="510" y="262" text-anchor="middle">added at the top band</text>
+        <text class="d10bS" x="40" y="194" text-anchor="end">0</text>
+
+        <text class="d10bH" x="640" y="76">THE LEVER EVERYONE PULLS</text>
+        <text class="d10bS" x="640" y="98">"We hired more women this year,</text>
+        <text class="d10bS" x="640" y="114">so the gap should close." It widened,</text>
+        <text class="d10bS" x="640" y="130">because they were hired at the bottom.</text>
+        <text class="d10bR" x="640" y="256">Where, not how many.</text>
+
+        <text class="d10bN" x="30" y="288">On the bench's 3,000-row sample the three bars read 9.8, 15.1 and -2.9. The mechanism is identical; the profile is the sample's median employer.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the red bar is the reported gap after a hiring drive that put its new women in the lowest band, and the drive was real progress by headcount</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>What the break button proves, and what it cannot<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Press it. Inside every employer the four band shares are shuffled, so each employer keeps exactly its shares of women and men and loses only the order they sit in. The R2 of composition against reported gaps collapses from 0.41 on the sample to about -1.8, which is worse than predicting every employer's gap with the overall mean. Composition explains the gap only when the pyramid is the right way up, which is the whole claim. Press again and the real order comes back with the real R2.</p>
+        <p>What it cannot prove is that any employer's gap is composition <em>rather than</em> pay. The bench models equal pay within bands because the filing shows nothing within bands; the residual is everything the model cannot see, and at a given employer that residual might be pay, hours, part-time patterns or a steeper ladder. The decomposition names the question. The pay equity regression in session 6, on data the filing does not contain, is what answers it.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers the sentence for the meeting</span>
+      <h2>Defending the number</h2>
+      <span class="tag concept">6 min live</span>
+    </div>
+    <p class="lede">A people number is defended by saying what it is made of. For a gap: the reported figure, the share of it the pyramid produces, the residual the filing cannot explain, and the two things a leader can actually change, where people are hired and promoted, and what they are paid at the same level. For attrition: the flow, the base, the period, the assumption. The sentence is short, and every clause in it has a number behind it that the bench or the bridge can reproduce.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn histogram of 100 placebo R2 values, a narrow hump around minus 1.84 on the far left of an axis running from minus 2 to plus 1. Far to the right at 0.41 a single moss marker for the real R2 with a bracket reading the pyramid the right way up. A note gives the sentence for the meeting.">
+        <defs>
+          <filter id="d10cSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="71" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d10cHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d10cAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d10cH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d10cL { font: 600 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d10cS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d10cB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d10cV { font: 800 16px Inter, sans-serif; fill: #4F1521; }
+          .d10cN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d10cH" x="30" y="26">WHERE THE REAL R2 SITS AGAINST 100 SHUFFLES</text>
+        <text class="d10cS" x="380" y="26">placebo: bands shuffled inside every employer, refit under the ladder, 100 times · mean -1.84, sd 0.07</text>
+
+        <g filter="url(#d10cSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M60 220 L840 220"/>
+          <!-- placebo hump on the left around x=150 -->
+          <rect x="110" y="210" width="12" height="10" fill="url(#d10cHc)"/>
+          <rect x="124" y="180" width="12" height="40" fill="url(#d10cHc)"/>
+          <rect x="138" y="120" width="12" height="100" fill="url(#d10cHc)"/>
+          <rect x="152" y="104" width="12" height="116" fill="url(#d10cHc)"/>
+          <rect x="166" y="150" width="12" height="70" fill="url(#d10cHc)"/>
+          <rect x="180" y="200" width="12" height="20" fill="url(#d10cHc)"/>
+          <!-- the real R2 far right -->
+          <path d="M700 90 L700 220" stroke="#3D6B2E" stroke-width="3"/>
+          <circle cx="700" cy="90" r="9" fill="#3D6B2E" stroke="#3D6B2E"/>
+          <path d="M190 130 L688 130" stroke="#3D6B2E" stroke-dasharray="6 4" marker-end="url(#d10cAr)"/>
+        </g>
+
+        <text class="d10cS" x="60" y="240">-2.0</text>
+        <text class="d10cS" x="156" y="240" text-anchor="middle">-1.84</text>
+        <text class="d10cS" x="460" y="240" text-anchor="middle">0</text>
+        <text class="d10cB" x="700" y="76" text-anchor="middle">real order: R2 0.41</text>
+        <text class="d10cS" x="700" y="240" text-anchor="middle">+0.41</text>
+        <text class="d10cV" x="440" y="120" text-anchor="middle">the pyramid, the right way up</text>
+        <text class="d10cL" x="60" y="90">shuffled: worse than the mean</text>
+
+        <text class="d10cN" x="30" y="272">"Our reported gap is 11 percent; about 9 of it is the pyramid, women being 56 percent of the bottom band and 40 of the top;</text>
+        <text class="d10cN" x="30" y="290">the rest the filing cannot explain. Hiring women at the bottom widens it. The levers are promotion and same-level pay, and the audit is next."</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the hump is what chance produces when the bands are in the wrong order; the moss dot is what the real filings produce</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The sentence, and the three questions it survives<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>"So is the gap composition or pay?"</strong> Mostly composition at the median employer, about 9 points of 11 under the fitted ladder, and the filing cannot see the rest; it could be pay, hours or a steeper ladder. The same-level question needs the salary table, which is session 6's regression, not the filing.</p>
+        <p><strong>"So we should hire more women?"</strong> Where. Added to the bottom band the modelled gap goes from 9.6 to 14.9; added to the top it goes to -3.2. The pyramid is a promotion and hiring-level question before it is a headcount question.</p>
+        <p><strong>"How do you know the pyramid explains anything?"</strong> Shuffle the bands inside every employer and composition explains nothing, R2 below zero, every time. The real order explains 0.35 of the variance across 11,301 employers and 0.41 on the sample; the two numbers are quoted together because the difference is the honest width.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>What the bench does not show, so you do not claim it<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>It does not show any employer's within-band pay, hours or part-time share; the filing does not contain them. It does not show the national gap: the ONS figures of 7.0 percent full-time and 13.1 percent all employees for April 2024 are economy-wide hourly-earnings medians, not per-employer medians, and are not comparable to the filing numbers. It does not rank employers. And it does not say a gap made of composition is acceptable; it says which lever the gap responds to.</p>
+      </div>
+    </details>
+
+    <div class="scorecard" data-title="The people number's ship gate" data-msgs="Sixteen of sixteen. The number has a stock, a flow, a base, a date, a placebo where one exists and a sentence; it goes in the deck.|Close, and not yet. Any row under 2 is a question you will be asked in the meeting and cannot yet answer; write it down before the deck is sent.|Half the gate is open. The rows at 0 are usually the base and the survivor question; those two take an hour with the bridge and they are the ones that turn a number into a claim.|Do not put this number in a deck yet. Go back to the session each low row names and work the bridge or the bench until the row is solid." data-foot="Score every row 0 for not yet, 1 for partly, 2 for solid. This gate is strict: anything under 16 of 16 does not go in a deck, because a people number with no base written under it is a numerator wearing a percent sign. A row at 0 or 1 is the next thing to do, and it names the session to go back to.">
+      <div class="sc-row"><div class="sc-q">Every rate on the page has its base written under it, and the base is a headcount computed as a function of a date, not a column. <em>Deep-dive session 1. Apex: 210 over 1,022, 941.5 or 861 is 20.5, 22.3 or 24.4 percent.</em></div></div>
+      <div class="sc-row"><div class="sc-q">The bridge reconciles: start plus joiners minus leavers equals end, asserted in code. <em>Deep-dive session 1. 1,022 + 49 - 210 = 861.</em></div></div>
+      <div class="sc-row"><div class="sc-q">I can say who is not in the table, and every tenure or survival number carries that caveat. <em>Deep-dive session 2. A snapshot holds only the people who survived to be photographed; the Apex curve is biased upward for that reason.</em></div></div>
+      <div class="sc-row"><div class="sc-q">Any annualised or benchmarked figure states its arithmetic and its assumption. <em>Deep-dive session 3. 44.6 is 22.3 doubled and assumes H2 repeats H1; a monthly quits rate times 12 is a rough scale, not an annual rate.</em></div></div>
+      <div class="sc-row"><div class="sc-q">"Regretted", "engaged" and every other classification is shown as a choice with the categories visible. <em>Deep-dive sessions 3 and 7. 137 of 210 is regretted under one list of five categories; a different list gives a different share.</em></div></div>
+      <div class="sc-row"><div class="sc-q">For a pay gap I can say how much the pyramid produces and how much the filing cannot explain, and I have the placebo behind the first number. <em>The bench. About 9 of 11 points; R2 0.35 on all filings, 0.41 on the sample, below zero when the bands are shuffled.</em></div></div>
+      <div class="sc-row"><div class="sc-q">I can name the anti-lever when somebody proposes it, with the two modelled figures side by side. <em>The bench. Women added at the bottom band: 9.6 to 14.9; at the top: -3.2.</em></div></div>
+      <div class="sc-row"><div class="sc-q">Nothing on the page computes a protected characteristic the law forbids, and any automated decision on people has its audit named. <em>Deep-dive session 9. GDPR Articles 9 and 22, the EU AI Act's Annex III, New York's Local Law 144; the AI + HR course for the simulator.</em></div></div>
+    </div>
+  </section>
+
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>After the bench</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li><strong>Filter the bench to each employer size in turn</strong> and write the fitted ladder and R2 for each. Say in one sentence whether the ladder is steeper or flatter for large employers, and by how much.</li>
+      <li><strong>Find your own employer's filing</strong> on the gov.uk service (any UK employer with 250 or more staff has one). Write its four female band shares and its two gaps, then compute its composition-only gap under the fitted ladder by hand.</li>
+      <li><strong>Run the anti-lever on your own pyramid</strong> with women added at the bottom and at the top. Write both figures beside the filed gap.</li>
+      <li><strong>Write the sentence</strong> for your own organisation, in the shape from Part 2, with blanks where you do not yet have the number. The blanks are the work plan.</li>
+    </ol>
+  </section>
+
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+    <p>Clear all three and deep-dive session 10 gets stamped in your passport.</p>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · A leader says "we hired 10 percent more women this year, so the gap should have closed". The bench says what?</p>
+      <button class="qopt" type="button">A · It closed, because more women always lowers the gap</button>
+      <button class="qopt" type="button">B · It cannot have changed, because hiring does not affect a pay gap</button>
+      <button class="qopt" type="button">C · It depends entirely on where they were hired: added to the bottom band the median employer's modelled gap goes from 9.6 to 14.9 percent; added to the top band it goes to -3.2; the reported gap is a composition number before it is a pay number, and headcount without level is the anti-lever</button>
+      <button class="qopt" type="button">D · The gap is unaffected because the filing only counts men</button>
+      <p class="qwhy">The pyramid produces most of the median filing. Women added at the bottom make the pyramid steeper and the gap wider, and the hiring drive was real progress by headcount. The lever is level, not count.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · What does the break button demonstrate, and what does it not?</p>
+      <button class="qopt" type="button">A · That composition explains the reported gaps only when each employer's bands are in their real order, since shuffling them sends R2 below zero; it does not show that any employer's residual is pay rather than hours or a steeper ladder, because the filing shows nothing inside a band</button>
+      <button class="qopt" type="button">B · That the reported gaps are wrong, because shuffling should not change anything</button>
+      <button class="qopt" type="button">C · That the ladder is a real pay scale</button>
+      <button class="qopt" type="button">D · That employers with larger gaps have more women</button>
+      <p class="qwhy">A detector that cannot be made to fail has not been tested; the shuffle is the failing state. Removing the pyramid's order removes composition's explanatory power and nothing else.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="3">
+      <p class="qtext">3 · Which is the sentence that defends the number?</p>
+      <button class="qopt" type="button">A · "Our pay gap is 11 percent."</button>
+      <button class="qopt" type="button">B · "Our pay gap is below the national average, so we are fine."</button>
+      <button class="qopt" type="button">C · "Our pay gap is caused by discrimination."</button>
+      <button class="qopt" type="button">D · "Our reported median gap is 11 percent; about 9 points of it is the pyramid, women being 56 percent of our bottom band and 40 of our top, under a ladder fitted on 11,301 filings; the rest the filing cannot explain; hiring at the bottom would widen it; the levers are promotion and same-level pay, and the same-level audit on the salary table is next."</button>
+      <p class="qwhy">The number, what it is made of, what the filing cannot show, the anti-lever, the levers, and the next step. Option B compares a per-employer median with an economy-wide one, which the page says is not a comparison.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What this session teaches, and where it came from</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Every share, median, ladder, R2 and placebo figure on the bench</span><span class="note">Computed in the browser from 3,000 employers' 2024 filings sampled from the gov.uk gender pay gap service (Open Government Licence v3.0); the same code agrees with the offline build exactly on every deterministic number and on the placebo to within 0.01</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The fitted ladder 1 / 1.20 / 1.45 / 2.80 and the full-set figures: R2 0.353, composition-only median 9.8, 33.8 percent below, anti-lever 9.57 / 14.88 / -3.18</span><span class="note">Computed from all 11,301 usable 2024 filings offline; the ladder and the anti-lever are modelled under equal pay within a band and the page says so</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The six UK figures and the four bands</span><span class="note">Equality Act 2010 (Gender Pay Gap Information) Regulations 2017, read at source</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">ONS 7.0 and 13.1 percent, April 2024</span><span class="note">Named as economy-wide medians that are not comparable with filing medians</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Oaxaca-Blinder, and the law on automated people decisions</span><span class="note">Named; sessions 6 and 9 own them</span></div>
+    </div>
+    <p class="mono" style="margin-top:14px">Every fact on this page, and its verification tier, is recorded in the course's source map.</p>
+  </section>
+
+  <section class="cheat" id="cheatsheet">
+    <h3>Deep-dive session 10 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>A gap is composition plus pay</b><span>The filing shows the pyramid and the gap, and nothing inside a band.</span></div>
+      <div class="cheat-item"><b>The fitted ladder</b><span>1 / 1.20 / 1.45 / 2.80 on 11,301 filings; 1 / 1.3 / 1.5 / 3.0 on the sample. Quote both.</span></div>
+      <div class="cheat-item"><b>Composition explains R2 0.35</b><span>Median composition-only gap 9.8 against 11.0 reported; a third report less than their pyramid.</span></div>
+      <div class="cheat-item"><b>The anti-lever</b><span>Same women: bottom band 9.6 to 14.9; top band to -3.2. Where, not how many.</span></div>
+      <div class="cheat-item"><b>The placebo</b><span>Shuffle the bands: R2 -1.84. The order is the whole claim.</span></div>
+      <div class="cheat-item"><b>The sentence</b><span>Number, what it is made of, what the filing cannot show, the anti-lever, the levers, the next step.</span></div>
+    </div>
+  </section>
+
+  <div class="callout next">
+    <span class="nx-pill">Both tracks</span>
+    <p>That is the deep-dive track. The Foundations track is the same six habits without code, for the people you will say the sentence to: stocks and flows, a rate and its base, the funnel, pay and fairness, surveys as evidence, and the dashboard. If you came here first, start there next; if you came from there, you now have the number Foundations session 4 promised, and the bench that makes it yours.</p>
+  </div>
+
+  <footer class="pagefoot">
+    <span>Deep-dive session 10 of 10 · learn-people-analytics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="p9-ai-on-people-data.html">← Prev: AI on people data, and what the law forbids</a> &nbsp;·&nbsp; <a href="../index.html">Course home</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/pa-sample.js?v=1"></script>
+<script src="../assets/pa-live.js?v=1"></script>
+<script src="../assets/pa-bench.js?v=1"></script>
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

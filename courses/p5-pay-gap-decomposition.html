@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Deep-dive session 5 of 10. Every UK gender pay gap filing for 2024 in pandas: 11,315 filings, 11,301 usable, a median reported gap of 8.4 percent on a pyramid with 56.0 percent women in the bottom pay band and 40.0 in the top. A pay ladder nobody publishes, fitted from everybody's gaps; the composition-only gap it implies; a placebo that shuffles the bands; and the anti-lever that makes a gap wider when women are hired into the wrong band.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Pay gap decomposition on 11,301 employers - learn people analytics with phoebe">
+<meta property="og:description" content="Deep-dive session 5 of 10. The pyramid alone reports a median gap of 9.8 percent against a reported 11.0. The code, the fit and the placebo.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/courses/p5-pay-gap-decomposition.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pay gap decomposition on 11,301 employers - learn people analytics with phoebe">
+<meta name="twitter:description" content="Deep-dive session 5 of 10. Real UK filings, a fitted ladder, and the lever that works backwards.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Deep-dive session 5 · Pay gap decomposition on 11,301 employers - learn people analytics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-people-analytics-with-phoebe</a> / Deep-dive session 5 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn People Analytics with Phoebe · Deep-dive session 5 of 10</div>
+    <h1>Pay gap decomposition on <span class="accent">11,301 employers</span></h1>
+    <p class="sub">Every UK employer with 250 or more employees publishes six pay figures a year, and the government publishes all of them as one CSV. Tonight loads the 2024 file in pandas: 11,315 filings, 11,301 that can be decomposed, a median reported gap of 8.4 percent, and a pyramid in which the median employer has 56.0 percent women in its bottom pay band and 40.0 in its top. The filing never says what each band is paid, so the build-along fits a pay ladder from everybody's gaps at once, computes the gap each employer would report if pay differed only by band, and finds that the pyramid alone gives a median of 9.8 percent against a reported 11.0. Then it breaks its own explanation on purpose, and shows the hiring lever that works backwards.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Core</span>
+      <span class="chip audience">HR analysts, reward teams, anyone who signs a pay gap report</span>
+      <span class="chip audience">Python, pandas, numpy</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-18 · The filing, the ladder, the residual</span>
+      <span class="a3" style="flex:5">18-40 · Build-along: 11,301 filings in pandas</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we start</h2>
+    </div>
+    <p class="lede">Four sessions on a constructed company; tonight the data is real. The gov.uk gender pay gap service publishes every filing for reporting year 2024, snapshot 5 April 2024, under the Open Government Licence v3.0. Each row is one employer's six figures and the share of women and men in four equal-sized pay bands. No row says why its gap is what it is, and no page of these sessions names any employer in it as good or bad. The question is a structural one: how much of a reported gap would the shape of the workforce produce on its own, and what does the answer let an analyst say?</p>
+
+    <div class="legend">
+      <span class="pill">🎫 Clear all three quiz questions to stamp your passport</span>
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">★ Build-along = run the code yourself</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> A loader that turns 11,315 filings into 11,301 with a stated reason for every row dropped; the reported gaps and the pyramid reproduced to the decimal; a composition-only gap function; a ladder fitted by an exhaustive grid that gives the same answer every run; the residual and the share of employers below their composition gap; the anti-lever; and a placebo that proves the explanation depends on the bands being in their real order.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the filing and the pyramid</span>
+      <h2>Six numbers, four bands, 11,301 employers</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">The Equality Act 2010 (Gender Pay Gap Information) Regulations 2017, SI 2017/172, require every employer with 250 or more employees to publish the mean and median hourly pay gap, the mean and median bonus gap, the share of each sex receiving a bonus, and the share of each sex in four equal-sized hourly-pay quartiles. The quartiles are the only pay structure the filing reveals, and they are enough to see a pyramid: across 2024's usable filings, the median employer's female share runs 56.0, 52.7, 47.0 and 40.0 percent from the bottom band to the top.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 318" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn stack of four pay bands, top quartile at the top, each a bar split into women in wine and men in pale pink. Female share: top quartile 40.0 percent, upper middle 47.0, lower middle 52.7, bottom quartile 56.0. A dashed line marks 50 percent. A side panel reads: 11,301 usable employers of 11,315 filings; median of the reported median gaps 8.4 percent; 77.6 percent positive, 8.5 percent exactly zero; 81.3 percent have more women in the bottom band than the top.">
+        <defs>
+          <filter id="d5aSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="151" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d5aHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d5aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d5aH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d5aL { font: 700 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d5aS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d5aB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d5aV { font: 800 18px Inter, sans-serif; fill: #4F1521; }
+          .d5aW { font: 800 12px Inter, sans-serif; fill: #FFFFFF; }
+          .d5aA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .05em; }
+          .d5aN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d5aH" x="30" y="26">THE MEDIAN EMPLOYER'S FOUR PAY BANDS, BOTTOM TO TOP</text>
+
+        <g filter="url(#d5aSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- four bands, 4px per percent, 400px = 100 percent; women first -->
+          <rect x="150" y="56" width="160" height="30" rx="4" transform="rotate(-0.4 230 71)" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="310" y="56" width="240" height="30" rx="4" transform="rotate(-0.4 430 71)" fill="#F9EEF0"/>
+          <rect x="150" y="98" width="188" height="30" rx="4" transform="rotate(0.4 244 113)" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="338" y="98" width="212" height="30" rx="4" transform="rotate(0.4 444 113)" fill="#F9EEF0"/>
+          <rect x="150" y="140" width="211" height="30" rx="4" transform="rotate(-0.3 255 155)" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="361" y="140" width="189" height="30" rx="4" transform="rotate(-0.3 455 155)" fill="#F9EEF0"/>
+          <rect x="150" y="182" width="224" height="30" rx="4" transform="rotate(0.4 262 197)" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="374" y="182" width="176" height="30" rx="4" transform="rotate(0.4 462 197)" fill="#F9EEF0"/>
+          <!-- the 50 percent line and the axis -->
+          <path d="M350 48 L350 220" stroke="#3D6B2E" stroke-width="2.4" stroke-dasharray="6 5"/>
+          <path d="M150 222 L550 222"/>
+          <path d="M150 218 L150 226 M350 218 L350 226 M550 218 L550 226"/>
+          <!-- the side panel, with a small filing-sheet doodle -->
+          <rect x="590" y="50" width="260" height="212" rx="8" transform="rotate(0.3 720 156)" fill="#FFFFFF"/>
+          <rect x="812" y="60" width="24" height="30" rx="2" fill="#F9EEF0"/>
+          <path d="M817 70 L831 70 M817 76 L831 76 M817 82 L826 82" stroke="#7A2334" stroke-width="1.6"/>
+        </g>
+
+        <text class="d5aL" x="30" y="76">top quartile</text>
+        <text class="d5aL" x="30" y="118">upper middle</text>
+        <text class="d5aL" x="30" y="160">lower middle</text>
+        <text class="d5aL" x="30" y="202">bottom quartile</text>
+        <text class="d5aW" x="160" y="76">women 40.0%</text>
+        <text class="d5aW" x="160" y="118">women 47.0%</text>
+        <text class="d5aW" x="160" y="160">women 52.7%</text>
+        <text class="d5aW" x="160" y="202">women 56.0%</text>
+        <text class="d5aS" x="540" y="75" text-anchor="end">men</text>
+        <text class="d5aS" x="540" y="117" text-anchor="end">men</text>
+        <text class="d5aS" x="540" y="159" text-anchor="end">men</text>
+        <text class="d5aS" x="540" y="201" text-anchor="end">men</text>
+
+        <text class="d5aS" x="150" y="238" text-anchor="middle">0</text>
+        <text class="d5aS" x="350" y="238" text-anchor="middle">50</text>
+        <text class="d5aS" x="550" y="238" text-anchor="middle">100</text>
+        <text class="d5aA" x="350" y="256" text-anchor="middle">SHARE OF THE BAND, PERCENT</text>
+
+        <text class="d5aL" x="606" y="76">THE 2024 FILINGS</text>
+        <text class="d5aV" x="606" y="106">11,301</text>
+        <text class="d5aS" x="606" y="124">usable, of 11,315 filings</text>
+        <text class="d5aV" x="606" y="156">8.4%</text>
+        <text class="d5aS" x="606" y="174">median of the reported median gaps</text>
+        <text class="d5aB" x="606" y="194">77.6% positive · 8.5% exactly zero</text>
+        <text class="d5aV" x="606" y="226">81.3%</text>
+        <text class="d5aS" x="606" y="244">more women in bottom band than top</text>
+
+        <text class="d5aN" x="30" y="288">Female share of each equal-sized hourly-pay quartile, median employer, 11,301 usable 2024 filings. Computed.</text>
+        <text class="d5aN" x="30" y="304">Each bar is a median across employers, so the four bars are not one real employer. gov.uk, OGL v3.0.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the wine bars shrink as the bands climb; that slope is the whole of what the next Part turns into a gap</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>From 11,315 filings to 11,301, and a reason for every cut<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The 2024 file holds <strong>11,315 filings</strong>, one per employer. Two cuts, each written as a decision before any number. <strong>Kept:</strong> all eight quartile shares and both hourly gaps present, and a mean gap within -100 to 100; that leaves 11,312, because three filings report a mean gap below -100, which would mean women are paid more than twice what men are on average and is almost certainly a keying error. <strong>Usable:</strong> at least one man and one woman across the four bands, because an all-male or all-female workforce has no gap to decompose and would divide by zero in the next Part; that leaves <strong>11,301</strong>. The 2023 file gives 11,169 filings and 11,162 usable on the same rules.</p>
+        <p>On the 11,301, the reported median hourly gap has a median of <strong>8.4 percent</strong> (8.9 in 2023) and a mean of 11.2. <strong>77.6 percent of employers report a positive median gap</strong>, men paid more, and <strong>8.5 percent report exactly zero</strong>. The reported mean gap has a median of 11.0 and a mean of 12.0, with 85.9 percent positive. Those are medians across employers, and every one of them counts a small employer and a very large one the same.</p>
+        <p>Then the pyramid: female share by band at the median employer, 56.0 / 52.7 / 47.0 / 40.0 percent bottom to top, and <strong>81.3 percent of employers have a higher female share in the bottom band than in the top.</strong> That is not a statement about any one employer. It is the shape of the UK filings, and it is the only pay structure the filing lets anyone see.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>What the six numbers can and cannot say<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The filing says, for one snapshot date, how hourly pay differs between men and women on average and at the middle, how bonuses differ, and where each sex sits among four bands of equal headcount. It says nothing about pay within a band, nothing about hours, occupation, tenure or part-time status, and nothing about why. A median gap of exactly zero, reported by 8.5 percent of employers, is a statement that the middle man and the middle woman fall on the same hourly rate; it can happen when many people share one hourly rate, and it says nothing about the other 49 percent on each side.</p>
+        <p>The bonus figures are thinner still: 75.8 percent of filings report a median bonus gap, and the rest pay no bonus to one sex or to either. Tonight uses the hourly gaps and the quartiles only. Deep-dive session 6 looks inside a band with a regression on constructed salaries, which is exactly what the filing cannot do.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>A national register anyone can download.</strong> Every large UK employer's pay gap is public, machine-readable and free to reuse under the Open Government Licence v3.0. The CSV for a reporting year sits at <code>gender-pay-gap.service.gov.uk/viewing/download-data/2024</code>, and the same file that a journalist reads for a headline is the one this build-along decomposes. The sample rows carry employer names only as data; the analysis here is about the shape of 11,301 filings, and it singles nobody out.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers the ladder fit and the anti-lever</span>
+      <h2>A pay ladder nobody publishes, fitted from everybody's gaps</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">If each band had a known relative pay, the pyramid would imply a gap: women's average pay is the ladder weighted by where the women sit, men's is the ladder weighted by where the men sit, and the gap is one minus the ratio. Nobody publishes the ladder. But 11,301 employers each publish a mean gap and a pyramid, and the ladder that makes the pyramids best predict the gaps can be found by trying every candidate. Fitted by least squares: <strong>1 / 1.20 / 1.45 / 2.80</strong>.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 328" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn ladder with four rungs placed at heights proportional to the fitted relative pay of each band: bottom band 1, lower middle 1.20, upper middle 1.45, top band 2.80, the top rung far above the other three. A panel explains the composition-only gap: women's mean pay is the ladder weighted by women per band, men's mean pay is the ladder weighted by men per band, and the gap is one minus women's over men's, with equal pay inside every band assumed. A moss box gives the fit on 11,301 filings: R squared 0.353, correlation 0.66, from a grid in steps of 0.05 with rungs forced to rise and the bottom fixed at 1.">
+        <defs>
+          <filter id="d5bSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="157" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d5bHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d5bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d5bH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d5bL { font: 700 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d5bS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d5bB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d5bV { font: 800 16px Inter, sans-serif; fill: #4F1521; }
+          .d5bA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .05em; }
+          .d5bN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d5bH" x="30" y="26">A PAY LADDER NOBODY PUBLISHES, FITTED FROM EVERYBODY'S GAPS</text>
+        <text class="d5bA" x="30" y="50">RELATIVE PAY, BOTTOM BAND = 1</text>
+
+        <g filter="url(#d5bSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- ladder rails; 100px per unit of pay above the bottom rung at y 250 -->
+          <path d="M80 62 L80 280 M180 62 L180 280"/>
+          <path d="M80 250 L180 250" stroke-width="3"/>
+          <path d="M80 230 L180 230" stroke-width="3"/>
+          <path d="M80 205 L180 205" stroke-width="3"/>
+          <path d="M80 70 L180 70" stroke="#3D6B2E" stroke-width="3.4"/>
+          <!-- the gap between rung 3 and rung 4 -->
+          <path d="M196 203 L196 76" stroke="#7A2334" stroke-dasharray="4 4" marker-end="url(#d5bAr)"/>
+          <!-- formula panel -->
+          <rect x="390" y="56" width="460" height="150" rx="8" transform="rotate(-0.3 620 131)" fill="#FFFFFF"/>
+          <path d="M404 86 L836 86" stroke="#DCC9CD"/>
+          <!-- fit box -->
+          <rect x="390" y="220" width="460" height="74" rx="8" transform="rotate(0.3 620 257)" fill="#E9F1E4" stroke="#3D6B2E"/>
+        </g>
+
+        <text class="d5bL" x="204" y="254">bottom band · 1</text>
+        <text class="d5bL" x="204" y="234">lower middle · 1.20</text>
+        <text class="d5bL" x="204" y="209">upper middle · 1.45</text>
+        <text class="d5bL" x="204" y="74">top band · 2.80</text>
+        <text class="d5bS" x="208" y="142">the top band pays</text>
+        <text class="d5bS" x="208" y="158">far more than the rest</text>
+
+        <text class="d5bL" x="406" y="78">COMPOSITION-ONLY GAP, FOR ONE EMPLOYER</text>
+        <text class="d5bS" x="406" y="108">women's mean pay: the ladder weighted by women in each band</text>
+        <text class="d5bS" x="406" y="128">men's mean pay: the ladder weighted by men in each band</text>
+        <text class="d5bV" x="406" y="160">gap = 1 - women's mean / men's mean</text>
+        <text class="d5bS" x="406" y="186">assumed: equal pay inside every band, and this ladder everywhere</text>
+
+        <text class="d5bL" x="406" y="242">FITTED ON 11,301 FILINGS BY LEAST SQUARES</text>
+        <text class="d5bV" x="406" y="266">R2 0.353 · correlation 0.66</text>
+        <text class="d5bS" x="406" y="284">grid in steps of 0.05, rungs forced to rise, bottom fixed at 1</text>
+
+        <text class="d5bN" x="30" y="316">A statement about UK filings as a whole, not the pay scale of any employer. Modelled on computed gaps.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the moss rung is the one that does the work: most of the gap the pyramid produces comes from who reaches the top band</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The composition-only gap, and what fitting the ladder means<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Because the four bands are equal in headcount, the number of women in a band is proportional to the female share of that band. So women's average pay under a ladder L is the ladder weighted by the four female shares, men's is the ladder weighted by the four male shares, and <strong>the composition-only gap is 1 minus women's weighted mean over men's weighted mean.</strong> It is the gap an employer would report if pay differed only by band and everyone in a band were paid the same. Equal pay inside every band is the assumption, and it is stated wherever the number appears.</p>
+        <p>The fit tries every ladder with the bottom band fixed at 1 and each rung above the last, in steps of 0.05, and keeps the one whose composition-only gaps sit closest to the reported mean gaps in squared error across all 11,301 employers. The winner is <strong>1 / 1.20 / 1.45 / 2.80</strong>. Under it, composition alone explains <strong>R2 0.353</strong> of the variance in reported mean gaps, a correlation of <strong>0.66</strong>. About a third of the variation in reported mean gaps across employers is accounted for by the shape of the pyramid under one national ladder.</p>
+        <p>What the ladder is not: it is not any employer's pay scale, and it is not a measurement of what the top band earns. It is the single set of four numbers that best turns 11,301 pyramids into 11,301 reported gaps. An employer whose own top band pays three times its bottom will have a steeper ladder than this one, and its composition-only gap under the national ladder will be too small. That is a limitation to print, not a defect to hide.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The anti-lever: the same women, hired into a different band<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Take the median employer's band profile, whose composition-only gap under the fitted ladder is <strong>9.57</strong>. Now hire women equal to 10 percent of headcount, all into one band. Put them in the <strong>bottom</strong> band and the gap becomes <strong>14.88</strong>: wider, because the new women all sit on the lowest rung and pull women's average pay down. Put the same number of women in the <strong>top</strong> band and it becomes <strong>-3.18</strong>: reversed. Both are modelled on computed numbers under the fitted ladder and equal pay within a band.</p>
+        <p>The lesson is the one every pay gap report should carry: <strong>"hire more women" is not a lever; "hire more women where" is.</strong> A target stated as a headcount can widen the reported gap while the organisation becomes more balanced overall, and a board that reads only the gap will conclude the programme failed. The build-along's figure draws the two arrows, and deep-dive session 10 lets you pull the lever on 3,000 real employers in the browser.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Why an exhaustive grid and not a solver<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A general-purpose optimiser would find a ladder faster, and it might find a slightly different one each time depending on its starting point and tolerance. The grid is three nested loops over values in steps of 0.05, with each rung forced to be at least 0.05 above the last, and it returns the same four numbers on every machine. For a number that will be quoted in a report, reproducible beats fast; the fit on 11,301 employers takes seconds.</p>
+        <p>The constraint matters too. An unconstrained fit could return a ladder in which the upper middle band pays less than the lower middle, which fits some noise and describes no pay structure anyone has. Forcing the rungs to rise is a decision about what a pay quartile is, and it goes in the decisions block with the others. On the bench's 3,000-employer sample the same grid gives 1 / 1.3 / 1.5 / 3.0 with R2 0.4114: a different sample, a similar ladder, which is itself a small robustness check.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The target that widened the gap.</strong> An employer commits to hiring more women and meets the target through entry-level roles, where most of its vacancies are. The workforce is more balanced than a year earlier; the next filing shows a wider gap, and the headline says the programme failed. Constructed setting; the mechanism is the anti-lever above, 9.57 to 14.88 on the median profile, modelled. The honest report shows the band profile beside the gap, so a reader can see that the pyramid moved and in which direction.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-3">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers composition against reported, the placebo and Oaxaca-Blinder</span>
+      <h2>What the pyramid explains, and what it leaves</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">Every employer now has two numbers: the mean gap it reported and the composition-only gap its pyramid implies under the national ladder. Across the 11,301, the composition-only median is <strong>9.8 percent</strong> against a reported mean-gap median of <strong>11.0</strong>. The difference, reported minus composition-only, has a median of 2.3 points and a standard deviation of 10.2. And <strong>33.8 percent of employers report a gap below their composition-only gap.</strong></p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 386" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn schematic plot with composition-only gap on the horizontal axis and reported mean gap on the vertical axis. A hachured elongated cloud stands for 11,301 employers along a moss diagonal line where reported equals composition-only. The composition-only median 9.8 and the reported median 11.0 are marked on the axes. Above the line the gap is more than the pyramid gives; below it, 33.8 percent of employers report less. A side panel reads: the pyramid alone, 9.8 against 11.0, residual median 2.3 points, sd 10.2, R squared 0.353 in the real band order. A red placebo panel reads: bands shuffled inside each employer, R squared about minus 1.84 over 100 shuffles of a 3,000-employer sample, worse than predicting the average.">
+        <defs>
+          <filter id="d5cSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="163" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d5cHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d5cAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d5cH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d5cL { font: 700 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d5cS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d5cB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d5cR { font: 800 11px Inter, sans-serif; fill: #991B1B; }
+          .d5cV { font: 800 16px Inter, sans-serif; fill: #4F1521; }
+          .d5cA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .05em; }
+          .d5cN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d5cH" x="30" y="26">WHAT THE PYRAMID EXPLAINS, AND WHAT IT LEAVES</text>
+        <text class="d5cA" x="80" y="50">REPORTED MEAN GAP, %</text>
+
+        <g filter="url(#d5cSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- axes: x from -20 to 40 at 6px per point, origin x 200; y from -20 to 40 at 4px per point, origin y 220 -->
+          <path d="M80 300 L80 60 M80 300 L446 300" />
+          <path d="M200 296 L200 304 M320 296 L320 304 M440 296 L440 304 M259 294 L259 306" />
+          <path d="M76 220 L84 220 M76 140 L84 140 M76 60 L84 60 M74 176 L86 176" />
+          <!-- the schematic cloud along the fit -->
+          <ellipse cx="259" cy="176" rx="150" ry="38" transform="rotate(-33.7 259 176)" fill="url(#d5cHc)" stroke="#9A3A4C" stroke-width="1.6"/>
+          <!-- the line where reported equals composition-only -->
+          <path d="M80 300 L440 60" stroke="#3D6B2E" stroke-width="2.6"/>
+          <!-- median guides -->
+          <path d="M259 300 L259 176 L80 176" stroke="#7A2334" stroke-width="1.4" stroke-dasharray="4 4"/>
+          <!-- right panels -->
+          <rect x="480" y="56" width="370" height="140" rx="8" transform="rotate(-0.3 665 126)" fill="#FFFFFF"/>
+          <rect x="480" y="212" width="370" height="96" rx="8" transform="rotate(0.3 665 260)" fill="#FEF2F2" stroke="#991B1B"/>
+        </g>
+
+        <text class="d5cS" x="70" y="224" text-anchor="end">0</text>
+        <text class="d5cS" x="70" y="144" text-anchor="end">20</text>
+        <text class="d5cS" x="70" y="64" text-anchor="end">40</text>
+        <text class="d5cB" x="70" y="180" text-anchor="end">11.0</text>
+        <text class="d5cS" x="200" y="318" text-anchor="middle">0</text>
+        <text class="d5cB" x="259" y="318" text-anchor="middle">9.8</text>
+        <text class="d5cS" x="320" y="318" text-anchor="middle">20</text>
+        <text class="d5cS" x="440" y="318" text-anchor="middle">40</text>
+        <text class="d5cA" x="263" y="338" text-anchor="middle">COMPOSITION-ONLY GAP, %</text>
+
+        <text class="d5cB" x="96" y="84">above the line: more gap</text>
+        <text class="d5cS" x="96" y="100">than the pyramid alone gives</text>
+        <text class="d5cB" x="300" y="246">33.8% below the line</text>
+        <text class="d5cS" x="300" y="262">pay inside bands runs the</text>
+        <text class="d5cS" x="300" y="276">other way, or the national</text>
+        <text class="d5cS" x="300" y="290">ladder is steeper than theirs</text>
+        <text class="d5cB" x="420" y="62" text-anchor="end">reported = pyramid</text>
+
+        <text class="d5cL" x="496" y="80">THE PYRAMID ALONE</text>
+        <text class="d5cV" x="496" y="110">9.8 against 11.0</text>
+        <text class="d5cS" x="496" y="128">composition-only median vs reported mean-gap median</text>
+        <text class="d5cS" x="496" y="148">residual median 2.3 points, sd 10.2</text>
+        <text class="d5cB" x="496" y="178">R2 0.353 with the bands in their real order</text>
+
+        <text class="d5cL" x="496" y="236">PLACEBO: BANDS SHUFFLED INSIDE EACH EMPLOYER</text>
+        <text class="d5cV" x="496" y="264">R2 about -1.84</text>
+        <text class="d5cS" x="496" y="282">100 shuffles of the 3,000-employer sample; best -1.68</text>
+        <text class="d5cR" x="496" y="298">worse than predicting the average for everyone</text>
+
+        <text class="d5cN" x="30" y="362">Schematic cloud: the shape stands for 11,301 employers and is not a plot of them. Medians and R2 are computed.</text>
+        <text class="d5cN" x="30" y="378">Composition-only gap under the fitted ladder and equal pay within a band: modelled.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the moss line is where the pyramid would explain everything; the red panel is what happens when the pyramid is scrambled</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>9.8 against 11.0, and the third of employers below the line<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>At the median, the pyramid under the national ladder produces most of the reported gap: <strong>9.8 percent against 11.0</strong>. The residual, reported minus composition-only, has a median of <strong>2.3 points</strong>. Read carefully, that says: for the middle employer, the gap it reports is a little more than its band shares alone would produce if everyone in a band were paid the same and its bands were spaced like the nation's. The spread is wide, a standard deviation of 10.2 points, which means the median hides employers far above and far below the line.</p>
+        <p><strong>33.8 percent of employers report a gap below their composition-only gap.</strong> At those employers either pay inside the bands runs the other way, women paid more than men within a band, or the national ladder is steeper than their own. The filing cannot tell those two apart. That is the honest limit of a decomposition built on four bands: it separates the part of the gap that the pyramid would produce from the part it would not, and it cannot say what the second part is.</p>
+        <p>The sentence to write: <strong>"under a ladder fitted to all 2024 filings, and assuming equal pay within bands, our band profile alone would produce a mean gap of X; we report Y."</strong> Every clause is a stated assumption, and none of them is a cause.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The placebo: scramble the pyramid and the explanation dies<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A decomposition that explains a third of the variance could be explaining it for the wrong reason. Perhaps any four numbers between 0 and 1 would correlate with the gap; perhaps it is the overall female share, not the pyramid, doing the work. The test: take each employer's four female shares and shuffle them among its own four bands, so each employer keeps exactly the same shares but loses their order, and refit under the same ladder.</p>
+        <p>Done 100 times on the bench's 3,000-employer sample (drawn with <code>numpy.random.default_rng(20240405)</code>), the R2 averages <strong>about -1.84</strong>, standard deviation 0.07, best draw -1.68, against 0.408 for the same sample with the bands in their real order. A negative R2 means the prediction is worse than guessing the average gap for everyone. <strong>Composition explains the gap only when the bands are in their real order,</strong> which is the evidence that the pyramid, and not the share of women, is the mechanism. Any explanation you publish deserves a test that could have broken it.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Oaxaca-Blinder, the regression version, and why explained is not justified<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Tonight's split is a four-band, population-level version of an older idea. Blinder 1973, "Wage Discrimination: Reduced Form and Structural Estimates", Journal of Human Resources 8(4) 436-455, and Oaxaca 1973, "Male-Female Wage Differentials in Urban Labor Markets", International Economic Review 14(3) 693-709, decompose a gap in average pay into a part "explained by measured differences" in characteristics and a part "not explained". With individual salaries, a regression replaces the ladder and grade, tenure or hours replace the bands. Deep-dive session 6 builds it on constructed salaries.</p>
+        <p>The warning carries across. <strong>Explained is not the same as justified.</strong> The composition-only gap says the pyramid would produce 9.8 percent; it does not say the pyramid is fair. Who reaches the top band is itself a set of decisions about promotion, hiring and hours, and a gap that is "explained by composition" is a gap whose cause has been moved one step up the chain, not removed.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>ONS 7.0 and 13.1 are a different number<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The Office for National Statistics reports the UK gender pay gap from the Annual Survey of Hours and Earnings, April 2024: <strong>7.0 percent for full-time employees and 13.1 percent for all employees</strong> (2023: 7.5 and 14.2). Those are gaps between hourly-earnings medians across the whole economy, one median for all men and one for all women. The 8.4 above is a median across employers of each employer's own median gap, where a firm of 260 and a firm of 26,000 count once each.</p>
+        <p>The two are <strong>not comparable</strong>, and neither is wrong. The ONS number answers "how does the middle woman's pay compare with the middle man's, nationally"; the filing median answers "what does the typical large employer report". Put them in one sentence only with both definitions attached.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>Two true numbers in one headline.</strong> A report says the UK gender pay gap is 7.0 percent, and the next paragraph says the typical large employer reports 8.4. A reader concludes that large employers are worse than the economy. Neither number supports that: 7.0 is the ONS full-time median gap across all employees, 13.1 is the all-employee version, and 8.4 is the median of per-employer medians from the filings. Three definitions, one word. The fix is the same one every session has used: print the base beside the number.</p>
+    </div>
+
+    <div class="tryrow" data-fn="wordcount" data-multiline="1" data-title="Write the decomposition sentence" data-hint="For one employer's filing: the reported mean gap, the composition-only gap under the fitted ladder, the residual, and the two assumptions (the ladder, equal pay within bands). Say what it cannot tell you. Three lines." data-seed="" data-cta="Count it"></div>
+  </section>
+
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>11,301 filings in pandas: the counts, the fit, the anti-lever</h2>
+      <span class="tag demo">★ 22 min · everyone builds</span>
+    </div>
+    <p class="lede">Eight steps on the real 2024 file. Download it from <code>https://gender-pay-gap.service.gov.uk/viewing/download-data/2024</code> (Open Government Licence v3.0) and save it as <code>gpg-2024.csv</code>. Every printed number below is what this code prints on that file, reproduced for these pages; the ladder fit is an exhaustive grid and takes a few seconds. If the service republishes the file with late filings, the counts can move by a handful, and the decisions will not.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 304" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three hand-drawn boxes, each with a small stack of four pay bands. Centre: the median employer's profile with four equal bands, women 56.0, 52.7, 47.0 and 40.0 percent bottom to top, composition-only gap 9.57. An arrow to the left: women equal to 10 percent of headcount added to the bottom band, drawn as a wine extension on the bottom bar, gap 14.88, wider, in a red panel. An arrow to the right: the same women added to the top band, a wine extension on the top bar, gap minus 3.18, reversed, in a moss panel.">
+        <defs>
+          <filter id="d5dSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="167" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d5dHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d5dAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d5dH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d5dL { font: 700 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d5dS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d5dB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d5dR { font: 800 11px Inter, sans-serif; fill: #991B1B; }
+          .d5dV { font: 800 20px Inter, sans-serif; fill: #4F1521; }
+          .d5dN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d5dH" x="30" y="26">THE ANTI-LEVER: THE SAME WOMEN, HIRED INTO TWO DIFFERENT BANDS</text>
+
+        <g filter="url(#d5dSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- three boxes -->
+          <rect x="30" y="48" width="240" height="200" rx="8" transform="rotate(-0.5 150 148)" fill="#FEF2F2" stroke="#991B1B"/>
+          <rect x="320" y="48" width="240" height="200" rx="8" transform="rotate(0.3 440 148)" fill="#FFFFFF"/>
+          <rect x="610" y="48" width="240" height="200" rx="8" transform="rotate(0.5 730 148)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <!-- centre: four equal bands, top band first -->
+          <rect x="390" y="66" width="100" height="10" rx="2" fill="url(#d5dHc)"/>
+          <rect x="390" y="80" width="100" height="10" rx="2" fill="url(#d5dHc)"/>
+          <rect x="390" y="94" width="100" height="10" rx="2" fill="url(#d5dHc)"/>
+          <rect x="390" y="108" width="100" height="10" rx="2" fill="url(#d5dHc)"/>
+          <!-- left: bottom band grows by 0.4 of a band, all women -->
+          <rect x="80" y="66" width="100" height="10" rx="2" fill="url(#d5dHc)"/>
+          <rect x="80" y="80" width="100" height="10" rx="2" fill="url(#d5dHc)"/>
+          <rect x="80" y="94" width="100" height="10" rx="2" fill="url(#d5dHc)"/>
+          <rect x="80" y="108" width="100" height="10" rx="2" fill="url(#d5dHc)"/>
+          <rect x="180" y="108" width="40" height="10" rx="2" fill="#7A2334" stroke="#7A2334"/>
+          <!-- right: top band grows by 0.4 of a band, all women -->
+          <rect x="670" y="66" width="100" height="10" rx="2" fill="url(#d5dHc)"/>
+          <rect x="770" y="66" width="40" height="10" rx="2" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="670" y="80" width="100" height="10" rx="2" fill="url(#d5dHc)"/>
+          <rect x="670" y="94" width="100" height="10" rx="2" fill="url(#d5dHc)"/>
+          <rect x="670" y="108" width="100" height="10" rx="2" fill="url(#d5dHc)"/>
+          <!-- arrows out of the centre -->
+          <path d="M316 150 L278 150" marker-end="url(#d5dAr)"/>
+          <path d="M564 150 L602 150" marker-end="url(#d5dAr)"/>
+        </g>
+
+        <text class="d5dL" x="150" y="148" text-anchor="middle">ADD THEM AT THE BOTTOM</text>
+        <text class="d5dV" x="150" y="182" text-anchor="middle">14.88</text>
+        <text class="d5dR" x="150" y="204" text-anchor="middle">the gap widens</text>
+        <text class="d5dS" x="150" y="222" text-anchor="middle">women = 10% of headcount</text>
+
+        <text class="d5dS" x="498" y="75">top band</text>
+        <text class="d5dS" x="498" y="117">bottom band</text>
+        <text class="d5dL" x="440" y="148" text-anchor="middle">MEDIAN EMPLOYER'S PROFILE</text>
+        <text class="d5dV" x="440" y="182" text-anchor="middle">9.57</text>
+        <text class="d5dS" x="440" y="204" text-anchor="middle">composition-only gap</text>
+        <text class="d5dS" x="440" y="222" text-anchor="middle">women 56.0 / 52.7 / 47.0 / 40.0</text>
+
+        <text class="d5dL" x="730" y="148" text-anchor="middle">ADD THEM AT THE TOP</text>
+        <text class="d5dV" x="730" y="182" text-anchor="middle">-3.18</text>
+        <text class="d5dB" x="730" y="204" text-anchor="middle">the gap reverses</text>
+        <text class="d5dS" x="730" y="222" text-anchor="middle">the same 10% of headcount</text>
+
+        <text class="d5dN" x="30" y="276">Modelled: the median employer's band profile under the fitted ladder 1 / 1.20 / 1.45 / 2.80.</text>
+        <text class="d5dN" x="30" y="292">Equal pay inside every band is assumed. Wine segment = the added women. "Where" is the lever.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - one headcount target, two opposite gaps; the only difference is the rung the new women stand on</figcaption>
+    </figure>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Load, cut, and count what each cut removed.</strong> The decisions come first, as comments; the three counts are the proof that they were applied.</p>
+        <div class="prompt-box good"><span class="label">★ Step 1 · 11,315 to 11,301</span>import numpy as np, pandas as pd
+
+# source:  gov.uk gender pay gap service, reporting year 2024 (snapshot 5 April 2024), OGL v3.0
+# row:     one employer's filing
+# kept:    all eight quartile shares and both hourly gaps present; mean gap within -100 to 100
+# usable:  at least one man and one woman across the four bands (else no gap to decompose)
+# bands:   the four equal-sized hourly-pay quartiles the regulation defines
+Q  = ["FemaleLowerQuartile", "FemaleLowerMiddleQuartile", "FemaleUpperMiddleQuartile", "FemaleTopQuartile"]
+MQ = ["MaleLowerQuartile", "MaleLowerMiddleQuartile", "MaleUpperMiddleQuartile", "MaleTopQuartile"]
+raw = pd.read_csv("gpg-2024.csv")
+x = raw.dropna(subset=Q + MQ + ["DiffMedianHourlyPercent", "DiffMeanHourlyPercent"])
+x = x[x["DiffMeanHourlyPercent"].abs() &lt;= 100]
+F, M = x[Q].values / 100, x[MQ].values / 100
+ok = (F.sum(1) &gt; 0) &amp; (M.sum(1) &gt; 0)
+print(len(raw), len(x), ok.sum())                   # 11315 11312 11301
+x = x[ok].reset_index(drop=True)
+F, M = F[ok], M[ok]</div>
+      </div>
+      <div class="step">
+        <p><strong>The reported gaps.</strong> Medians across employers, with the positive and exactly-zero shares. These are the numbers a headline quotes, reproduced before anything is modelled.</p>
+        <div class="prompt-box good"><span class="label">★ Step 2 · what employers report</span>med = x["DiffMedianHourlyPercent"].values
+y = x["DiffMeanHourlyPercent"].values
+print(f"median gap: median {np.median(med):.1f}, mean {med.mean():.1f}, "
+      f"positive {(med &gt; 0).mean():.3f}, exactly zero {(med == 0).mean():.3f}")
+print(f"mean gap:   median {np.median(y):.1f}, mean {y.mean():.1f}, positive {(y &gt; 0).mean():.3f}")
+# median gap: median 8.4, mean 11.2, positive 0.776, exactly zero 0.085
+# mean gap:   median 11.0, mean 12.0, positive 0.859</div>
+      </div>
+      <div class="step">
+        <p><strong>The pyramid.</strong> Female share by band at the median employer, and the share of employers whose bottom band is more female than their top.</p>
+        <div class="prompt-box good"><span class="label">★ Step 3 · the four bands</span>print("female share by band, median employer:", np.round(np.median(F, 0) * 100, 1))
+print(f"more women at the bottom than the top: {(F[:, 0] &gt; F[:, 3]).mean():.3f}")
+# female share by band, median employer: [56.  52.7 47.  40. ]
+# more women at the bottom than the top: 0.813</div>
+      </div>
+      <div class="step">
+        <p><strong>The composition-only gap as a function.</strong> Tested on three constructed profiles before it touches a real one: a flat workforce must give zero, a pyramid a positive gap, an inverted pyramid a negative one.</p>
+        <div class="prompt-box good"><span class="label">★ Step 4 · the formula, tested on constructed rows</span>def comp_gap(F, M, L):
+    """Composition-only gap in percent: pay differs only by band, equal pay within a band."""
+    L = np.asarray(L, float)
+    women = (F * L).sum(1) / F.sum(1)       # the ladder weighted by women in each band
+    men = (M * L).sum(1) / M.sum(1)         # the ladder weighted by men in each band
+    return (1 - women / men) * 100
+
+toy = np.array([[.5, .5, .5, .5], [.6, .5, .4, .3], [.3, .4, .5, .6]])   # constructed: flat, pyramid, inverted
+print(np.round(comp_gap(toy, 1 - toy, [1, 1.2, 1.45, 2.8]), 1))          # [  0.   16.4 -19.2]</div>
+      </div>
+      <div class="step">
+        <p><strong>Fit the ladder by exhaustive grid.</strong> Bottom fixed at 1, each rung at least 0.05 above the last, the least squared error against the reported mean gaps. The same four numbers on every run.</p>
+        <div class="prompt-box good"><span class="label">★ Step 5 · the ladder</span>best = None
+for l2 in np.arange(1.05, 1.61, 0.05):
+    for l3 in np.arange(l2 + 0.05, 2.61, 0.05):
+        for l4 in np.arange(l3 + 0.05, 5.01, 0.05):
+            sse = ((comp_gap(F, M, [1, l2, l3, l4]) - y) ** 2).sum()
+            if best is None or sse &lt; best[0]:
+                best = (sse, l2, l3, l4)
+sse, l2, l3, l4 = best
+L = np.array([1, l2, l3, l4])
+g = comp_gap(F, M, L)
+r2 = 1 - sse / ((y - y.mean()) ** 2).sum()
+print("ladder", np.round(L, 2), "R2", round(r2, 3), "corr", round(np.corrcoef(g, y)[0, 1], 2))
+# ladder [1.   1.2  1.45 2.8 ] R2 0.353 corr 0.66</div>
+      </div>
+      <div class="step">
+        <p><strong>Composition against reported.</strong> The medians side by side, the residual, and the share of employers below the line.</p>
+        <div class="prompt-box good"><span class="label">★ Step 6 · what the pyramid explains</span>resid = y - g
+print(f"composition-only median {np.median(g):.1f} against reported mean-gap median {np.median(y):.1f}")
+print(f"residual median {np.median(resid):.1f}, sd {resid.std():.1f}; below composition-only {(resid &lt; 0).mean():.3f}")
+# composition-only median 9.8 against reported mean-gap median 11.0
+# residual median 2.3, sd 10.2; below composition-only 0.338</div>
+      </div>
+      <div class="step">
+        <p><strong>The anti-lever on the median profile.</strong> Women equal to 10 percent of headcount is 0.4 of one band, since each band is a quarter; the chosen band grows to 1.4 and its female share is recomputed.</p>
+        <div class="prompt-box good"><span class="label">★ Step 7 · where, not how many</span>def gap_w(f, w):
+    """Composition-only gap for one profile f with band sizes w (1 = a quarter of headcount)."""
+    m = 1 - f
+    return (1 - (f * w * L).sum() / (f * w).sum() / ((m * w * L).sum() / (m * w).sum())) * 100
+
+prof = np.median(F, 0)
+bottom = prof.copy(); bottom[0] = (prof[0] + 0.4) / 1.4
+top = prof.copy(); top[3] = (prof[3] + 0.4) / 1.4
+print(f"median profile {gap_w(prof, np.ones(4)):.2f}; "
+      f"+ women at the bottom {gap_w(bottom, np.array([1.4, 1, 1, 1])):.2f}; "
+      f"+ women at the top {gap_w(top, np.array([1, 1, 1, 1.4])):.2f}")
+# median profile 9.57; + women at the bottom 14.88; + women at the top -3.18</div>
+      </div>
+      <div class="step">
+        <p><strong>The placebo, on the bench's 3,000-employer sample.</strong> Same seed as deep-dive session 10's bench. Shuffle each employer's four shares among its own bands, keep the full-set ladder, and compare R2 with the real order.</p>
+        <div class="prompt-box good"><span class="label">★ Step 8 · try to break it</span>rng = np.random.default_rng(20240405)
+idx = np.sort(rng.choice(len(x), 3000, replace=False))
+Fs, Ms, ys = F[idx], M[idx], y[idx]
+real = comp_gap(Fs, Ms, L)
+print(f"sample, real band order: R2 {1 - ((real - ys) ** 2).sum() / ((ys - ys.mean()) ** 2).sum():.3f}")
+rng2 = np.random.default_rng(20240405)
+r2s = []
+for _ in range(100):
+    Fp = np.array([rng2.permutation(r) for r in Fs])
+    gp = comp_gap(Fp, 1 - Fp, L)
+    r2s.append(1 - ((gp - ys) ** 2).sum() / ((ys - ys.mean()) ** 2).sum())
+print(f"placebo, 100 shuffles: R2 mean {np.mean(r2s):.2f}, sd {np.std(r2s):.2f}, best {np.max(r2s):.2f}")
+# sample, real band order: R2 0.408
+# placebo, 100 shuffles: R2 mean -1.84, sd 0.07, best -1.68</div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Keep the placebo in the script.</strong> Every decomposition looks convincing when it works. The one that has been run against a version of the data built to make it fail, and failed to fail, is the one you can defend in front of a reward committee. The placebo costs eight lines and a few seconds, and it is the reason the sentence "the pyramid explains a third of the variation" can be said at all.</p>
+    </div>
+  </section>
+
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before deep-dive session 6</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li><strong>Run the eight steps</strong> on the 2024 file and check every printed number against the comments. Then run steps 1 to 3 on the 2023 file and confirm 11,162 usable and a median of median gaps of 8.9.</li>
+      <li><strong>Refit the ladder on one employer size class</strong> using the <code>EmployerSize</code> column. Write the new ladder and R2 beside the full-set ones, and one sentence on why a ladder for large employers might be steeper.</li>
+      <li><strong>Run the anti-lever for the two middle bands</strong> with <code>gap_w</code>. Write which of the four bands a hiring target could use without widening the reported gap on the median profile.</li>
+      <li><strong>Write the decomposition sentence</strong> for one filing you choose, with both assumptions in it and no judgement of the employer. Session 6 then asks the question the filing cannot: what is paid inside a band.</li>
+    </ol>
+  </section>
+
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+    <p>Clear all three and deep-dive session 5 gets stamped in your passport.</p>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · The composition-only median is 9.8 percent against a reported mean-gap median of 11.0, a residual median of 2.3 points. A colleague writes "9.8 points of the UK gap is structure and 2.3 is discrimination". What is wrong?</p>
+      <button class="qopt" type="button">A · Nothing; the residual is by definition the discriminatory part</button>
+      <button class="qopt" type="button">B · The numbers are the wrong way round; the residual is the structural part</button>
+      <button class="qopt" type="button">C · The composition-only gap is what the pyramid alone would report under a fitted national ladder and equal pay within bands; the residual mixes within-band pay, ladders that differ from the national one and everything the filing cannot see, and neither part is causal; explained is not the same as justified</button>
+      <button class="qopt" type="button">D · The colleague should have used the ONS figure of 7.0 instead</button>
+      <p class="qwhy">A decomposition separates what one mechanism would produce from what it would not. It does not name the rest, and 33.8 percent of employers sit below their composition-only gap, which a discrimination reading cannot explain.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · A board commits to hiring women equal to 10 percent of headcount. On the median employer's profile, what happens to the composition-only gap of 9.57?</p>
+      <button class="qopt" type="button">A · It depends where they are hired: into the bottom band it widens to 14.88, into the top band it reverses to -3.18, both modelled under the fitted ladder with equal pay within bands; the target should name the band, not only the headcount</button>
+      <button class="qopt" type="button">B · It always falls, because more women means a smaller gap</button>
+      <button class="qopt" type="button">C · It stays at 9.57, because the gap depends only on pay rates</button>
+      <button class="qopt" type="button">D · It falls in proportion to the new women's share of headcount, whichever band they join</button>
+      <p class="qwhy">The gap compares women's average rung with men's. New women on the lowest rung lower women's average; the same women on the top rung raise it. "Where" is the lever.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="3">
+      <p class="qtext">3 · Why shuffle each employer's four band shares and refit?</p>
+      <button class="qopt" type="button">A · To anonymise the employers before publishing the sample</button>
+      <button class="qopt" type="button">B · To get a better ladder by averaging over many orderings</button>
+      <button class="qopt" type="button">C · Because the gov.uk file lists the bands in random order</button>
+      <button class="qopt" type="button">D · As a placebo: each employer keeps its shares but loses their order, and R2 falls from 0.408 on the sample to about -1.84, worse than guessing the average, which shows the explanation comes from the pyramid's order and not from the share of women alone</button>
+      <p class="qwhy">An explanation deserves a test that could break it. The shuffle keeps every number and destroys only the structure the explanation claims to rely on.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What this session teaches, and where it came from</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Equality Act 2010 (Gender Pay Gap Information) Regulations 2017, SI 2017/172: 250 or more employees, six measures, four equal quartiles, 5 April snapshot</span><span class="note">Primary</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">gov.uk gender pay gap service CSV, reporting year 2024, Open Government Licence v3.0</span><span class="note">Primary; the file every number below is computed from</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">11,315 filings, 11,312 complete and in range, 11,301 usable; median of median gaps 8.4 (2023: 8.9), 77.6 percent positive, 8.5 percent zero; mean-gap median 11.0; bands 56.0 / 52.7 / 47.0 / 40.0; 81.3 percent bottom over top</span><span class="note">Computed from the 2024 filings; the build-along reproduces each one</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Fitted ladder 1 / 1.20 / 1.45 / 2.80, R2 0.353, correlation 0.66; composition-only median 9.8; residual median 2.3, sd 10.2; 33.8 percent below</span><span class="note">Computed, then modelled: the ladder is fitted and equal pay within a band is assumed</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The anti-lever on the median profile: 9.57, 14.88 at the bottom, -3.18 at the top</span><span class="note">Modelled on computed numbers</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The placebo: bands shuffled inside each employer, R2 about -1.84 (sd 0.07, best -1.68) against 0.408 in the real order</span><span class="note">Computed on the bench's 3,000-employer sample, seed 20240405, under the full-set ladder</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">ONS ASHE April 2024: 7.0 percent full-time, 13.1 percent all employees (2023: 7.5, 14.2)</span><span class="note">Primary; not comparable with the per-employer filing medians, and the page says why</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Oaxaca-Blinder: Blinder 1973, Journal of Human Resources 8(4) 436-455; Oaxaca 1973, International Economic Review 14(3) 693-709</span><span class="note">Named as the regression version; built on constructed salaries in session 6</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">The same computation live in the browser</span><span class="note">Named; the bench is session 10</span></div>
+    </div>
+    <p class="mono" style="margin-top:14px">Every fact on this page, and its verification tier, is recorded in the course's source map.</p>
+  </section>
+
+  <section class="cheat" id="cheatsheet">
+    <h3>Deep-dive session 5 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>The file</b><span>gov.uk, 2024, OGL v3.0. 11,315 filings, 11,312 in range, 11,301 usable. A reason for every cut.</span></div>
+      <div class="cheat-item"><b>What employers report</b><span>Median of median gaps 8.4; 77.6 percent positive; 8.5 percent exactly zero. Per-employer medians.</span></div>
+      <div class="cheat-item"><b>The pyramid</b><span>Women 56.0 / 52.7 / 47.0 / 40.0 bottom to top; 81.3 percent more female at the bottom.</span></div>
+      <div class="cheat-item"><b>The ladder</b><span>Grid fit 1 / 1.20 / 1.45 / 2.80; R2 0.353, corr 0.66. UK filings as a whole, no employer's scale.</span></div>
+      <div class="cheat-item"><b>Composition vs reported</b><span>9.8 against 11.0; residual 2.3; 33.8 percent below. Placebo R2 about -1.84. Explained is not justified.</span></div>
+      <div class="cheat-item"><b>Where, not how many</b><span>Median profile 9.57; women at the bottom 14.88; at the top -3.18. Modelled. ONS 7.0 / 13.1 is another number.</span></div>
+    </div>
+  </section>
+
+  <div class="callout next">
+    <span class="nx-pill">Next session</span>
+    <p>The filing stops at the edge of each band, and tonight's decomposition had to assume equal pay inside every one. Deep-dive session 6 steps inside: a constructed, seeded salary table with a planted coefficient, log pay regressed on grade, tenure and sex by least squares, and the Oaxaca-Blinder split into explained and unexplained, with the one variable that must never be a control and the reminder, again, that explained is not the same as justified.</p>
+  </div>
+
+  <footer class="pagefoot">
+    <span>Deep-dive session 5 of 10 · learn-people-analytics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="p4-funnel-maths.html">← Prev: Funnel maths and adverse impact</a> &nbsp;·&nbsp; <a href="p6-pay-equity-regression.html">Next: Pay equity regression →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

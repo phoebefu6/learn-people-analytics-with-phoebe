@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Deep-dive session 7 of 10. A survey score is a number people volunteered, and three things decide what it can carry: whether the items measure one thing (Cronbach's alpha, computed by the formula on 600 constructed responses with one planted bad item), who answered and who did not, and the minimum group size below which a mean identifies a person. Gallup's engagement figure read by edition, and the folk claim about managers left unclaimed.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Survey psychometrics - learn people analytics with phoebe">
+<meta property="og:description" content="Deep-dive session 7 of 10. Alpha by the formula, the planted bad item, who answers, and the anonymity wall in code.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/courses/p7-survey-psychometrics.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Survey psychometrics - learn people analytics with phoebe">
+<meta name="twitter:description" content="Deep-dive session 7 of 10. Twelve items, one planted to fail, and the number that finds it.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Deep-dive session 7 · Survey psychometrics - learn people analytics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-people-analytics-with-phoebe</a> / Deep-dive session 7 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn People Analytics with Phoebe · Deep-dive session 7 of 10</div>
+    <h1>Survey <span class="accent">psychometrics</span></h1>
+    <p class="sub">Pay is recorded. Tenure is computed from a date. A survey score is different: somebody chose to answer, chose a number between one and five, and the twelve numbers were averaged into a score that then appears on a dashboard with the same confidence as a headcount. Tonight is about what that score can carry. A constructed survey of 600 responses to 12 five-point items, generated with a seed and with one item planted to measure almost nothing, is scored, tested with Cronbach's alpha by the formula, and re-scored without the bad item. Then the two questions that no formula answers: who answered, and how small a group may be shown before a mean becomes a name. The Gallup engagement figure is read by edition, 23 percent in one, 21 and 20 in the next two, and the sentence that usually follows it about managers is left where it belongs, unmeasured.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Core</span>
+      <span class="chip audience">People analysts, survey owners, anyone who reports an engagement score</span>
+      <span class="chip audience">Python, numpy, pandas</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-18 · Alpha, the bad item, who answers</span>
+      <span class="a3" style="flex:5">18-40 · Build-along: 600 constructed responses</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we start</h2>
+    </div>
+    <p class="lede">Foundations session 5 made the case in words: a five-point average is not a temperature, the people who answer are not the people, and a group of three has no anonymity. Tonight makes each of those a computation. The survey is constructed on the page: Apex's real headcount on 1 January 2026, 1,022 people, is the invited population; 600 of them answer, a chosen count; every answer is generated from an invented trait with noise; and item 9 is built to carry almost none of that trait, so that the reliability formula has something to find. Nothing in it describes any real survey. The mechanism does.</p>
+
+    <div class="legend">
+      <span class="pill">🎫 Clear all three quiz questions to stamp your passport</span>
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">★ Build-along = run the code yourself</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> A seeded survey generator with a planted bad item, Cronbach's alpha written from the 1951 formula in four lines, item-rest correlations that point at the item, a response funnel whose bias was planted on purpose so you can see what it does to the score, a minimum group size applied in code before any group is shown, and a correlation printed next to the words that stop it becoming a cause.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers items as a bundle and Cronbach's alpha</span>
+      <h2>Twelve items, one score, and the number that says whether they belong together</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">An engagement score is usually the mean of a bundle of items: I know what is expected of me, I have what I need, my opinion counts, and so on. Averaging them is a claim that they measure one underlying thing. Cronbach 1951 (Psychometrika 16(3) 297-334) gave the number that tests the claim: alpha, computed from the item variances and the variance of the total, which rises when the items move together and falls when they do not. It is a lower bound on the reliability of the total score, and it is the first thing to compute before a score is shown to anybody.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn survey sheet at the left, labelled 600 sheets, invented. Beside it a grid of twelve item boxes q1 to q12; q9 is hachured and labelled as planted to carry almost no signal. An arrow leads from the grid to a moss box, one score, the mean of the items, with a note that it can be built from 11 if one is dropped. A panel to the right writes Cronbach's alpha as k over k minus 1 times one minus the sum of item variances over the variance of the total score. A line below cites Cronbach 1951 and says alpha is a lower bound on the reliability of the total.">
+        <defs>
+          <filter id="d7aSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="77" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d7aHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d7aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d7aH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d7aL { font: 700 11.5px Inter, sans-serif; fill: #2A1A1E; }
+          .d7aS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d7aB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d7aW { font: 800 11.5px Inter, sans-serif; fill: #FFFFFF; }
+          .d7aA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .04em; }
+          .d7aN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d7aH" x="30" y="26">TWELVE ITEMS, ONE SCORE, ONE FORMULA</text>
+
+        <g filter="url(#d7aSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- the survey sheet doodle -->
+          <rect x="34" y="64" width="64" height="84" rx="3" transform="rotate(-3 66 106)" fill="#FFFFFF"/>
+          <path d="M46 84 L88 84 M46 98 L88 98 M46 112 L88 112 M46 126 L88 126" stroke="#DCC9CD"/>
+          <rect x="44" y="78" width="6" height="6" fill="#7A2334" stroke="none"/><rect x="44" y="106" width="6" height="6" fill="#7A2334" stroke="none"/>
+          <!-- the twelve items -->
+          <rect x="130" y="60" width="70" height="34" rx="5" transform="rotate(-0.8 165 77)" fill="#FFFFFF"/>
+          <rect x="212" y="60" width="70" height="34" rx="5" transform="rotate(0.6 247 77)" fill="#FFFFFF"/>
+          <rect x="294" y="60" width="70" height="34" rx="5" transform="rotate(-0.5 329 77)" fill="#FFFFFF"/>
+          <rect x="376" y="60" width="70" height="34" rx="5" transform="rotate(0.7 411 77)" fill="#FFFFFF"/>
+          <rect x="130" y="106" width="70" height="34" rx="5" transform="rotate(0.5 165 123)" fill="#FFFFFF"/>
+          <rect x="212" y="106" width="70" height="34" rx="5" transform="rotate(-0.7 247 123)" fill="#FFFFFF"/>
+          <rect x="294" y="106" width="70" height="34" rx="5" transform="rotate(0.4 329 123)" fill="#FFFFFF"/>
+          <rect x="376" y="106" width="70" height="34" rx="5" transform="rotate(-0.6 411 123)" fill="#FFFFFF"/>
+          <rect x="130" y="152" width="70" height="34" rx="5" transform="rotate(-1.2 165 169)" fill="url(#d7aHc)" stroke="#7A2334"/>
+          <rect x="212" y="152" width="70" height="34" rx="5" transform="rotate(0.5 247 169)" fill="#FFFFFF"/>
+          <rect x="294" y="152" width="70" height="34" rx="5" transform="rotate(-0.4 329 169)" fill="#FFFFFF"/>
+          <rect x="376" y="152" width="70" height="34" rx="5" transform="rotate(0.8 411 169)" fill="#FFFFFF"/>
+          <!-- arrow to the score -->
+          <path d="M452 122 L474 122" marker-end="url(#d7aAr)"/>
+          <rect x="480" y="100" width="130" height="44" rx="8" transform="rotate(-0.5 545 122)" fill="#3D6B2E" stroke="#3D6B2E"/>
+          <!-- the formula panel -->
+          <rect x="640" y="60" width="210" height="124" rx="6" transform="rotate(0.4 745 122)" fill="#FFFFFF"/>
+          <path d="M640 92 L850 92" stroke="#DCC9CD"/>
+        </g>
+
+        <text class="d7aS" x="34" y="168">600 sheets</text>
+        <text class="d7aS" x="34" y="184">invented</text>
+        <text class="d7aL" x="140" y="82">q1</text>
+        <text class="d7aL" x="222" y="82">q2</text>
+        <text class="d7aL" x="304" y="82">q3</text>
+        <text class="d7aL" x="386" y="82">q4</text>
+        <text class="d7aL" x="140" y="128">q5</text>
+        <text class="d7aL" x="222" y="128">q6</text>
+        <text class="d7aL" x="304" y="128">q7</text>
+        <text class="d7aL" x="386" y="128">q8</text>
+        <text class="d7aL" x="140" y="174">q9</text>
+        <text class="d7aL" x="222" y="174">q10</text>
+        <text class="d7aL" x="304" y="174">q11</text>
+        <text class="d7aL" x="386" y="174">q12</text>
+        <text class="d7aA" x="130" y="212">item 9: planted to carry almost no signal</text>
+
+        <text class="d7aW" x="490" y="118">one score</text>
+        <text class="d7aW" x="490" y="134">mean of the items</text>
+        <text class="d7aS" x="480" y="164">or 11, one dropped</text>
+
+        <text class="d7aL" x="650" y="82">Cronbach's alpha</text>
+        <text class="d7aS" x="650" y="112">k / (k - 1)  times</text>
+        <text class="d7aS" x="650" y="132">(1 - sum of item variances</text>
+        <text class="d7aS" x="650" y="152">/ variance of the total score)</text>
+        <text class="d7aB" x="650" y="176">k = 12, or 11 without q9</text>
+
+        <text class="d7aS" x="30" y="242">Cronbach 1951, Psychometrika 16(3) 297-334: alpha is a lower bound on the reliability of the total score.</text>
+        <text class="d7aB" x="30" y="264">600 constructed responses, five-point items, seed stated; the bad item is q9, and the code has to find it.</text>
+        <text class="d7aN" x="30" y="290">Alpha says whether the items move together. It does not say whether they measure the thing on the label.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the hachured item is the one the generator starved of signal; alpha drops because of it and rises without it</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>What alpha computes, and what it does not<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Take the total score, the sum of the twelve items per person. Its variance has two sources: each item's own variance, and the covariance between items. If the items measure one thing, they co-vary, and the variance of the total is much larger than the sum of the item variances. Alpha is k over k minus 1, times one minus the ratio of those two, so it approaches one when the covariance dominates and falls toward zero when the items are unrelated noise. Four lines of numpy; step 2 of the build-along.</p>
+        <p><strong>What it does not compute.</strong> Alpha does not say the items measure engagement, or anything with a name; it says they measure the same thing as each other. Twelve rewordings of one question give a superb alpha and no information. Alpha also rises mechanically with the number of items, so a long scale with weak items can outscore a short scale with strong ones. Read it with the item-rest correlations in Part 2, never alone, and never as a grade for the survey.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>A five-point mean is not a temperature<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Foundations session 5 drew the same mean from two distributions: a team where everyone answered 3, and a team where half answered 1 and half answered 5. The mean is identical; the teams are not. In code the habit is to print the distribution beside the mean: the share at each point, or at least the share at 1 and 2 together and at 4 and 5 together. A change of 0.2 in a mean can be everyone moving slightly or a few people moving a long way, and only the distribution says which. The same applies to alpha: it summarises a covariance matrix, and the matrix is what to look at when the number surprises you.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The item that was really a different question.</strong> Constructed setting, common mechanism. A twelve-item engagement scale carried a question about the canteen. It had been added years earlier because somebody wanted the data, and it had been averaged into the engagement score ever since. Alpha for the scale was acceptable, because eleven good items carry a twelfth; the item-rest correlation for the canteen question sat near zero. Dropping it raised alpha and moved every team's score by a small amount that had nothing to do with engagement. Nobody had ever computed either number. The formula is from 1951 and takes four lines.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers alpha as shared variance and the planted item</span>
+      <h2>Finding the item that does not belong</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">Alpha is a property of the bundle. To find which item is dragging it down, correlate each item with the sum of the other eleven: the item-rest correlation. An item that measures the shared thing correlates well with the rest; an item that measures something else, or nothing, does not. On the constructed survey item 9 was built with almost no loading on the trait, so its item-rest correlation sits near zero and alpha without it is higher. On a real survey nobody planted anything, and the same two numbers are how you find out.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 324" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn bar chart of twelve item-rest correlations, q1 to q12. Eleven bars are tall and filled moss-pale; the bar for q9 is short and hachured, near zero. The axis is labelled item-rest correlation, each item against the sum of the other eleven. To the right, two boxes: alpha with all 12 items, and below it, in solid moss, alpha with q9 dropped, higher by construction. A warning says alpha rises when a noisy item leaves and also rises when items repeat each other.">
+        <defs>
+          <filter id="d7bSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="79" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d7bHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d7bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d7bH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d7bL { font: 700 11.5px Inter, sans-serif; fill: #2A1A1E; }
+          .d7bS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d7bB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d7bW { font: 800 11.5px Inter, sans-serif; fill: #FFFFFF; }
+          .d7bA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .04em; }
+          .d7bN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d7bH" x="30" y="26">ALPHA IS SHARED VARIANCE, AND ONE ITEM SHARES NONE</text>
+
+        <g filter="url(#d7bSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M80 230 L570 230" marker-end="url(#d7bAr)"/>
+          <path d="M80 230 L80 70" marker-end="url(#d7bAr)"/>
+          <rect x="90" y="112" width="28" height="118" transform="rotate(-0.6 104 171)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="130" y="104" width="28" height="126" transform="rotate(0.5 144 167)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="170" y="120" width="28" height="110" transform="rotate(-0.4 184 175)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="210" y="108" width="28" height="122" transform="rotate(0.6 224 169)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="250" y="116" width="28" height="114" transform="rotate(-0.5 264 173)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="290" y="100" width="28" height="130" transform="rotate(0.4 304 165)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="330" y="114" width="28" height="116" transform="rotate(-0.6 344 172)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="370" y="106" width="28" height="124" transform="rotate(0.5 384 168)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="410" y="220" width="28" height="10" transform="rotate(-1 424 225)" fill="url(#d7bHc)" stroke="#7A2334"/>
+          <rect x="450" y="110" width="28" height="120" transform="rotate(0.6 464 170)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="490" y="118" width="28" height="112" transform="rotate(-0.4 504 174)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="530" y="102" width="28" height="128" transform="rotate(0.5 544 166)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <!-- a magnifier over the short bar -->
+          <circle cx="424" cy="196" r="11" fill="#FFFFFF" stroke="#7A2334"/>
+          <path d="M432 204 L444 216" stroke="#7A2334" stroke-width="2.6"/>
+          <!-- the two alpha boxes -->
+          <rect x="620" y="70" width="230" height="44" rx="8" transform="rotate(-0.5 735 92)" fill="#FFFFFF"/>
+          <path d="M735 120 L735 132" marker-end="url(#d7bAr)"/>
+          <rect x="620" y="140" width="230" height="44" rx="8" transform="rotate(0.4 735 162)" fill="#3D6B2E" stroke="#3D6B2E"/>
+        </g>
+
+        <text class="d7bS" x="72" y="234" text-anchor="end">0</text>
+        <text class="d7bS" x="72" y="80" text-anchor="end">high</text>
+        <text class="d7bS" x="104" y="250" text-anchor="middle">q1</text>
+        <text class="d7bS" x="144" y="250" text-anchor="middle">q2</text>
+        <text class="d7bS" x="184" y="250" text-anchor="middle">q3</text>
+        <text class="d7bS" x="224" y="250" text-anchor="middle">q4</text>
+        <text class="d7bS" x="264" y="250" text-anchor="middle">q5</text>
+        <text class="d7bS" x="304" y="250" text-anchor="middle">q6</text>
+        <text class="d7bS" x="344" y="250" text-anchor="middle">q7</text>
+        <text class="d7bS" x="384" y="250" text-anchor="middle">q8</text>
+        <text class="d7bA" x="424" y="250" text-anchor="middle">q9</text>
+        <text class="d7bS" x="464" y="250" text-anchor="middle">q10</text>
+        <text class="d7bS" x="504" y="250" text-anchor="middle">q11</text>
+        <text class="d7bS" x="544" y="250" text-anchor="middle">q12</text>
+        <text class="d7bA" x="80" y="272">ITEM-REST CORRELATION: EACH ITEM AGAINST THE SUM OF THE OTHER ELEVEN</text>
+
+        <text class="d7bL" x="632" y="96">alpha, all 12 items</text>
+        <text class="d7bW" x="632" y="166">alpha, q9 dropped: higher</text>
+        <text class="d7bB" x="620" y="206">alpha rises when a noisy item leaves;</text>
+        <text class="d7bB" x="620" y="222">it also rises when items repeat each other</text>
+
+        <text class="d7bS" x="30" y="292">Constructed: 600 responses, 12 items; the generator gave q9 almost no loading. Your bars will differ.</text>
+        <text class="d7bN" x="30" y="316">Bar heights are schematic. The build-along prints the real item-rest correlations for your seed.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - eleven bars share the trait and one shares nothing; the magnifier is the item-rest correlation, and it is the number that names the item</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Drop it, re-score, and say what moved<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The decision to drop an item is not statistical alone. Alpha says the item does not share variance with the rest; it does not say whether the item was wrong or the rest were. If the eleven items ask about the manager and the twelfth asks about pay, the twelfth is a different construct, not a bad question, and it belongs in its own scale. In the constructed survey the case is clean because the generator made it so. In a real survey, read the item's wording before reading its correlation, and write down why it was dropped, because every team's score will move when it goes and someone will ask.</p>
+        <p><strong>Say what moved.</strong> When an item is dropped, the score changes for everyone, by an amount unrelated to anything anybody did. Publish the old score, the new score and the reason, once. A dashboard that silently switches from twelve items to eleven between two quarters has manufactured a trend, and that trend will be read as one.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Correlation is not cause, and the engagement literature is where it hurts most<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Step 6 of the build-along correlates the survey score with an invented flag for leaving within six months, and finds a correlation, because the generator planted one. On a real table the same correlation appears often, and it does not say which way the arrow points: disengaged people leave, people who have already decided to leave answer surveys as disengaged, and a bad quarter produces both. The figure "engagement drives performance", in any of its circulating forms, has no measured source in the map and is not claimed. The experimentation and causal inference courses are where an arrow gets a direction; a survey correlation is a reason to design that study, not a substitute for it.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>Same survey, two scales.</strong> Constructed setting. A people team ran the item-rest correlations on a fourteen-item scale and found that the items split cleanly into two bundles of seven, with high correlations inside each bundle and low ones across. The scale had been measuring two things, roughly "my manager" and "my workload", and averaging them into one score had been hiding that teams with a good manager and a bad workload looked the same as the reverse. Two scores, two alphas, and a dashboard that finally distinguished the two problems. The formula did not find that on its own; a person looked at the matrix.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-3">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers response bias and the anonymity threshold</span>
+      <h2>Who answered, and who may be shown</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">Alpha is computed on the people who answered. The score is reported as if it described everyone. Between those two sits the response funnel, and the funnel is not random: the people most likely to skip a survey are often the people the survey most needs to hear. The constructed survey plants that bias deliberately, so that you can measure the gap between the respondents' trait and the population's. Then a second, unrelated constraint: a mean over three people is not a statistic, it is a disclosure, and a minimum group size has to be applied in code before any group is shown.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 316" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Left, a hand-drawn funnel: a wide hachured bar for 1,022 invited, Apex's headcount on 1 January 2026, narrowing to a pale bar for 600 responded, a chosen count, 58.7 percent. A note says who answers is not random and the generator makes the engaged more likely to answer on purpose. Right, eight group boxes of increasing size along a baseline, and a thick moss wall between the fourth and fifth labelled minimum group size 8, a stated choice; groups left of the wall are marked not reported and groups right of it reported. Below, the rule that a mean over three people identifies them, and that common practice puts the threshold at 5 to 10 with no single source.">
+        <defs>
+          <filter id="d7cSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="83" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d7cHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d7cAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d7cH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d7cL { font: 700 11.5px Inter, sans-serif; fill: #2A1A1E; }
+          .d7cS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d7cB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d7cA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .04em; }
+          .d7cN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d7cH" x="30" y="26">WHO ANSWERS, AND WHO MAY BE REPORTED</text>
+
+        <g filter="url(#d7cSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- the funnel -->
+          <rect x="40" y="60" width="380" height="30" rx="4" transform="rotate(-0.4 230 75)" fill="url(#d7cHc)"/>
+          <path d="M40 92 L112 108 M420 92 L335 108" stroke="#DCC9CD"/>
+          <path d="M230 94 L230 106" marker-end="url(#d7cAr)"/>
+          <rect x="112" y="110" width="223" height="30" rx="4" transform="rotate(0.4 223 125)" fill="#F9EEF0"/>
+          <!-- eight groups sorted by size, invented -->
+          <rect x="520" y="182" width="26" height="18" transform="rotate(-1 533 191)" fill="#FFFFFF"/>
+          <rect x="560" y="176" width="26" height="24" transform="rotate(0.8 573 188)" fill="#FFFFFF"/>
+          <rect x="600" y="164" width="26" height="36" transform="rotate(-0.6 613 182)" fill="#FFFFFF"/>
+          <rect x="640" y="158" width="26" height="42" transform="rotate(0.7 653 179)" fill="#FFFFFF"/>
+          <rect x="700" y="146" width="26" height="54" transform="rotate(-0.5 713 173)" fill="#FFFFFF"/>
+          <rect x="740" y="128" width="26" height="72" transform="rotate(0.6 753 164)" fill="#FFFFFF"/>
+          <rect x="780" y="110" width="26" height="90" transform="rotate(-0.7 793 155)" fill="#FFFFFF"/>
+          <rect x="820" y="68" width="26" height="132" transform="rotate(0.5 833 134)" fill="#FFFFFF"/>
+          <path d="M510 200 L856 200"/>
+          <!-- the wall -->
+          <path d="M682 54 L682 208" stroke="#3D6B2E" stroke-width="4"/>
+        </g>
+
+        <text class="d7cS" x="40" y="52">invited 1,022 = Apex headcount on 1 Jan 2026</text>
+        <text class="d7cS" x="112" y="160">responded 600, a chosen count, 58.7 percent</text>
+        <text class="d7cB" x="40" y="186">who answers is not random: the generator makes</text>
+        <text class="d7cB" x="40" y="202">the engaged more likely to answer, on purpose</text>
+
+        <text class="d7cB" x="682" y="46" text-anchor="middle">MIN GROUP SIZE 8, a stated choice</text>
+        <text class="d7cA" x="596" y="222" text-anchor="middle">not reported</text>
+        <text class="d7cB" x="770" y="222" text-anchor="middle">reported</text>
+
+        <text class="d7cS" x="40" y="252">A mean over 3 people identifies them; the threshold is a minimum count, applied before any group is shown.</text>
+        <text class="d7cS" x="40" y="270">Common practice puts it at 5 to 10, no single source; the code uses 8 and says so.</text>
+        <text class="d7cN" x="30" y="300">Constructed survey. 1,022 is Apex's real headcount; the 600 responses, every answer and the group sizes are invented.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the wall is a filter on the count, not on the score; a group is either big enough to be shown or it is not, whatever its mean</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Response bias you can measure, and response bias you cannot<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>In the constructed survey the trait is known for all 1,022 people, so the mean trait of the 600 who answered can be compared with the mean of the 422 who did not, and the gap is the bias. On a real survey the trait of the non-respondents is exactly what is unknown, and the only handles are the things known for everyone: department, tenure, grade, entity. Compare the respondents to the invited on those. If Sales, with its 50 percent attrition on the start base, answered at half the rate of Finance, the company score is a Finance score wearing a company label, and reweighting by department is the least that is owed.</p>
+        <p><strong>The threshold is a count, applied first.</strong> Group the respondents, count each group, and drop every group under the minimum before computing a single mean. The order matters: a pipeline that computes means and then hides the small ones has already put the means in a file. The minimum itself is a choice; five to ten is common practice with no single source, and the code uses eight and prints the word "stated" beside it. What is not a choice is that the threshold applies to every cut, including the cuts nobody planned: department by tenure band by sex is a small group even when each margin is large.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Gallup's number, by edition, and the sentence that follows it<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Gallup's State of the Global Workplace reported 23 percent of employees engaged in its 2024 edition, on 2023 data. The 2025 edition reported 21 percent and the 2026 edition 20. Any of the three is quotable with its edition named; "Gallup says 23 percent" without the year is a number drifting loose from its measurement, and it is reported here as Gallup's figure, not recomputed. The sentence that usually travels with it, that people leave managers and not companies, has no measured source: it traces to Buckingham and Coffman's First, Break All the Rules of 1999, a book and not a statistic, and it is not claimed on any page here. Apex's own exit reasons give Management/Culture 23 of 210, behind Better Opportunity, Career Growth and Compensation, and a reason on an exit form is what the leaver chose to write, which is its own response bias.</p>
+      </div>
+    </details>
+
+    <div class="tryrow" data-fn="wordcount" data-multiline="1" data-title="Write your survey's three numbers" data-hint="For a survey you own: alpha for the scale, the response rate by the largest department and the smallest, and the minimum group size with the word stated beside it. Three lines." data-seed="" data-cta="Count it"></div>
+  </section>
+
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>Alpha, the bad item and the wall, on 600 constructed responses</h2>
+      <span class="tag demo">★ 22 min · everyone builds</span>
+    </div>
+    <p class="lede">Seven steps. Step 1 invites Apex's real 1,022 people, spread across the eight departments at their real 1 January headcounts, gives each an invented trait, and draws 600 respondents with a probability that rises with the trait. Twelve five-point items are generated from the trait; item 9 gets almost no loading. Everything after that is computation on invented answers, so no output is printed on the page: your numbers will differ.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The build-along as a hand-drawn track of six stations: generate, with 1,022 invited and 600 answering; items, twelve five-point with q9 planted; alpha by the formula on 12 items; drop q9 after the item-rest correlations and compute alpha again; the wall, minimum group 8, deciding who is shown; and the sentence, no cause and no folk claim. A line above says station 1 decides who answers, so the score is biased before an item is read.">
+        <defs>
+          <filter id="d7dSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="89" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d7dHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d7dAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d7dH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d7dL { font: 700 11px Inter, sans-serif; fill: #2A1A1E; }
+          .d7dS { font: 400 10.5px Inter, sans-serif; fill: #6B5459; }
+          .d7dB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d7dW { font: 800 11px Inter, sans-serif; fill: #FFFFFF; }
+          .d7dN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d7dH" x="30" y="26">SIX STATIONS</text>
+
+        <g filter="url(#d7dSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M40 120 L840 120" stroke="#DCC9CD"/>
+          <rect x="40" y="90" width="120" height="60" rx="8" transform="rotate(-0.6 100 120)" fill="url(#d7dHc)"/>
+          <rect x="176" y="90" width="120" height="60" rx="8" transform="rotate(0.5 236 120)" fill="#FFFFFF"/>
+          <rect x="312" y="90" width="120" height="60" rx="8" transform="rotate(-0.4 372 120)" fill="#F9EEF0"/>
+          <rect x="448" y="90" width="120" height="60" rx="8" transform="rotate(0.6 508 120)" fill="#FFFFFF"/>
+          <rect x="584" y="90" width="120" height="60" rx="8" transform="rotate(-0.5 644 120)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="720" y="90" width="120" height="60" rx="8" transform="rotate(0.4 780 120)" fill="#7A2334" stroke="#7A2334"/>
+          <path d="M162 120 L172 120" marker-end="url(#d7dAr)"/>
+          <path d="M298 120 L308 120" marker-end="url(#d7dAr)"/>
+          <path d="M434 120 L444 120" marker-end="url(#d7dAr)"/>
+          <path d="M570 120 L580 120" marker-end="url(#d7dAr)"/>
+          <path d="M706 120 L716 120" marker-end="url(#d7dAr)"/>
+        </g>
+
+        <text class="d7dL" x="52" y="112">1 · generate</text>
+        <text class="d7dS" x="52" y="128">1,022 invited</text>
+        <text class="d7dS" x="52" y="142">600 answer</text>
+        <text class="d7dL" x="188" y="112">2 · items</text>
+        <text class="d7dS" x="188" y="128">12 five-point</text>
+        <text class="d7dS" x="188" y="142">q9 planted</text>
+        <text class="d7dL" x="324" y="112">3 · alpha</text>
+        <text class="d7dS" x="324" y="128">by the formula</text>
+        <text class="d7dS" x="324" y="142">12 items</text>
+        <text class="d7dL" x="460" y="112">4 · drop q9</text>
+        <text class="d7dS" x="460" y="128">item-rest r</text>
+        <text class="d7dS" x="460" y="142">alpha again</text>
+        <text class="d7dB" x="596" y="112">5 · the wall</text>
+        <text class="d7dS" x="596" y="128">min group 8</text>
+        <text class="d7dS" x="596" y="142">who is shown</text>
+        <text class="d7dW" x="732" y="112">6 · the sentence</text>
+        <text class="d7dW" x="732" y="128">no cause claimed</text>
+        <text class="d7dW" x="732" y="142">no folk claim</text>
+
+        <text class="d7dS" x="40" y="74">Station 1 decides who answers, so the score is biased before an item is read. On a real survey nobody knows how much.</text>
+        <text class="d7dN" x="30" y="212">Save alpha with the seed in the filename. A survey score never enters the headcount model of session 8.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the hachured station is where the bias is planted; every later number inherits it, and on a real survey the amount is unknown</figcaption>
+    </figure>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Invite Apex, plant the trait, draw the respondents.</strong> Departments at their real 1 January 2026 headcounts. The trait is invented; the response draw depends on it, which is the planted bias.</p>
+        <div class="prompt-box good"><span class="label">★ Step 1 · generate, seeded</span>import numpy as np, pandas as pd
+
+rng = np.random.default_rng(2026)          # the seed; change it and every number below moves
+
+# Apex headcount by department on 1 January 2026, the real counts from deep-dive session 1
+depts = {"Operations": 218, "Engineering": 213, "Finance": 145, "Sales": 108,
+         "Customer Service": 93, "R&amp;D": 94, "Marketing": 76, "HR": 75}
+invited = pd.DataFrame({"department": np.repeat(list(depts), list(depts.values()))})
+N = len(invited)                             # 1022
+invited["manager"] = rng.integers(1, 121, N) # invented: about 8.5 people per manager
+invited["trait"]   = rng.normal(0, 1, N)     # invented "engagement", one per person
+
+# who answers: probability rises with the trait, on purpose; 600 is a chosen count
+p = 1 / (1 + np.exp(-(0.3 + 0.8 * invited["trait"])))
+idx = rng.choice(N, 600, replace=False, p=p / p.sum())
+invited["responded"] = False
+invited.loc[idx, "responded"] = True
+print(N, invited["responded"].sum(), f"{600 / N * 100:.1f}%")   # 1022 600 58.7%</div>
+      </div>
+      <div class="step">
+        <p><strong>Twelve five-point items from the trait.</strong> Eleven load on it; item 9 barely does. Rounded and clipped to 1 to 5, which is what a five-point scale does to a continuous trait.</p>
+        <div class="prompt-box good"><span class="label">★ Step 2 · items, one planted</span>k = 12
+loading = np.full(k, 0.9)
+loading[8] = 0.05                            # q9: planted to carry almost no signal
+
+resp = invited[invited["responded"]].copy()
+raw = 3 + np.outer(resp["trait"], loading) + rng.normal(0, 0.8, (len(resp), k))
+items = pd.DataFrame(np.clip(np.rint(raw), 1, 5).astype(int),
+                     columns=[f"q{j + 1}" for j in range(k)], index=resp.index)
+print(items.describe().loc[["mean", "std"]].round(2))   # your numbers will differ
+print((items == 3).mean().round(2).to_dict())           # the share at the midpoint, per item</div>
+      </div>
+      <div class="step">
+        <p><strong>Cronbach's alpha, by the formula.</strong> Sum of item variances over the variance of the total, from Cronbach 1951. Four lines, no library.</p>
+        <div class="prompt-box good"><span class="label">★ Step 3 · alpha</span>def alpha(df):
+    k = df.shape[1]
+    item_var  = df.var(ddof=1).sum()
+    total_var = df.sum(axis=1).var(ddof=1)
+    return k / (k - 1) * (1 - item_var / total_var)
+
+print(f"alpha, {items.shape[1]} items: {alpha(items):.3f}")   # your numbers will differ</div>
+      </div>
+      <div class="step">
+        <p><strong>Item-rest correlations, then drop the item.</strong> Each item against the sum of the others. The planted item is the one near zero; alpha without it is higher, by construction.</p>
+        <div class="prompt-box good"><span class="label">★ Step 4 · find it, drop it</span>rest = {c: items[c].corr(items.drop(columns=c).sum(axis=1)) for c in items}
+for c, r in sorted(rest.items(), key=lambda kv: kv[1]):
+    print(f"{c:4s} item-rest r {r:+.3f}")                # q9 should sit at the bottom
+worst = min(rest, key=rest.get)
+
+items11 = items.drop(columns=worst)
+print(f"alpha without {worst}: {alpha(items11):.3f}")     # your numbers will differ; higher
+resp["score12"] = items.mean(axis=1)
+resp["score11"] = items11.mean(axis=1)
+print(f"every score moved by {(resp['score11'] - resp['score12']).abs().mean():.3f} on average, for no reason of anyone's")</div>
+      </div>
+      <div class="step">
+        <p><strong>The response bias, measured because it can be here.</strong> The trait is known for everyone in the constructed table, so the respondents and the silent can be compared. On a real survey only the department mix can be.</p>
+        <div class="prompt-box good"><span class="label">★ Step 5 · who answered</span>silent = invited[~invited["responded"]]
+print(f"mean trait, respondents {resp['trait'].mean():+.3f}; silent {silent['trait'].mean():+.3f}")
+# the gap is the bias, planted by step 1; on a real survey it cannot be measured
+
+rate = invited.groupby("department")["responded"].mean().mul(100).round(1)
+print(rate.sort_values().to_string())                    # response rate by department, your numbers will differ
+# the reweighting that is at least owed: weight each department's respondents back to its invited count
+n_resp = resp["department"].map(resp["department"].value_counts())
+resp["w"] = resp["department"].map(depts) / n_resp          # invited count over respondent count, per department
+print(f"score, unweighted {resp['score11'].mean():.3f}; reweighted to the invited mix {np.average(resp['score11'], weights=resp['w']):.3f}")</div>
+      </div>
+      <div class="step">
+        <p><strong>The wall, and a correlation with its warning.</strong> Count first, drop the small groups, then compute the means. Then correlate the score with an invented leaving flag and print the words that keep it a correlation.</p>
+        <div class="prompt-box good"><span class="label">★ Step 6 · minimum group size, then the correlation</span>MIN_N = 8                                                 # stated choice; 5 to 10 is common practice, no single source
+by_mgr = resp.groupby("manager")["score11"].agg(["count", "mean"])
+shown  = by_mgr[by_mgr["count"] &gt;= MIN_N]
+print(f"{len(by_mgr)} manager groups, {len(shown)} shown, {len(by_mgr) - len(shown)} under the threshold of {MIN_N} (stated)")
+# the order matters: the means for the hidden groups were never written anywhere
+
+# invented: a leaving flag whose probability falls with the trait, planted, not observed
+resp["left_6m"] = (rng.random(len(resp)) &lt; 1 / (1 + np.exp(1.6 + 0.9 * resp["trait"]))).astype(int)
+r = resp["score11"].corr(resp["left_6m"])
+print(f"correlation of score with leaving: {r:+.3f}  (planted by the generator; direction unknown on real data)")</div>
+      </div>
+      <div class="step">
+        <p><strong>The sentence.</strong> Alpha with the item count, the response rate with the invited base, the threshold with the word stated, and no cause.</p>
+        <div class="prompt-box good"><span class="label">★ Step 7 · the sentence</span>sentence = (f"Constructed survey: {len(resp)} of {N} invited answered ({600 / N * 100:.1f}%), "
+            f"and respondents sit higher on the trait than the silent by construction. "
+            f"Alpha is {alpha(items11):.2f} on 11 items after dropping {worst} (item-rest r {rest[worst]:+.2f}). "
+            f"Groups under {MIN_N} respondents (stated) are not shown. "
+            f"The score correlates with leaving at r {r:+.2f}; no direction is claimed.")
+print(sentence)
+resp.drop(columns=["trait"]).to_csv("apex_survey_seed2026.csv", index=False)   # the trait is never exported</div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Set the loading of item 9 to 0.9 and run again.</strong> Alpha rises, the item-rest correlations line up, and the eleven-item score becomes a twelve-item score that differs from it only by noise. Then set the response coefficient 0.8 to zero: the respondents' mean trait meets the silent's, and the score stops overstating. Two parameters, two lessons, and on a real survey neither can be turned off.</p>
+    </div>
+  </section>
+
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before deep-dive session 8</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li><strong>Run the seven steps</strong> with the seed as written, then with two others. Record alpha with and without the worst item each time, and whether the worst item was q9 every time.</li>
+      <li><strong>Plant a second construct:</strong> give items 10 to 12 a loading on a second invented trait instead of the first. Re-run step 4 and write what the item-rest correlations show, and why alpha alone would not have.</li>
+      <li><strong>Change the threshold</strong> to 5 and to 10 and count how many manager groups are shown at each. Write the sentence that goes with the number you would choose.</li>
+      <li><strong>For a survey you own,</strong> compute the response rate by department against the invited count. Name the department that would be over-represented in an unweighted company score.</li>
+    </ol>
+  </section>
+
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+    <p>Clear all three and deep-dive session 7 gets stamped in your passport.</p>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · Alpha for a twelve-item scale is acceptable. Why compute the item-rest correlations anyway?</p>
+      <button class="qopt" type="button">A · Because alpha is only valid for scales of ten items or fewer</button>
+      <button class="qopt" type="button">B · Because item-rest correlations are the same as alpha, just per item</button>
+      <button class="qopt" type="button">C · Because alpha is a property of the bundle and eleven good items carry a twelfth; the item-rest correlation is the number that names the item measuring something else, and alpha without it says how much the bundle was being dragged</button>
+      <button class="qopt" type="button">D · Because alpha cannot be computed without them</button>
+      <p class="qwhy">Alpha rises with item count and with any shared variance, so it hides one bad item well. Item against the sum of the rest is the diagnostic; the wording of the item is the decision.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · 600 of 1,022 invited answered. The company score is reported as the mean of the 600. What is the least that is owed before it is called the company's score?</p>
+      <button class="qopt" type="button">A · A comparison of respondents to the invited on what is known for everyone, department at least, and a reweighting to the invited mix, because who answers is not random and the trait of the silent cannot be measured on a real survey</button>
+      <button class="qopt" type="button">B · Nothing; 58.7 percent is a high response rate and the mean stands</button>
+      <button class="qopt" type="button">C · A larger sample, since 600 is too few for a mean</button>
+      <button class="qopt" type="button">D · A survey of the non-respondents asking why they did not answer</button>
+      <p class="qwhy">The constructed survey planted the bias so it could be measured. A real one cannot measure it; it can only check the mix on known variables and reweight, and say so.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="3">
+      <p class="qtext">3 · A dashboard shows a mean score for a team of four. Where in the pipeline should the fix go?</p>
+      <button class="qopt" type="button">A · In the dashboard, as a rule that hides means for small teams after they are computed</button>
+      <button class="qopt" type="button">B · Nowhere; four people is enough for a mean</button>
+      <button class="qopt" type="button">C · In the survey, by not asking teams of four to answer</button>
+      <button class="qopt" type="button">D · Before any mean is computed: count each group, drop those under a stated minimum, then compute; the threshold is a count and not a score, it applies to every cut including the unplanned ones, and a mean over four people is a disclosure, not a statistic</button>
+      <p class="qwhy">A mean that was computed and then hidden was still written to a file. The wall goes first, on the count, on every grouping.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What this session teaches, and where it came from</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Cronbach's alpha computed by the formula; item-rest correlations</span><span class="note">Cronbach 1951, "Coefficient alpha and the internal structure of tests", Psychometrika 16(3) 297-334, primary</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The constructed survey: 1,022 invited at Apex's real department headcounts, 600 respondents, 12 five-point items, q9 planted, response bias planted, seed 2026</span><span class="note">Generated on the page's own build script; every answer invented; 1,022 and the department counts are computed from the constructed Apex table; no output printed</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Response bias and reweighting; the anonymity threshold as a minimum group size applied before any mean</span><span class="note">Standard practice, no single source; the threshold of 8 is a stated choice, 5 to 10 being common</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Gallup, State of the Global Workplace: 23 percent engaged in the 2024 edition (2023 data); 21 in the 2025 edition; 20 in the 2026 edition</span><span class="note">Secondary; reported with the edition named</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">"People leave managers, not companies"</span><span class="note">Not claimed: traces to Buckingham and Coffman, First, Break All the Rules (1999), not to a measured statistic</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Correlation of a survey score with leaving; "engagement drives performance"</span><span class="note">The correlation is planted on constructed data; no direction claimed; no performance figure claimed; the experimentation and causal inference courses own the arrow</span></div>
+    </div>
+    <p class="mono" style="margin-top:14px">Every fact on this page, and its verification tier, is recorded in the course's source map.</p>
+  </section>
+
+  <section class="cheat" id="cheatsheet">
+    <h3>Deep-dive session 7 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Alpha</b><span>k/(k-1) x (1 - sum of item variances / variance of the total). Lower bound on reliability.</span></div>
+      <div class="cheat-item"><b>Item-rest correlation</b><span>Each item against the sum of the others. The one near zero is the one to read.</span></div>
+      <div class="cheat-item"><b>Alpha is not validity</b><span>Twelve rewordings score high and say nothing. Read the matrix.</span></div>
+      <div class="cheat-item"><b>Who answered</b><span>Compare respondents to invited on what is known for all. Reweight. Say so.</span></div>
+      <div class="cheat-item"><b>The wall</b><span>Count, drop under the stated minimum, then compute. Every cut, planned or not.</span></div>
+      <div class="cheat-item"><b>Gallup by edition</b><span>23 (2024 edition), 21 (2025), 20 (2026). The managers sentence has no measured source.</span></div>
+    </div>
+  </section>
+
+  <div class="callout next">
+    <span class="nx-pill">Next session</span>
+    <p>Two sessions of measuring what happened; deep-dive session 8 plans what will. Apex's real counts become the inputs of a stock-flow model, 1,022 at the start and 22.3 percent attrition on the average base in the first half, 44.6 annualised under an assumption the code states, and the hiring need is written as growth plus replacement. A transition-rate plan fits on one page, three scenarios are reported as ranges and not points, and every growth rate is labelled invented, because it is.</p>
+  </div>
+
+  <footer class="pagefoot">
+    <span>Deep-dive session 7 of 10 · learn-people-analytics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="p6-pay-equity-regression.html">← Prev: Pay equity regression</a> &nbsp;·&nbsp; <a href="p8-workforce-planning.html">Next: Workforce planning →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

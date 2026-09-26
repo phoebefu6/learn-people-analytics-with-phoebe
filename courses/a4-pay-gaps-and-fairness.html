@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Foundations session 4 of 6. A pay gap is not unequal pay. The six figures every UK employer with 250 or more staff publishes, the four pay bands, and what 11,315 filings for 2024 show: a median gap of 8.4 percent, 77.6 percent of employers with a positive gap, and a pyramid with 56.0 percent women at the bottom and 40.0 at the top. Composition against within-band pay, and the lever that widens the gap when pulled in the wrong place.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Pay, gaps and fairness - learn people analytics with phoebe">
+<meta property="og:description" content="Foundations session 4 of 6. Six figures, four bands, 11,315 real filings, and the difference between a gap and unequal pay.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/courses/a4-pay-gaps-and-fairness.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pay, gaps and fairness - learn people analytics with phoebe">
+<meta name="twitter:description" content="Foundations session 4 of 6. The pyramid, composition against within-band pay, and the anti-lever.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Foundations session 4 · Pay, gaps and fairness - learn people analytics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-people-analytics-with-phoebe</a> / Foundations session 4 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn People Analytics with Phoebe · Foundations session 4 of 6</div>
+    <h1>Pay, gaps <span class="accent">and fairness</span></h1>
+    <p class="sub">"Women at this company are paid 8 percent less than men" is a sentence that means two different things, and the headline never says which. It can mean that a woman and a man doing the same job are paid differently, which is unequal pay and unlawful. Or it can mean that the average hourly pay of all the women is 8 percent below the average for all the men, which is a pay gap, and which a company with perfectly equal pay in every role can still report, because of who holds which roles. Tonight is the second meaning, on real data: the six figures every large UK employer must publish, the four pay bands, 11,315 filings for 2024, and the two mechanisms, composition and within-band pay, that any gap is made of. Then a lever that most people pull in the wrong direction.</p>
+    <div class="chip-row">
+      <span class="chip level">🟢 Foundations</span>
+      <span class="chip audience">Leaders, HR partners, anyone who has to explain a pay gap figure</span>
+      <span class="chip audience">No code</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-18 · The filing, the pyramid, two mechanisms</span>
+      <span class="a3" style="flex:5">18-40 · Build-along: reading one filing's six numbers</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we start</h2>
+    </div>
+    <p class="lede">Pay is the one people number where the data is public. Since 2017, every UK employer with 250 or more employees has had to publish six figures a year under the Equality Act 2010 (Gender Pay Gap Information) Regulations 2017, and the government publishes the whole set as an open file. For reporting year 2024 that is 11,315 filings, and they are the running data for tonight and for the deep-dive track's pay sessions. No employer is named on any page, no filing is called good or bad, and nothing on the page says why any gap exists. What the filings can show, precisely, is how much of a gap the shape of a workforce produces on its own. That turns out to be most of it, and it is not the part most pay gap plans address.</p>
+
+    <div class="legend">
+      <span class="pill">🎫 Clear all three quiz questions to stamp your passport</span>
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">★ Build-along = everyone works it through</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> The difference between a pay gap and unequal pay, said in one sentence; the six figures and what each one's base is; the pyramid, and why 81.3 percent of employers have one; composition against within-band pay as the two mechanisms behind any gap; and the reason "hire more women" is not a lever until you say where.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the filing, the six figures and the pyramid</span>
+      <h2>A pay gap is not unequal pay</h2>
+      <span class="tag concept">6 min live</span>
+    </div>
+    <p class="lede">Equal pay is a legal duty: the same pay for the same work, or work of equal value, between a man and a woman at the same employer. A pay gap is a statistic: the difference between the average hourly pay of all men and all women at that employer, whatever jobs they do. An employer can meet the first completely and still report a large second, if its best-paid roles are mostly held by men. The filing is built to show that, and its most telling part is not the headline gap but the four bands underneath it.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 316" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn pyramid of four equal-sized pay bands, top quartile at the top, with each band split by sex. The women's share, in wine, reads 40.0 percent in the top band, 47.0 in the upper middle, 52.7 in the lower middle and 56.0 in the bottom band, for the median employer in the 2024 filings. A ladder beside the bands marks pay rising upward. A side panel says 81.3 percent of employers have a higher share of women in the bottom band than in the top.">
+        <defs>
+          <filter id="s4aSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="83" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="s4aHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="s4aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .s4aH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s4aL { font: 600 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s4aS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .s4aB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .s4aV { font: 800 16px Inter, sans-serif; fill: #4F1521; }
+          .s4aW { font: 800 12px Inter, sans-serif; fill: #FFFFFF; }
+          .s4aA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .05em; }
+          .s4aN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="s4aH" x="30" y="26">FOUR EQUAL BANDS, AND WHO IS IN EACH</text>
+        <text class="s4aS" x="300" y="26">the median employer across 11,315 filings for 2024 · each band is a quarter of the staff, by hourly pay</text>
+
+        <g filter="url(#s4aSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- four bands, 500 wide, white; women's share in wine from the left -->
+          <rect x="200" y="60" width="500" height="40" rx="4" transform="rotate(-0.3 450 80)" fill="#FFFFFF"/>
+          <rect x="200" y="110" width="500" height="40" rx="4" transform="rotate(0.3 450 130)" fill="#FFFFFF"/>
+          <rect x="200" y="160" width="500" height="40" rx="4" transform="rotate(-0.3 450 180)" fill="#FFFFFF"/>
+          <rect x="200" y="210" width="500" height="40" rx="4" transform="rotate(0.2 450 230)" fill="#FFFFFF"/>
+          <rect x="201" y="61" width="200" height="38" rx="3" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="201" y="111" width="235" height="38" rx="3" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="201" y="161" width="263" height="38" rx="3" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="201" y="211" width="280" height="38" rx="3" fill="#7A2334" stroke="#7A2334"/>
+          <!-- the pay ladder: two rails, four rungs -->
+          <path d="M160 254 L160 58 M180 254 L180 58" stroke="#3D6B2E" stroke-width="2.5"/>
+          <path d="M160 80 L180 80 M160 130 L180 130 M160 180 L180 180 M160 230 L180 230" stroke="#3D6B2E" stroke-width="2.5"/>
+          <path d="M170 56 L170 44" stroke="#3D6B2E" stroke-width="2.5" marker-end="url(#s4aAr)"/>
+          <!-- side panel -->
+          <rect x="720" y="56" width="130" height="196" rx="10" transform="rotate(0.5 785 154)" fill="#E9F1E4" stroke="#3D6B2E"/>
+        </g>
+
+        <text class="s4aL" x="30" y="78">top quartile</text>
+        <text class="s4aS" x="30" y="93">best paid quarter</text>
+        <text class="s4aL" x="30" y="128">upper middle</text>
+        <text class="s4aL" x="30" y="178">lower middle</text>
+        <text class="s4aL" x="30" y="228">bottom quartile</text>
+        <text class="s4aS" x="30" y="243">lowest paid quarter</text>
+
+        <text class="s4aW" x="301" y="85" text-anchor="middle">40.0% women</text>
+        <text class="s4aS" x="551" y="85" text-anchor="middle">60.0% men</text>
+        <text class="s4aW" x="318" y="135" text-anchor="middle">47.0% women</text>
+        <text class="s4aS" x="568" y="135" text-anchor="middle">53.0% men</text>
+        <text class="s4aW" x="332" y="185" text-anchor="middle">52.7% women</text>
+        <text class="s4aS" x="582" y="185" text-anchor="middle">47.3% men</text>
+        <text class="s4aW" x="341" y="235" text-anchor="middle">56.0% women</text>
+        <text class="s4aS" x="591" y="235" text-anchor="middle">44.0% men</text>
+
+        <text class="s4aA" x="200" y="50">HIGHER PAY</text>
+        <text class="s4aA" x="200" y="268">LOWER PAY</text>
+
+        <text class="s4aH" x="734" y="82">THE PYRAMID</text>
+        <text class="s4aB" x="734" y="108">81.3 percent of</text>
+        <text class="s4aB" x="734" y="124">employers have</text>
+        <text class="s4aB" x="734" y="140">more women at</text>
+        <text class="s4aB" x="734" y="156">the bottom than</text>
+        <text class="s4aB" x="734" y="172">at the top</text>
+        <text class="s4aS" x="734" y="200">median employer,</text>
+        <text class="s4aS" x="734" y="214">2024 filings, UK,</text>
+        <text class="s4aS" x="734" y="228">250+ employees</text>
+
+        <text class="s4aN" x="30" y="292">Equal pay inside every band would still leave a gap here, because the wine share shrinks as the ladder rises.</text>
+        <text class="s4aN" x="30" y="308">That is a pay gap made of composition, and it is the shape 81.3 percent of filings have.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the wine share narrows as the ladder rises; the gap that shape produces exists before anyone is paid unequally</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The six figures, and what each one's base is<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The Equality Act 2010 (Gender Pay Gap Information) Regulations 2017, SI 2017/172, require every employer with 250 or more employees to publish six figures each year, on a snapshot date of 5 April for private employers, within twelve months. All six are about hourly pay or bonus, and all six are averages across all men and all women, whatever their jobs.</p>
+        <p><strong>1 and 2: the mean and the median hourly pay gap,</strong> as a percent of men's pay. The median is the one to read first: it is the middle woman against the middle man, and it is not pulled by a handful of very high earners the way the mean is. <strong>3 and 4: the mean and the median bonus gap,</strong> on the same logic, over the year before the snapshot; 75.8 percent of 2024 filings report a median bonus gap, the rest pay no bonus to one sex or either. <strong>5: the share of each sex who received a bonus.</strong> <strong>6: the share of each sex in four equal-sized hourly pay quartiles,</strong> which is the pyramid in the figure, and the one figure that shows where a gap comes from rather than how big it is.</p>
+        <p><strong>Every one of the six is a statistic about averages across roles.</strong> None of them compares a woman and a man in the same job. That comparison is equal pay, it is a legal duty, and a filing cannot show whether it is met. What the filing can show is how the workforce is shaped, and that turns out to be most of the story.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>What 11,315 filings show: 8.4, 77.6 and the pyramid<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>For reporting year 2024, 11,315 employers filed; 11,312 of the filings are complete and in range, and 11,301 have at least one man and one woman across the four bands, which is what it takes for a gap to be decomposable. Across them, <strong>the median hourly gap has a median of 8.4 percent</strong> (2023: 8.9). <strong>77.6 percent of employers report a positive median gap,</strong> men paid more; <strong>8.5 percent report exactly zero.</strong> The mean gap's median is 11.0.</p>
+        <p>The pyramid at the median employer runs <strong>56.0 percent women in the bottom band, 52.7 in the lower middle, 47.0 in the upper middle, 40.0 in the top,</strong> and <strong>81.3 percent of employers have a higher share of women at the bottom than at the top.</strong> That single fact is the reason the median gap is positive at most employers: it does not require any woman to be paid less than a man in the same band. It requires the bands to be paid differently, which is what bands are, and the sexes to be unevenly spread across them, which they are at four filings in five.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The headline and the correction.</strong> A pay gap figure is published, a news story calls it "paying women less", and the employer's reply says pay is equal for equal work. Both can be true. The headline reads a gap as unequal pay; the reply answers the equal pay question the filing cannot address. The pyramid is the sentence that ends the argument: "our gap is X, and here is the share of women in each of our four pay bands". Constructed exchange; the confusion is in most coverage of every filing year.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers composition and within-band pay</span>
+      <h2>Two mechanisms make any gap</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">Any pay gap is the sum of two things. Composition: women and men are spread differently across pay bands, and the bands pay differently, so the averages differ even with equal pay in every band. Within-band pay: inside a band, women and men are paid differently. The filing shows the first mechanism directly, through the four bands. It cannot see the second at all. Most of what a company can honestly say about its gap follows from keeping those two apart.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 316" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two hand-drawn panels. Left, composition: four pay bands with the women's share shrinking upward and a fitted pay ladder beside them reading 1.00, 1.20, 1.45 and 2.80; the caption says equal pay in every band still gives a composition-only gap with a median of 9.8 percent. Right, within a band: a single band containing a man and a woman at different pay heights; the caption says the residual, reported gap minus composition-only gap, has a median of 2.3 points. A plus sign joins the panels.">
+        <defs>
+          <filter id="s4bSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="89" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="s4bHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="s4bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .s4bH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s4bL { font: 600 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s4bS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .s4bB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .s4bV { font: 800 16px Inter, sans-serif; fill: #4F1521; }
+          .s4bT { font: 800 22px Inter, sans-serif; fill: #4F1521; }
+          .s4bA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .05em; }
+          .s4bN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="s4bH" x="30" y="26">COMPOSITION PLUS WITHIN-BAND PAY</text>
+        <text class="s4bS" x="290" y="26">the filing shows the left panel and cannot see the right one · 11,301 usable filings, 2024</text>
+
+        <g filter="url(#s4bSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- left panel -->
+          <rect x="30" y="50" width="400" height="222" rx="10" transform="rotate(-0.3 230 161)" fill="#FFFFFF"/>
+          <!-- mini pyramid: bands 200 wide at x=60, women's share in wine -->
+          <rect x="60" y="90" width="200" height="30" rx="3" fill="#F9EEF0"/>
+          <rect x="60" y="130" width="200" height="30" rx="3" fill="#F9EEF0"/>
+          <rect x="60" y="170" width="200" height="30" rx="3" fill="#F9EEF0"/>
+          <rect x="60" y="210" width="200" height="30" rx="3" fill="#F9EEF0"/>
+          <rect x="61" y="91" width="80" height="28" rx="2" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="61" y="131" width="94" height="28" rx="2" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="61" y="171" width="105" height="28" rx="2" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="61" y="211" width="112" height="28" rx="2" fill="#7A2334" stroke="#7A2334"/>
+          <!-- the fitted ladder as a rising arrow -->
+          <path d="M290 236 L290 84" stroke="#3D6B2E" stroke-width="2.5" marker-end="url(#s4bAr)"/>
+          <!-- right panel -->
+          <rect x="470" y="50" width="380" height="222" rx="10" transform="rotate(0.3 660 161)" fill="#FFFFFF"/>
+          <!-- one band, with a pay axis inside -->
+          <rect x="500" y="96" width="300" height="120" rx="6" fill="#F9EEF0"/>
+          <path d="M516 206 L516 110" stroke="#3D6B2E" stroke-width="2.5" marker-end="url(#s4bAr)"/>
+          <!-- a man higher, a woman lower, in the same band -->
+          <circle cx="610" cy="126" r="7"/>
+          <path d="M610 133 L610 148 M610 138 L603 144 M610 138 L617 144 M610 148 L605 156 M610 148 L615 156"/>
+          <circle cx="720" cy="158" r="7" stroke="#7A2334"/>
+          <path d="M720 165 L720 180 M720 170 L713 176 M720 170 L727 176 M720 180 L715 188 M720 180 L725 188" stroke="#7A2334"/>
+          <path d="M540 126 L596 126 M540 158 L706 158" stroke="#DCC9CD" stroke-dasharray="3 3"/>
+        </g>
+
+        <text class="s4bH" x="46" y="76">COMPOSITION</text>
+        <text class="s4bS" x="150" y="76">the pyramid times the ladder</text>
+        <text class="s4bS" x="66" y="110">top</text>
+        <text class="s4bS" x="66" y="230">bottom</text>
+        <text class="s4bL" x="300" y="110">2.80</text>
+        <text class="s4bL" x="300" y="150">1.45</text>
+        <text class="s4bL" x="300" y="190">1.20</text>
+        <text class="s4bL" x="300" y="230">1.00</text>
+        <text class="s4bS" x="336" y="110">fitted pay</text>
+        <text class="s4bS" x="336" y="124">ladder, all</text>
+        <text class="s4bS" x="336" y="138">employers</text>
+        <text class="s4bB" x="46" y="260">equal pay in every band still gives 9.8 (median)</text>
+
+        <text class="s4bT" x="450" y="170" text-anchor="middle">+</text>
+
+        <text class="s4bH" x="486" y="76">WITHIN A BAND</text>
+        <text class="s4bS" x="600" y="76">what the filing cannot see</text>
+        <text class="s4bA" x="524" y="112">PAY</text>
+        <text class="s4bS" x="628" y="130">a man, same band</text>
+        <text class="s4bS" x="628" y="176">a woman, same band, paid less</text>
+        <text class="s4bB" x="486" y="260">the residual: reported minus composition, 2.3 (median)</text>
+
+        <text class="s4bN" x="30" y="296">The three numbers are medians over 11,301 employers and do not add; the reported mean gap's median is 11.0.</text>
+        <text class="s4bN" x="30" y="312">33.8 percent of employers report a gap below their composition-only gap: their within-band pay runs the other way.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the left panel is the part a company can read off its own filing; the right panel is the part it has to go and measure</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Composition: the pyramid times the ladder<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Take the median employer's pyramid, 56.0 / 52.7 / 47.0 / 40.0, and suppose every band pays the same to everyone in it. The women's average is still lower than the men's, because more of the women are in the lower-paid bands. How much lower depends on how steeply pay rises up the bands. Nobody publishes band pay, so the deep-dive track fits a ladder across all usable employers from the gaps they reported: <strong>1 / 1.20 / 1.45 / 2.80,</strong> meaning the top band pays about 2.8 times the bottom at a typical filer. Under that ladder, composition alone explains about a third of the variation in reported mean gaps across employers (R2 0.353), and <strong>the composition-only gap has a median of 9.8 percent</strong> against a reported mean-gap median of 11.0.</p>
+        <p>The plain reading: <strong>at a typical UK filer, most of the reported gap is the pyramid.</strong> That is not a defence and it is not an accusation. It says where the gap is: in who holds which band, not in what the band pays. It also says where a plan has to act if it wants the number to move, which is Part 3.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Within a band: what the filing cannot see<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Subtract the composition-only gap from the reported gap and what is left is the residual: pay differences inside bands, plus whatever the fitted ladder gets wrong for that employer. Its median is 2.3 points, with a wide spread, and <strong>33.8 percent of employers report a gap below their composition-only gap,</strong> which means within-band pay at those employers runs in women's favour, or their own ladder is flatter than the fitted one. The filing cannot tell those apart. It knows nothing about pay within a band, nothing about hours, occupation, tenure or part-time status, and nothing causal.</p>
+        <p>Measuring within-band pay properly needs the salary table and a regression: pay on grade, tenure and sex, with the method that splits a gap into "explained by measured differences" and "not explained", named Oaxaca-Blinder after the two 1973 papers. Deep-dive session 6 does it on constructed Apex salaries, with the warning that "explained" is not the same as "justified".</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The plan that fixed the wrong mechanism.</strong> An employer with a reported gap near the median commissions an equal pay audit, finds pay within grades close to equal, and announces the gap is "explained". Explained by what? By the pyramid: the audit checked the right panel and found little, and the left panel, where most of the gap sits, was never in scope. The gap will be the same next year, and the audit will be quoted again. Constructed employer; the scope error is common.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-3">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers the anti-lever and the national figure</span>
+      <h2>"Hire more women" is not a lever until you say where</h2>
+      <span class="tag concept">3 min live</span>
+    </div>
+    <p class="lede">If the gap is mostly the pyramid, the way to move it is to change the pyramid. The obvious plan is to hire more women. Take the median employer's profile, keep the fitted ladder and equal pay within every band, and add women equal to 10 percent of headcount. Put them in the bottom band and the composition-only gap goes from 9.57 to 14.88 percent. Put them in the top band and it goes to -3.18. Same plan, same headcount, opposite signs. The lever is not "more women"; it is "more women where".</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 314" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn pyramid of the median employer's four bands in the centre, with two arrows. The left arrow adds women equal to 10 percent of headcount into the bottom band and the composition-only gap moves from 9.57 to 14.88 percent, wider. The right arrow adds the same women into the top band and the gap moves from 9.57 to minus 3.18 percent. A note says this is modelled: the fitted ladder, equal pay within a band, nothing else changed.">
+        <defs>
+          <filter id="s4cSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="97" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="s4cHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="s4cAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .s4cH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s4cL { font: 600 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s4cS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .s4cB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .s4cV { font: 800 16px Inter, sans-serif; fill: #4F1521; }
+          .s4cT { font: 800 20px Inter, sans-serif; fill: #4F1521; }
+          .s4cM { font: 800 20px Inter, sans-serif; fill: #2B4D20; }
+          .s4cN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="s4cH" x="30" y="26">THE SAME LEVER, PULLED IN TWO PLACES</text>
+        <text class="s4cS" x="300" y="26">median employer's profile, 2024 · add women = 10 percent of headcount · modelled</text>
+
+        <g filter="url(#s4cSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- centre pyramid, bands 200 wide at x=340 -->
+          <rect x="340" y="80" width="200" height="30" rx="3" fill="#FFFFFF"/>
+          <rect x="340" y="120" width="200" height="30" rx="3" fill="#FFFFFF"/>
+          <rect x="340" y="160" width="200" height="30" rx="3" fill="#FFFFFF"/>
+          <rect x="340" y="200" width="200" height="30" rx="3" fill="#FFFFFF"/>
+          <rect x="341" y="81" width="80" height="28" rx="2" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="341" y="121" width="94" height="28" rx="2" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="341" y="161" width="105" height="28" rx="2" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="341" y="201" width="112" height="28" rx="2" fill="#7A2334" stroke="#7A2334"/>
+          <!-- left card: into the bottom -->
+          <rect x="40" y="70" width="260" height="170" rx="10" transform="rotate(-0.5 170 155)" fill="#F9EEF0"/>
+          <path d="M300 215 L334 215" stroke="#7A2334" stroke-width="3" marker-end="url(#s4cAr)"/>
+          <!-- right card: into the top -->
+          <rect x="580" y="70" width="260" height="170" rx="10" transform="rotate(0.5 710 155)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <path d="M580 95 L546 95" stroke="#3D6B2E" stroke-width="3" marker-end="url(#s4cAr)"/>
+          <!-- a pair of scales, top right -->
+          <path d="M826 30 L826 60 M812 60 L840 60 M804 38 L848 38"/>
+          <path d="M804 38 L798 50 L810 50 Z M848 38 L842 50 L854 50 Z" fill="#FFFFFF"/>
+        </g>
+
+        <text class="s4cS" x="346" y="72">top band</text>
+        <text class="s4cS" x="500" y="252">bottom band</text>
+        <text class="s4cL" x="440" y="270" text-anchor="middle">now: 9.57</text>
+
+        <text class="s4cH" x="56" y="96">INTO THE BOTTOM BAND</text>
+        <text class="s4cS" x="56" y="118">the new women join the lowest-paid quarter</text>
+        <text class="s4cT" x="56" y="154">9.57 to 14.88</text>
+        <text class="s4cB" x="56" y="182">wider by 5.3 points</text>
+        <text class="s4cS" x="56" y="204">more women, and a bigger gap to explain</text>
+        <text class="s4cS" x="56" y="220">at the next filing</text>
+
+        <text class="s4cH" x="596" y="96">INTO THE TOP BAND</text>
+        <text class="s4cS" x="596" y="118">the new women join the best-paid quarter</text>
+        <text class="s4cM" x="596" y="154">9.57 to -3.18</text>
+        <text class="s4cB" x="596" y="182">the sign flips</text>
+        <text class="s4cS" x="596" y="204">same headcount, same ladder,</text>
+        <text class="s4cS" x="596" y="220">same equal pay within bands</text>
+
+        <text class="s4cN" x="30" y="294">Modelled on the median profile under the fitted ladder with equal pay within every band; nothing else moves.</text>
+        <text class="s4cN" x="30" y="310">The deep-dive bench lets you pull both arrows on 3,000 real employers, including yours if it filed.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the wine card is the plan most companies run; the moss card is the same headcount in a different band, and the gap changes sign</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Where the lever is<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A gap made of composition moves when the composition moves, and composition is who is in which band. <strong>Adding people to the bottom band adds to the pyramid; adding them to the top band subtracts from it.</strong> A hiring plan that brings in women mostly at entry level, which is where most hiring happens, makes the reported gap wider at the next filing while the company is doing what it said it would. The plan is not wrong. The metric is measuring composition, and composition just got more pyramid-shaped.</p>
+        <p>The honest sentence for a plan is therefore about bands, not headcount: "we intend to change the share of women in the top band from 40.0 to X", with the date. Promotion into the band and hiring into the band both count; hiring into the bottom band counts the other way.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The anti-lever, modelled: 9.57 to 14.88, or to -3.18<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The arithmetic is modelled, and every assumption is on the figure: the median employer's band profile from the 2024 filings, the fitted ladder 1 / 1.20 / 1.45 / 2.80, equal pay within every band, and women added equal to 10 percent of headcount with nothing else changing. Under those assumptions the composition-only gap starts at <strong>9.57 percent</strong>. Put the added women in the bottom band and it becomes <strong>14.88</strong>. Put them in the top band and it becomes <strong>-3.18</strong>, a gap in women's favour.</p>
+        <p>None of that is a forecast for any real employer, whose ladder is steeper or flatter than the fit and whose within-band pay is unknown. It is a demonstration that the sign of the effect depends on the band, which is true under any ladder that rises. Deep-dive session 10 runs the same two arrows on a 3,000-employer sample of the real filings, live, where the numbers come out as 9.79, 15.07 and -2.92 on the sample's own profile.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The national figure, 7.0 and 13.1, and why it is a different animal<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The Office for National Statistics publishes the UK gender pay gap from the Annual Survey of Hours and Earnings: for April 2024, <strong>7.0 percent for full-time employees and 13.1 percent for all employees</strong> (2023: 7.5 and 14.2). It is tempting to hold 8.4 beside 7.0 and conclude that the median filer is slightly worse than the country. The two numbers are not comparable. The ONS figure is the median hourly earnings of all women in the economy against all men, one calculation across everyone. The 8.4 is the median of 11,315 employer-level medians, each computed inside one workforce. An economy where every employer had a zero gap could still have a national gap, if women worked at lower-paying employers; and the reverse. The two numbers answer different questions and both are worth knowing. Write which one a slide is quoting.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Goldin on hours: what is left when composition is accounted for<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Goldin 2014, "A Grand Gender Convergence: Its Last Chapter", American Economic Review 104(4) 1091-1119, argues that most of the historical gap has closed and that the remaining gap is driven by occupations that reward long and particular hours disproportionately: jobs where being available at specific times, and for many of them, is paid at a premium rather than pro rata. That is a statement about the structure of pay across occupations, not about any employer's filing, and it is one explanation for why the top band of the pyramid looks the way it does at so many employers. The filing cannot see hours or occupation, so it cannot test this; a company that wants to know whether its own top band is shaped by hours has to go and look.</p>
+      </div>
+    </details>
+
+    <div class="tryrow" data-fn="wordcount" data-multiline="1" data-title="Which band does your plan touch?" data-hint="For a diversity hiring or promotion plan you know: which pay band will most of the people it brings in land in, and which way does that move a composition gap? Three lines." data-seed="" data-cta="Count it"></div>
+  </section>
+
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>Reading one filing's six numbers, on paper</h2>
+      <span class="tag demo">★ 22 min · everyone works it through</span>
+    </div>
+    <p class="lede">Six worksheet steps that take a published filing and turn it into three sentences: what the gap is, what the pyramid looks like, and which band a plan would have to change. The worked example is the median employer, a composite built from the 2024 filings, not a real firm; for the bonus figures no composite is claimed, so those boxes stay blank until you fill them from a filing of your own. Any employer's filing from the gov.uk service works for the exercise, and no page here names one.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 336" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn filing form with six boxes for the median employer, a composite of the 2024 filings. Mean hourly gap 11.0 percent; median hourly gap 8.4 percent, with 77.6 percent of employers positive and 8.5 percent zero; mean bonus gap and median bonus gap left blank, with a note that 75.8 percent of employers report one; share receiving a bonus left blank; and the four quartiles, drawn in moss as the box to read first, with women's share 56.0, 52.7, 47.0 and 40.0 from bottom to top.">
+        <defs>
+          <filter id="s4dSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="101" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="s4dHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="s4dAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .s4dH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s4dL { font: 600 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s4dS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .s4dB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .s4dV { font: 800 18px Inter, sans-serif; fill: #4F1521; }
+          .s4dN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="s4dH" x="30" y="26">THE FILING, SIX BOXES</text>
+        <text class="s4dS" x="200" y="26">the median employer, a composite of 11,315 filings for 2024, not a real firm · snapshot 5 April</text>
+
+        <g filter="url(#s4dSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- the form -->
+          <rect x="40" y="46" width="800" height="250" rx="10" transform="rotate(0.2 440 171)" fill="#FFFFFF"/>
+          <!-- six boxes, 3 x 2 -->
+          <rect x="60" y="90" width="240" height="84" rx="6" transform="rotate(-0.5 180 132)" fill="#F9EEF0"/>
+          <rect x="320" y="90" width="240" height="84" rx="6" transform="rotate(0.4 440 132)" fill="#F9EEF0"/>
+          <rect x="580" y="90" width="240" height="84" rx="6" transform="rotate(-0.4 700 132)" fill="#FFFFFF" stroke-dasharray="5 4"/>
+          <rect x="60" y="190" width="240" height="84" rx="6" transform="rotate(0.5 180 232)" fill="#FFFFFF" stroke-dasharray="5 4"/>
+          <rect x="320" y="190" width="240" height="84" rx="6" transform="rotate(-0.4 440 232)" fill="#FFFFFF" stroke-dasharray="5 4"/>
+          <rect x="580" y="190" width="240" height="84" rx="6" transform="rotate(0.4 700 232)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <!-- a pen doodle, top right of the form -->
+          <path d="M790 54 L820 84 M786 58 L816 88 M790 54 L786 58 M820 84 L816 88 M816 88 L826 96 L820 84" stroke="#7A2334"/>
+        </g>
+
+        <text class="s4dH" x="60" y="74">GENDER PAY GAP REPORT · reporting year 2024</text>
+        <text class="s4dS" x="360" y="74">boxes 3, 4 and 5: no composite claimed, fill from a filing of your own</text>
+
+        <text class="s4dS" x="72" y="110">1 · mean hourly pay gap</text>
+        <text class="s4dV" x="72" y="140">11.0%</text>
+        <text class="s4dS" x="72" y="162">median across employers · 85.9% positive</text>
+        <text class="s4dS" x="332" y="110">2 · median hourly pay gap</text>
+        <text class="s4dV" x="332" y="140">8.4%</text>
+        <text class="s4dS" x="332" y="162">77.6% of employers positive · 8.5% zero</text>
+        <text class="s4dS" x="592" y="110">3 · mean bonus gap</text>
+        <text class="s4dV" x="592" y="140">____ %</text>
+        <text class="s4dS" x="592" y="162">75.8% of employers report a bonus gap</text>
+        <text class="s4dS" x="72" y="210">4 · median bonus gap</text>
+        <text class="s4dV" x="72" y="240">____ %</text>
+        <text class="s4dS" x="72" y="262">year before the snapshot</text>
+        <text class="s4dS" x="332" y="210">5 · share receiving a bonus</text>
+        <text class="s4dV" x="332" y="240">W ____ %  M ____ %</text>
+        <text class="s4dS" x="332" y="262">one share per sex</text>
+        <text class="s4dB" x="592" y="210">6 · women's share by quartile</text>
+        <text class="s4dV" x="592" y="240">56.0 / 52.7 / 47.0 / 40.0</text>
+        <text class="s4dB" x="592" y="262">bottom to top · read this box first</text>
+
+        <text class="s4dN" x="30" y="316">Boxes 1 and 2 say how big. Box 6 says where. A filing read from box 6 upward is a filing read correctly.</text>
+        <text class="s4dN" x="30" y="332">Every value here is a median across employers; a real filing has one employer's six numbers and nothing else.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the moss box is the one that shows where the gap comes from; the two on the left only say how big it is</figcaption>
+    </figure>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Step 1 · Write the two hourly gaps, with their bases.</strong> Both are percents of men's hourly pay on the snapshot date. Read the median first. Composite: 11.0 and 8.4.</p>
+        <div class="prompt-box good"><span class="label">★ Step 1 · boxes 1 and 2</span>mean hourly gap:     11.0 percent   (median employer, composite, 2024)
+median hourly gap:    8.4 percent   (77.6 percent of employers positive, 8.5 percent zero)
+yours:               ____ and ____   snapshot date: 5 April ____</div>
+      </div>
+      <div class="step">
+        <p><strong>Step 2 · Write the three bonus figures, if there are any.</strong> Mean bonus gap, median bonus gap, and the share of each sex receiving one. 75.8 percent of 2024 filings report a median bonus gap; if yours does not, write why (no bonus to one sex, or to either).</p>
+        <div class="prompt-box good"><span class="label">★ Step 2 · boxes 3, 4 and 5</span>mean bonus gap:      ____ percent      median bonus gap:  ____ percent
+share with a bonus:  women ____ percent   men ____ percent
+if blank, because:   __________________________________________</div>
+      </div>
+      <div class="step">
+        <p><strong>Step 3 · Draw the pyramid.</strong> Women's share in each of the four quartiles, bottom to top. Then one comparison: bottom against top. Composite: 56.0 / 52.7 / 47.0 / 40.0; bottom over top at 81.3 percent of employers.</p>
+        <div class="prompt-box good"><span class="label">★ Step 3 · box 6, the pyramid</span>bottom quartile:   56.0 percent women    (composite)
+lower middle:      52.7
+upper middle:      47.0
+top quartile:      40.0
+yours:             ____  ____  ____  ____     bottom higher than top?  yes / no</div>
+      </div>
+      <div class="step">
+        <p><strong>Step 4 · Name the mechanism the filing can see.</strong> If the bottom share is higher than the top share, composition is producing a gap on its own. Write that sentence. Then write the one the filing cannot answer: whether pay within a band is equal.</p>
+        <div class="prompt-box good"><span class="label">★ Step 4 · composition, and the question left open</span>the filing shows:   more women in lower bands than higher ones, so the bands' pay
+                    differences alone produce a gap    (composite: composition-only median 9.8)
+the filing cannot:  say whether a woman and a man in the same band are paid the same
+that needs:         the salary table and a within-band comparison (deep-dive session 6)</div>
+      </div>
+      <div class="step">
+        <p><strong>Step 5 · Which band would a plan change.</strong> Take the plan the company actually has, and write which band most of the people it adds will land in. Then write the direction that moves a composition gap.</p>
+        <div class="prompt-box good"><span class="label">★ Step 5 · the lever, and where it points</span>the plan:            _____________________________________________
+most people land in: bottom / lower middle / upper middle / top
+that moves the gap:  wider (bottom) / narrower (top)
+composite, modelled: +10 percent headcount of women at the bottom, 9.57 to 14.88; at the top, 9.57 to -3.18</div>
+      </div>
+      <div class="step">
+        <p><strong>Step 6 · The three sentences.</strong> How big, where from, and what would move it. Each sentence names its base; the third names a band and a date. No sentence says why.</p>
+        <div class="prompt-box good"><span class="label">★ Step 6 · three sentences</span>"Our median hourly gap is 8.4 percent, at the 5 April 2024 snapshot (men paid more).
+ Women are 56.0 percent of our bottom pay quartile and 40.0 percent of our top one, so the
+ shape of the workforce produces a gap before pay within any band is considered.
+ To move the reported figure we would change the share of women in the top quartile,
+ from 40.0 to ____ by ____; hiring into the bottom quartile moves it the other way."</div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Read box 6 first.</strong> The two hourly gaps say how big; the four quartiles say where. A pay gap statement that quotes the headline and skips the pyramid has reported the size of something without saying what it is made of, and the plan that follows will pull the lever in whichever direction is easiest to hire.</p>
+    </div>
+  </section>
+
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before Foundations session 5</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li><strong>Read one real filing</strong> from the gov.uk gender pay gap service, an employer you know if it has 250 or more staff, and fill the six boxes. Write the pyramid and whether the bottom share is above the top.</li>
+      <li><strong>Write the two sentences</strong> that filing supports, how big and where from, and the one question it cannot answer.</li>
+      <li><strong>Find the plan.</strong> If the employer publishes a narrative beside its numbers, write which band its stated actions would change, and which direction that moves a composition gap.</li>
+      <li><strong>Bring the filing.</strong> Foundations session 5 turns to the other number leadership loves, the engagement score, and asks the base question in its survey form: who answered, and who did not.</li>
+    </ol>
+  </section>
+
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+    <p>Clear all three and Foundations session 4 gets stamped in your passport.</p>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · An employer reports a median hourly pay gap of 8.4 percent. A news story says it "pays women 8.4 percent less for the same work". What is wrong with the story?</p>
+      <button class="qopt" type="button">A · Nothing; a pay gap is a measure of unequal pay</button>
+      <button class="qopt" type="button">B · It should have quoted the mean gap, which is the legal measure</button>
+      <button class="qopt" type="button">C · The filing compares the average hourly pay of all women with all men whatever their jobs; it says nothing about pay for the same work, which is equal pay, a separate legal duty the filing cannot test; an employer with equal pay in every band can still report 8.4 if more of its women are in lower-paid bands</button>
+      <button class="qopt" type="button">D · 8.4 is below the national figure of 13.1, so there is no gap to report</button>
+      <p class="qwhy">A gap is a statistic about averages across roles; equal pay is about the same role. The four quartiles are what show whether the gap is coming from the shape of the workforce, and 81.3 percent of filers have a pyramid that produces one.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · The median employer's women's share by quartile is 56.0 / 52.7 / 47.0 / 40.0, bottom to top. Suppose every band paid everyone in it identically. Would the employer report a gap?</p>
+      <button class="qopt" type="button">A · Yes: with more women in lower-paid bands, the women's average is below the men's even with equal pay inside every band; that is composition, it has a median of 9.8 percent across usable filers under the fitted ladder, and it is most of a typical reported gap</button>
+      <button class="qopt" type="button">B · No: equal pay within bands means a zero gap by definition</button>
+      <button class="qopt" type="button">C · No: the quartiles are equal-sized, so they cancel</button>
+      <button class="qopt" type="button">D · Only in the mean, never in the median</button>
+      <p class="qwhy">The pyramid times the ladder is a gap on its own. The residual, what is left after composition, has a median of 2.3 points, and 33.8 percent of employers report a gap below their composition-only figure.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · A plan adds women equal to 10 percent of headcount, mostly at entry level. On the median profile under the fitted ladder, what happens to the composition-only gap, and what should the plan say instead?</p>
+      <button class="qopt" type="button">A · It narrows from 9.57 to -3.18, because there are more women overall</button>
+      <button class="qopt" type="button">B · It widens from 9.57 to 14.88, because entry level is the bottom band and adding to the bottom makes the pyramid steeper; the same headcount added to the top band would take it to -3.18, so the plan should name the band and the target share, not the headcount</button>
+      <button class="qopt" type="button">C · It stays at 9.57, because within-band pay is unchanged</button>
+      <button class="qopt" type="button">D · It cannot be modelled without the salary table</button>
+      <p class="qwhy">Modelled, with every assumption stated: same ladder, equal pay within bands, nothing else moves. The sign depends on the band. "Hire more women" is not a lever; "hire more women where" is.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What this session teaches, and where it came from</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Equality Act 2010 (Gender Pay Gap Information) Regulations 2017, SI 2017/172: 250 or more employees, six measures, four equal quartiles, 5 April snapshot, publish within 12 months</span><span class="note">Primary; the SI was read</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">gov.uk gender pay gap service CSV for 2024, Open Government Licence v3.0: 11,315 filings, 11,312 complete, 11,301 usable; median gap 8.4 (2023: 8.9), mean gap median 11.0; 77.6 percent positive, 8.5 percent zero; 75.8 percent report a bonus gap; pyramid 56.0 / 52.7 / 47.0 / 40.0; 81.3 percent bottom over top</span><span class="note">Computed from the filings for these pages</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Fitted ladder 1 / 1.20 / 1.45 / 2.80, R2 0.353; composition-only median 9.8; residual median 2.3; 33.8 percent below composition; anti-lever 9.57 to 14.88 (bottom) and -3.18 (top)</span><span class="note">Computed, then modelled under stated assumptions: equal pay within a band, women equal to 10 percent of headcount, nothing else moved</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">ONS ASHE April 2024: 7.0 percent full-time, 13.1 percent all employees (2023: 7.5 and 14.2)</span><span class="note">Primary; whole-economy medians, not comparable with per-employer medians, and the page says so</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Goldin 2014, "A Grand Gender Convergence: Its Last Chapter", American Economic Review 104(4) 1091-1119</span><span class="note">Primary; the remaining gap is driven by occupations that reward long and particular hours</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Oaxaca-Blinder decomposition, named as the regression version of composition against within-band pay</span><span class="note">Named here; taught on constructed salaries in deep-dive session 6</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Why any employer's gap exists</span><span class="note">Not claimed; the filing carries nothing on hours, occupation, tenure, part-time status or within-band pay, and nothing causal</span></div>
+    </div>
+    <p class="mono" style="margin-top:14px">Every fact on this page, and its verification tier, is recorded in the course's source map.</p>
+  </section>
+
+  <section class="cheat" id="cheatsheet">
+    <h3>Foundations session 4 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Gap is not equal pay</b><span>A gap averages across roles. Equal pay is the same role. A filing shows the first and cannot test the second.</span></div>
+      <div class="cheat-item"><b>Six figures, four bands</b><span>Mean and median hourly gap, mean and median bonus gap, bonus share by sex, and women's share in four equal pay quartiles.</span></div>
+      <div class="cheat-item"><b>2024 filings</b><span>11,315 filed. Median gap 8.4. 77.6 percent positive, 8.5 percent zero. Pyramid 56.0 / 52.7 / 47.0 / 40.0 at the median.</span></div>
+      <div class="cheat-item"><b>Two mechanisms</b><span>Composition (the pyramid times the ladder, median 9.8) plus within-band pay (residual median 2.3). Read box 6 first.</span></div>
+      <div class="cheat-item"><b>The anti-lever</b><span>Add 10 percent headcount of women at the bottom: 9.57 to 14.88. At the top: -3.18. Modelled. Name the band.</span></div>
+      <div class="cheat-item"><b>Not the national figure</b><span>ONS 7.0 full-time, 13.1 all employees (April 2024) is one economy-wide median; 8.4 is the median of employer medians.</span></div>
+    </div>
+  </section>
+
+  <div class="callout next">
+    <span class="nx-pill">Next session</span>
+    <p>You can read a filing from the pyramid upward and say which band a plan would have to change. Foundations session 5 takes the number that sits next to the pay gap on most leadership dashboards, the engagement score, and asks the same base question of it: a survey score is an average over the people who answered, so who answered, who did not, and what does a 3.8 on a five-point scale actually mean. Then the most quoted number in the field, Gallup's 23 percent engaged, with the edition it came from, and two claims about surveys that circulate without a source.</p>
+  </div>
+
+  <footer class="pagefoot">
+    <span>Foundations session 4 of 6 · learn-people-analytics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="a3-the-hiring-funnel.html">← Prev: The hiring funnel</a> &nbsp;·&nbsp; <a href="a5-surveys-as-evidence.html">Next: Surveys as evidence →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

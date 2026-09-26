@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Deep-dive session 4 of 10. A hiring funnel in pandas: five stages, four conversions with the base printed under each, and the one ratio in hiring that a regulation has an opinion about. The impact ratio computed stage by stage on a constructed funnel with an invented split by sex, the four-fifths rule of thumb from 29 CFR 1607.4(D), and what a New York City Local Law 144 bias audit publishes.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Funnel maths and adverse impact - learn people analytics with phoebe">
+<meta property="og:description" content="Deep-dive session 4 of 10. Conversions with their bases, the impact ratio stage by stage, and why an end-to-end 1.00 can hide a screen at 0.75.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/courses/p4-funnel-maths.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Funnel maths and adverse impact - learn people analytics with phoebe">
+<meta name="twitter:description" content="Deep-dive session 4 of 10. Five stages, four bases, and the impact ratio in pandas.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Deep-dive session 4 · Funnel maths and adverse impact - learn people analytics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-people-analytics-with-phoebe</a> / Deep-dive session 4 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn People Analytics with Phoebe · Deep-dive session 4 of 10</div>
+    <h1>Funnel maths and <span class="accent">adverse impact</span></h1>
+    <p class="sub">Three sessions on the people who leave; tonight the people who arrive. A hiring funnel is five counts and four ratios, and every ratio has a base that is the stage before it. Split any stage by a group the company records and each group gets its own selection rate, and the lower rate over the highest one is the impact ratio: the single number in hiring that a regulation has an opinion about. Apex's funnel is constructed, 400 applicants to 10 hires, with an invented split by sex. Computed stage by stage in pandas it produces a result worth the whole evening: two stages under the four-fifths rule of thumb, in opposite directions, and an end-to-end ratio of exactly 1.00 that hides both.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Core</span>
+      <span class="chip audience">HR analysts, talent acquisition teams, anyone who reports a funnel</span>
+      <span class="chip audience">Python, pandas</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-18 · Conversions, ratios, the audit</span>
+      <span class="a3" style="flex:5">18-40 · Build-along: the funnel in pandas</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we start</h2>
+    </div>
+    <p class="lede">Foundations session 3 worked the same funnel by hand: 400 applied, 120 were screened in, 40 interviewed, 12 offered, 10 hired. Every count is invented, and so is the split by sex, 240 men and 160 women at the top. Nobody in it is real. What is real is the arithmetic, and the arithmetic is what a people analyst is asked to defend when a recruiting update reaches a board, an auditor or a lawyer. Tonight it becomes a DataFrame, a function that takes a dictionary of groups, and a table of impact ratios with the base printed beside every one.</p>
+
+    <div class="legend">
+      <span class="pill">🎫 Clear all three quiz questions to stamp your passport</span>
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">★ Build-along = run the code yourself</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> A funnel table with a conversion and a yield column that name their different bases; selection rates by group at every stage with both counts printed; an <code>impact_ratios</code> function that works for two groups or twelve; the stage-by-stage table that shows why an end-to-end ratio is not an audit; and the one-person test that says how far to trust a ratio built on a handful of offers.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers conversion per stage and its base</span>
+      <h2>Five stages, four conversions, one base each</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">A funnel has two kinds of ratio and they divide by different things. The conversion at a stage divides by the stage before it: 40 interviewed of 120 screened in is 33.3 percent. The yield divides by the top: 40 interviewed of 400 applicants is 10.0 percent. Both are correct, both are called "conversion" in somebody's dashboard, and a number quoted without its base could be either. Print the base, and the ambiguity disappears.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 328" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn funnel of five stacked bands narrowing from top to bottom: applied 400, screened 120, interviewed 40, offered 12, hired 10. Arrows lead from each band to a panel of conversions, each printed with its base: 120 over 400 is 30.0 percent, 40 over 120 is 33.3, 12 over 40 is 30.0, 10 over 12 is 83.3. A second column gives the yield on the base of 400: 30.0, 10.0, 3.0 and 2.5 percent. The screen row is highlighted as the widest stage.">
+        <defs>
+          <filter id="d4aSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="131" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d4aHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d4aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d4aH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d4aL { font: 700 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d4aS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d4aB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d4aV { font: 800 14px Inter, sans-serif; fill: #4F1521; }
+          .d4aN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d4aH" x="30" y="26">FIVE COUNTS, FOUR CONVERSIONS, AND THE BASE UNDER EACH ONE</text>
+
+        <g filter="url(#d4aSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- the funnel: five bands -->
+          <rect x="40" y="50" width="380" height="36" rx="6" transform="rotate(-0.5 230 68)" fill="url(#d4aHc)"/>
+          <rect x="80" y="98" width="300" height="36" rx="6" transform="rotate(0.5 230 116)" fill="#F9EEF0"/>
+          <rect x="120" y="146" width="220" height="36" rx="6" transform="rotate(-0.4 230 164)" fill="#F9EEF0"/>
+          <rect x="155" y="194" width="150" height="36" rx="6" transform="rotate(0.6 230 212)" fill="#F9EEF0"/>
+          <rect x="175" y="242" width="110" height="36" rx="6" transform="rotate(-0.6 230 260)" fill="#FFFFFF"/>
+          <!-- funnel walls -->
+          <path d="M36 52 L170 292 M424 52 L290 292" stroke="#DCC9CD" stroke-width="1.6"/>
+          <!-- arrows to the panel -->
+          <path d="M388 117 L464 121" marker-end="url(#d4aAr)"/>
+          <path d="M348 165 L464 169" marker-end="url(#d4aAr)"/>
+          <path d="M313 213 L464 217" marker-end="url(#d4aAr)"/>
+          <path d="M293 261 L464 265" marker-end="url(#d4aAr)"/>
+          <!-- the panel -->
+          <rect x="470" y="50" width="380" height="242" rx="8" transform="rotate(0.3 660 171)" fill="#FFFFFF"/>
+          <path d="M482 86 L838 86" stroke="#DCC9CD"/>
+          <rect x="478" y="100" width="364" height="44" rx="6" fill="#E9F1E4" stroke="#3D6B2E"/>
+        </g>
+
+        <text class="d4aL" x="230" y="73" text-anchor="middle">APPLIED · 400</text>
+        <text class="d4aL" x="230" y="121" text-anchor="middle">SCREENED IN · 120</text>
+        <text class="d4aL" x="230" y="169" text-anchor="middle">INTERVIEWED · 40</text>
+        <text class="d4aL" x="230" y="217" text-anchor="middle">OFFERED · 12</text>
+        <text class="d4aL" x="230" y="265" text-anchor="middle">HIRED · 10</text>
+
+        <text class="d4aH" x="486" y="73">CONVERSION, BASE = STAGE BEFORE</text>
+        <text class="d4aH" x="740" y="73">YIELD, BASE 400</text>
+
+        <text class="d4aV" x="486" y="121">120 / 400 = 30.0%</text>
+        <text class="d4aB" x="486" y="137">screened in, of those who applied</text>
+        <text class="d4aV" x="770" y="121">30.0%</text>
+        <text class="d4aV" x="486" y="169">40 / 120 = 33.3%</text>
+        <text class="d4aS" x="486" y="185">interviewed, of those screened in</text>
+        <text class="d4aV" x="770" y="169">10.0%</text>
+        <text class="d4aV" x="486" y="217">12 / 40 = 30.0%</text>
+        <text class="d4aS" x="486" y="233">offered, of those interviewed</text>
+        <text class="d4aV" x="770" y="217">3.0%</text>
+        <text class="d4aV" x="486" y="265">10 / 12 = 83.3%</text>
+        <text class="d4aS" x="486" y="281">accepted, of those offered</text>
+        <text class="d4aV" x="770" y="265">2.5%</text>
+
+        <text class="d4aN" x="30" y="316">Constructed Apex funnel, invented. Every conversion names its base; every yield divides by the same 400.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the moss row is the widest stage, where the most people are decided fastest, and where Part 2 splits the base</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Conversion and yield: two ratios, two bases, one column name<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The conversions on Apex's funnel are 30.0, 33.3, 30.0 and 83.3 percent, and each divides by the stage above it. The yields are 30.0, 10.0, 3.0 and 2.5 percent, and each divides by the 400 applicants. The screen and the yield agree at the first stage by construction, which is how the two get confused: the first row of either column reads 30.0, and from the second row on they part company.</p>
+        <p>In pandas the difference is one method. The conversion is <code>total / total.shift(1)</code>, the stage before; the yield is <code>total / total.iloc[0]</code>, the top. Write both columns, and write the base as its own column beside the conversion, so that "33.3 percent" can never be read without "of 120" next to it. A reader who sees <strong>40 of 120</strong> knows the size of the number; a reader who sees 33.3 alone has to trust the analyst about which 33.3 it is.</p>
+        <p>The last conversion, 83.3 percent, is the one that flatters: 10 of 12 offers accepted sounds like a strong funnel. It is ten people. The first conversion, 120 of 400, is the one that decides: 280 people were turned away at the screen, more than at every later stage put together. When a funnel is judged, it is judged at its widest stage, and that is where Part 2 splits the base.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>A funnel is a cohort, and most funnel reports are not<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The five counts only divide cleanly if they are the same people moving through: the 120 screened in are 120 of the 400 who applied. A monthly recruiting report usually counts events in the month instead: 400 applications received in March, 12 offers made in March, some of them to people who applied in January. The ratio of those two counts is not a conversion of anybody; it is two flows from different cohorts divided by each other, and it moves when the hiring volume moves even if nothing about the process changed.</p>
+        <p>The fix is the event-log discipline from deep-dive session 1 applied to candidates: one row per candidate per stage with a date, then count each stage for the same application cohort. Apex's constructed funnel is a cohort by construction. A real one has to be built that way on purpose, and the six decisions at the top of the script gain a seventh: <strong>which cohort, defined by which date</strong>.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The funnel does not end at the hire.</strong> Hoffman, Kahn and Li 2018, "Discretion in Hiring", Quarterly Journal of Economics 133(2) 765-800, studied firms that introduced a job test to rank applicants for low-skill service jobs while managers could still hire against its recommendation. Test-based hiring raised completed tenure by about 25 percent (0.23 log points), and the hires managers made by overriding the test left sooner. The outcome they measured sits after the last stage of the funnel: how long the hire stayed. A funnel that stops counting at acceptance cannot see it, which is why deep-dive session 2's survival curve belongs on the same people as tonight's conversions.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers the impact ratio, stage by stage</span>
+      <h2>Lower rate over highest, at every stage</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">Split the screen by sex, with the invented counts: 80 of 240 men screened in, 33.3 percent; 40 of 160 women, 25.0 percent. The impact ratio is the lower group's selection rate over the highest group's: 25.0 over 33.3, which is 0.750. Now do it at every stage, on each stage's own base, and the funnel tells a story that neither its totals nor its end-to-end ratio can.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 356" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Five rows of hand-drawn paired bars, one light bar for men and one wine bar for women, showing the selection rate at each stage on that stage's own base, with an invented split. Screen: men 33.3 percent, 80 of 240; women 25.0, 40 of 160; impact ratio 0.750, women lower, under four-fifths. Interview: men 32.5, 26 of 80; women 35.0, 14 of 40; ratio 0.929, men lower. Offer: men 26.9, 7 of 26; women 35.7, 5 of 14; ratio 0.754, men lower, under four-fifths. Hire: men 85.7, 6 of 7; women 80.0, 4 of 5; ratio 0.933. End to end: both 2.5 percent, 6 of 240 and 4 of 160; ratio 1.000, which hides the two stages under four-fifths.">
+        <defs>
+          <filter id="d4bSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="137" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d4bHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d4bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d4bH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d4bL { font: 700 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d4bS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d4bB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d4bR { font: 800 11px Inter, sans-serif; fill: #7A2334; }
+          .d4bV { font: 800 16px Inter, sans-serif; fill: #4F1521; }
+          .d4bA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .05em; }
+          .d4bN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d4bH" x="30" y="26">SELECTION RATE BY SEX AT EACH STAGE, ON THAT STAGE'S OWN BASE</text>
+        <text class="d4bS" x="30" y="44">invented split · light bar = men, wine bar = women · 3px per point</text>
+        <text class="d4bA" x="640" y="44">IMPACT RATIO</text>
+
+        <g filter="url(#d4bSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- a pair of scales doodle -->
+          <path d="M810 28 L810 54 M798 54 L822 54 M786 32 L834 32"/>
+          <path d="M786 32 L778 46 M786 32 L794 46 M834 32 L826 46 M834 32 L842 46" stroke-width="1.4"/>
+          <path d="M776 46 Q786 56 796 46 M824 46 Q834 56 844 46" stroke="#7A2334"/>
+          <!-- row separators -->
+          <path d="M30 110 L850 110 M30 164 L850 164 M30 218 L850 218 M30 272 L850 272" stroke="#EADDE0" stroke-width="1.4"/>
+          <!-- screen: men 33.3, women 25.0 -->
+          <rect x="170" y="62" width="100" height="14" rx="3" transform="rotate(-0.4 220 69)" fill="#F9EEF0"/>
+          <rect x="170" y="82" width="75" height="14" rx="3" transform="rotate(0.4 207 89)" fill="#7A2334" stroke="#7A2334"/>
+          <!-- interview: men 32.5, women 35.0 -->
+          <rect x="170" y="116" width="98" height="14" rx="3" transform="rotate(0.4 219 123)" fill="#F9EEF0"/>
+          <rect x="170" y="136" width="105" height="14" rx="3" transform="rotate(-0.4 222 143)" fill="#7A2334" stroke="#7A2334"/>
+          <!-- offer: men 26.9, women 35.7 -->
+          <rect x="170" y="170" width="81" height="14" rx="3" transform="rotate(-0.5 210 177)" fill="#F9EEF0"/>
+          <rect x="170" y="190" width="107" height="14" rx="3" transform="rotate(0.4 223 197)" fill="#7A2334" stroke="#7A2334"/>
+          <!-- hire: men 85.7, women 80.0 -->
+          <rect x="170" y="224" width="257" height="14" rx="3" transform="rotate(0.3 298 231)" fill="#F9EEF0"/>
+          <rect x="170" y="244" width="240" height="14" rx="3" transform="rotate(-0.3 290 251)" fill="#7A2334" stroke="#7A2334"/>
+          <!-- end to end: both 2.5 -->
+          <rect x="170" y="278" width="8" height="14" rx="2" fill="#F9EEF0"/>
+          <rect x="170" y="298" width="8" height="14" rx="2" fill="#7A2334" stroke="#7A2334"/>
+          <!-- ratio boxes -->
+          <rect x="630" y="62" width="220" height="40" rx="7" transform="rotate(-0.5 740 82)" fill="#F9EEF0" stroke="#7A2334"/>
+          <rect x="630" y="116" width="220" height="40" rx="7" transform="rotate(0.4 740 136)" fill="#FFFFFF"/>
+          <rect x="630" y="170" width="220" height="40" rx="7" transform="rotate(-0.4 740 190)" fill="#F9EEF0" stroke="#7A2334"/>
+          <rect x="630" y="224" width="220" height="40" rx="7" transform="rotate(0.5 740 244)" fill="#FFFFFF"/>
+          <rect x="630" y="278" width="220" height="40" rx="7" transform="rotate(-0.3 740 298)" fill="#E9F1E4" stroke="#3D6B2E"/>
+        </g>
+
+        <text class="d4bL" x="30" y="78">screen</text>
+        <text class="d4bS" x="30" y="94">base: applied</text>
+        <text class="d4bS" x="278" y="73">men 33.3% (80 of 240)</text>
+        <text class="d4bS" x="253" y="93">women 25.0% (40 of 160)</text>
+        <text class="d4bV" x="644" y="89">0.750</text>
+        <text class="d4bS" x="712" y="80">women lower</text>
+        <text class="d4bR" x="712" y="96">under four-fifths</text>
+
+        <text class="d4bL" x="30" y="132">interview</text>
+        <text class="d4bS" x="30" y="148">base: screened in</text>
+        <text class="d4bS" x="276" y="127">men 32.5% (26 of 80)</text>
+        <text class="d4bS" x="283" y="147">women 35.0% (14 of 40)</text>
+        <text class="d4bV" x="644" y="143">0.929</text>
+        <text class="d4bS" x="712" y="134">men lower</text>
+        <text class="d4bS" x="712" y="150">over four-fifths</text>
+
+        <text class="d4bL" x="30" y="186">offer</text>
+        <text class="d4bS" x="30" y="202">base: interviewed</text>
+        <text class="d4bS" x="259" y="181">men 26.9% (7 of 26)</text>
+        <text class="d4bS" x="285" y="201">women 35.7% (5 of 14)</text>
+        <text class="d4bV" x="644" y="197">0.754</text>
+        <text class="d4bS" x="712" y="188">men lower</text>
+        <text class="d4bR" x="712" y="204">under four-fifths</text>
+
+        <text class="d4bL" x="30" y="240">hire</text>
+        <text class="d4bS" x="30" y="256">base: offered</text>
+        <text class="d4bS" x="435" y="235">men 85.7% (6 of 7)</text>
+        <text class="d4bS" x="418" y="255">women 80.0% (4 of 5)</text>
+        <text class="d4bV" x="644" y="251">0.933</text>
+        <text class="d4bS" x="712" y="242">women lower</text>
+        <text class="d4bS" x="712" y="258">over four-fifths</text>
+
+        <text class="d4bL" x="30" y="294">end to end</text>
+        <text class="d4bS" x="30" y="310">base: applied</text>
+        <text class="d4bS" x="186" y="289">men 2.5% (6 of 240)</text>
+        <text class="d4bS" x="186" y="309">women 2.5% (4 of 160)</text>
+        <text class="d4bV" x="644" y="305">1.000</text>
+        <text class="d4bB" x="712" y="296">equal rates</text>
+        <text class="d4bB" x="712" y="312">hides two stages</text>
+
+        <text class="d4bN" x="30" y="344">Constructed funnel, invented split. At each stage: the lower group's selection rate over the highest group's.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - two stages fail the rule of thumb in opposite directions, and the end-to-end ratio averages them into a perfect 1.000</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Adverse impact as one metric: the impact ratio and the rule of thumb<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>The impact ratio at a stage is the lower group's selection rate over the highest group's selection rate, both on that stage's own base.</strong> With two groups it is one division; with a dozen ethnicity categories it is every group's rate over the top rate, which is why the build-along writes it as a function that takes a dictionary. It is a ratio of two rates, so it carries four counts behind it, and all four belong beside it: 40 of 160 over 80 of 240, not "0.75".</p>
+        <p>The US Uniform Guidelines on Employee Selection Procedures, 29 CFR 1607.4(D), 1978, give the rule of thumb: <strong>a selection rate less than four-fifths (80 percent) of the highest group's rate is generally regarded as evidence of adverse impact.</strong> That is the one sentence of law on this page, and it is a rule of thumb, not a verdict. What counts as a group, what to do with small numbers, how a screening tool moves the ratio and what each jurisdiction requires are taught with a working screening simulator and a legal map in the <a href="https://phoebefu6.github.io/learn-ai-hr-with-phoebe/">AI + HR course</a>. Use that simulator to see a tool shift the ratio; tonight's job is the arithmetic that feeds it.</p>
+        <p>On Apex's invented split the screen gives 0.750 with women lower, and the offer stage gives 0.754 with men lower. Both are under four-fifths, in opposite directions. The interview (0.929) and the hire (0.933) are over it. That is a funnel with two stages worth a question and two that are not, and the next card shows why the headline ratio says none of this.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Why an end-to-end 1.000 is not an audit<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>End to end, 6 of 240 men and 4 of 160 women were hired: 2.5 percent each, an impact ratio of exactly 1.000. A report that computes only this number declares the funnel even. It is even in outcome and uneven in process: the screen removed women at a lower rate of selection, the offer stage removed men at a lower rate, and the two stages cancelled on this particular draw of invented counts. Change either stage and the cancellation goes with it.</p>
+        <p>Each group's end-to-end rate is the product of its stage rates, so the end-to-end ratio multiplies the stage ratios together. It can hide a failing stage behind a lenient one, or compound two mild stages into a failing whole. Neither direction says anything about the stage where a decision was made. A screening tool acts at the screen; a hiring manager acts at the offer. <strong>The audit belongs at the stage where the decision is taken,</strong> with that stage's base, which is the whole reason the build-along loops over stages.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>One person across the line: impact ratios on small counts<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The offer stage is 7 of 26 men and 5 of 14 women. Offer one more man and the ratio goes from 0.754 to 0.862, from under four-fifths to over it. At the hire stage, 6 of 7 and 4 of 5: one fewer woman hired and 0.933 becomes 0.700. A ratio that crosses the line when one person changes is not a finding about a process; it is a finding about the size of the base, the same lesson deep-dive session 3 drew from HR's 8 of 75.</p>
+        <p>The screen is different. 40 of 160 women were screened in; the ratio reaches 0.8 only at 43 of 160, three more people on a base of 160. That is still a small number of people, but it is a stage with enough people for the ratio to mean something. The honest report prints the one-person width beside every ratio. Whether a difference is statistically distinguishable from zero is a question for a significance test, which the <a href="https://phoebefu6.github.io/learn-statistics-with-phoebe/">Statistics course</a> teaches; the width is the version a board can read.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>Why the widest stage gets the scrutiny.</strong> Bertrand and Mullainathan 2004, "Are Emily and Greg More Employable Than Lakisha and Jamal?", American Economic Review 94(4) 991-1013, sent otherwise comparable resumes to real job advertisements, with names chosen to sound white or African-American, and counted callbacks. Resumes with white-sounding names received about 50 percent more callbacks. The stage they measured is the screen: a few seconds with a resume, the most people, the fastest decision. That is where the first row of the figure above sits, and where an impact ratio computed every quarter would have been the first place to look.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-3">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers the NYC Local Law 144 bias audit</span>
+      <h2>What a bias audit publishes</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">New York City Local Law 144 of 2021, enforced from 5 July 2023, requires an employer that uses an automated employment decision tool to have an independent bias audit done every year and to publish a summary of it. The summary reports impact ratios by sex and by race/ethnicity. Strip away the legal wrapper and it is tonight's table: for each category, how many were assessed, how many were selected, the selection rate, and the rate over the highest category's rate.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 312" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn published audit summary sheet with columns for category, applicants, selected, selection rate and impact ratio. Rows by sex, with constructed numbers from the Apex screen: men 240 applicants, 80 selected, 33.3 percent, impact ratio 1.000; women 160, 40, 25.0 percent, 0.750. The selection rate and impact ratio columns are highlighted moss and a magnifier sits over the impact ratio. A race and ethnicity block below says one row per category with the same two columns. A side panel lists what the summary says: selection rate per category, impact ratio against the highest, an independent auditor, yearly; and what it does not say: whether the tool is lawful, what to do at 0.750, anything about the next stage.">
+        <defs>
+          <filter id="d4cSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="139" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d4cHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d4cAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d4cH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d4cL { font: 700 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d4cS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d4cB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d4cV { font: 800 13px Inter, sans-serif; fill: #4F1521; }
+          .d4cA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .05em; }
+          .d4cN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d4cH" x="30" y="26">WHAT A BIAS AUDIT PUBLISHES: TWO COLUMNS PER CATEGORY</text>
+        <text class="d4cS" x="30" y="44">NYC Local Law 144, enforced from 5 July 2023 · constructed numbers for one screening tool</text>
+
+        <g filter="url(#d4cSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- the published sheet -->
+          <rect x="30" y="58" width="520" height="200" rx="6" transform="rotate(-0.3 290 158)" fill="#FFFFFF"/>
+          <path d="M506 58 L550 58 L550 80" stroke="#DCC9CD"/>
+          <rect x="332" y="64" width="210" height="96" rx="6" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <path d="M42 90 L538 90" stroke="#DCC9CD"/>
+          <path d="M42 122 L538 122" stroke="#EADDE0" stroke-width="1.4"/>
+          <path d="M42 176 L538 176" stroke="#DCC9CD"/>
+          <!-- magnifier over the impact ratio -->
+          <circle cx="520" cy="134" r="13" fill="none" stroke="#3D6B2E"/>
+          <path d="M529 143 L540 154" stroke="#3D6B2E" stroke-width="2.6"/>
+          <!-- side panel -->
+          <rect x="580" y="58" width="270" height="200" rx="8" transform="rotate(0.4 715 158)" fill="#F9EEF0"/>
+          <path d="M594 150 L836 150" stroke="#DCC9CD"/>
+        </g>
+
+        <text class="d4cA" x="48" y="82">CATEGORY</text>
+        <text class="d4cA" x="160" y="82">ASSESSED</text>
+        <text class="d4cA" x="250" y="82">SELECTED</text>
+        <text class="d4cA" x="342" y="82">SEL. RATE</text>
+        <text class="d4cA" x="440" y="82">IMPACT RATIO</text>
+
+        <text class="d4cL" x="48" y="112">men</text>
+        <text class="d4cS" x="160" y="112">240</text>
+        <text class="d4cS" x="250" y="112">80</text>
+        <text class="d4cV" x="342" y="112">33.3%</text>
+        <text class="d4cV" x="440" y="112">1.000</text>
+        <text class="d4cL" x="48" y="146">women</text>
+        <text class="d4cS" x="160" y="146">160</text>
+        <text class="d4cS" x="250" y="146">40</text>
+        <text class="d4cV" x="342" y="146">25.0%</text>
+        <text class="d4cV" x="440" y="146">0.750</text>
+
+        <text class="d4cL" x="48" y="198">race/ethnicity</text>
+        <text class="d4cS" x="48" y="218">one row per category, the same two columns</text>
+        <text class="d4cS" x="48" y="236">each rate over the highest-rate category's rate</text>
+
+        <text class="d4cL" x="596" y="80">THE SUMMARY SAYS</text>
+        <text class="d4cS" x="596" y="100">the selection rate per category</text>
+        <text class="d4cS" x="596" y="118">each impact ratio, against the highest</text>
+        <text class="d4cS" x="596" y="136">done by an independent auditor, yearly</text>
+        <text class="d4cL" x="596" y="172">IT DOES NOT SAY</text>
+        <text class="d4cS" x="596" y="192">whether the tool is lawful</text>
+        <text class="d4cS" x="596" y="210">what to do about 0.750</text>
+        <text class="d4cS" x="596" y="228">anything about the next stage</text>
+        <text class="d4cB" x="596" y="246">the table is the start of the question</text>
+
+        <text class="d4cN" x="30" y="284">Constructed numbers: the Apex screen from Part 2, reused with its invented split by sex.</text>
+        <text class="d4cN" x="30" y="300">What 0.750 means in law, and the map across places, is taught with a simulator in the AI + HR course.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the two moss columns are what the law asks to see published; the rest of the sheet is how you check them</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The audit's two columns, and the base they hide<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A published summary under Local Law 144 reports, by sex and by race/ethnicity, the selection rate of each category and the impact ratio of each category against the category with the highest rate. Those two columns are the moss block in the figure. They are the same two numbers the build-along prints at every stage, and they are only as good as the counts behind them: <strong>0.750 on 40 of 160 women against 80 of 240 men, and 0.750 on 3 of 12 against 4 of 12, are the same number and not the same finding.</strong> Read a published audit with the counts columns first.</p>
+        <p>The audit covers one decision point, the tool, which is exactly the stage-by-stage view of Part 2. A tool that screens resumes sits at the screen; its audit says nothing about the interview panel downstream, and an end-to-end number would say less. The analyst's contribution is to produce the same table for every stage the company controls, not only the one the law names, with the one-person width beside every ratio.</p>
+        <p>Deep-dive session 9 returns to the same law alongside GDPR Article 22 and the EU AI Act, when the question is what a model may see at all. The legal map in depth, and what an employer does when a ratio comes back under four-fifths, stay with the <a href="https://phoebefu6.github.io/learn-ai-hr-with-phoebe/">AI + HR course</a>.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Categories the company does not record, and the base that shrinks<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Every impact ratio needs the group recorded for every person in the base. Applicants who decline to state their sex or ethnicity drop out of both the numerator and the denominator, and if they decline at different rates at different stages the stage bases shrink unevenly. Print, for every stage, how many people in the base had the category recorded, before any ratio. A screen with 400 applicants and 150 recorded categories is an impact ratio on 150 people, and the sentence should say so.</p>
+        <p>The other trap is the category list itself. Race/ethnicity with twelve categories gives twelve rates, several on single-digit counts, and a ratio of every one against the highest. The rates at the bottom of the list will swing by whole tenths on one person. Merging categories to get stable counts is a decision with consequences for who becomes invisible, and it belongs in the decisions block at the top of the script, written before any number.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The manager is a stage too.</strong> In Hoffman, Kahn and Li 2018, the hires managers made by overriding the job test's recommendation left sooner than the ones the test would have chosen. The study does not say managers know nothing; it says that in that setting, the exceptions were on average worse than the rule they overrode. For an audit it means the discretionary step is a decision point with a selection rate like any other. If the tool's stage gets an impact ratio every year, the override stage deserves one on the same terms, and nothing in the arithmetic stops you computing it.</p>
+    </div>
+
+    <div class="tryrow" data-fn="wordcount" data-multiline="1" data-title="Write the audit sentence" data-hint="For one stage of a funnel you know: the two selection rates with their counts, the impact ratio, which group is lower, the one-person width, and where the decision at that stage is made. Three lines." data-seed="" data-cta="Count it"></div>
+  </section>
+
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>The constructed funnel in pandas, stage by stage</h2>
+      <span class="tag demo">★ 22 min · everyone builds</span>
+    </div>
+    <p class="lede">Seven steps on a funnel typed straight into a DataFrame. The counts are constructed and the split by sex is invented, so every printed output below is exactly what the code produces on those counts; on your own funnel the numbers will differ and the steps will not. Nothing here is a simulator: the screening simulator lives in the <a href="https://phoebefu6.github.io/learn-ai-hr-with-phoebe/">AI + HR course</a>, and this is the table you would bring to it.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The build-along as a hand-drawn track of seven stations: the table of five stages and two groups; conversion with the base, 30.0 33.3 30.0 83.3; yield on the base of 400, 2.5 at the hire; selection rates for men and women at every stage; the impact ratio as the lower rate over the highest; the flag, two stages under 0.8 and 1.000 end to end; and the one-person test, the offer moving from 0.754 to 0.862.">
+        <defs>
+          <filter id="d4dSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="149" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d4dHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d4dAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d4dH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d4dL { font: 700 11px Inter, sans-serif; fill: #2A1A1E; }
+          .d4dS { font: 400 10.5px Inter, sans-serif; fill: #6B5459; }
+          .d4dB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d4dW { font: 800 11px Inter, sans-serif; fill: #FFFFFF; }
+          .d4dN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d4dH" x="30" y="26">SEVEN STATIONS</text>
+
+        <g filter="url(#d4dSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M40 120 L840 120" stroke="#DCC9CD"/>
+          <rect x="40" y="90" width="96" height="60" rx="8" transform="rotate(-0.6 88 120)" fill="#FFFFFF"/>
+          <rect x="156" y="90" width="96" height="60" rx="8" transform="rotate(0.5 204 120)" fill="#F9EEF0"/>
+          <rect x="272" y="90" width="96" height="60" rx="8" transform="rotate(-0.4 320 120)" fill="#FFFFFF"/>
+          <rect x="388" y="90" width="96" height="60" rx="8" transform="rotate(0.6 436 120)" fill="#F9EEF0"/>
+          <rect x="504" y="90" width="96" height="60" rx="8" transform="rotate(-0.5 552 120)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="620" y="90" width="96" height="60" rx="8" transform="rotate(0.4 668 120)" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="736" y="90" width="104" height="60" rx="8" transform="rotate(-0.5 788 120)" fill="#FFFFFF"/>
+          <path d="M138 120 L152 120" marker-end="url(#d4dAr)"/>
+          <path d="M254 120 L268 120" marker-end="url(#d4dAr)"/>
+          <path d="M370 120 L384 120" marker-end="url(#d4dAr)"/>
+          <path d="M486 120 L500 120" marker-end="url(#d4dAr)"/>
+          <path d="M602 120 L616 120" marker-end="url(#d4dAr)"/>
+          <path d="M718 120 L732 120" marker-end="url(#d4dAr)"/>
+        </g>
+
+        <text class="d4dL" x="52" y="112">1 · the table</text>
+        <text class="d4dS" x="52" y="128">5 stages</text>
+        <text class="d4dS" x="52" y="142">2 groups</text>
+        <text class="d4dL" x="168" y="112">2 · conversion</text>
+        <text class="d4dS" x="168" y="128">30.0 · 33.3</text>
+        <text class="d4dS" x="168" y="142">30.0 · 83.3</text>
+        <text class="d4dL" x="284" y="112">3 · yield</text>
+        <text class="d4dS" x="284" y="128">base is 400</text>
+        <text class="d4dS" x="284" y="142">2.5 at the hire</text>
+        <text class="d4dL" x="400" y="112">4 · rates</text>
+        <text class="d4dS" x="400" y="128">men, women</text>
+        <text class="d4dS" x="400" y="142">at every stage</text>
+        <text class="d4dB" x="516" y="112">5 · the ratio</text>
+        <text class="d4dS" x="516" y="128">lower rate over</text>
+        <text class="d4dS" x="516" y="142">the highest</text>
+        <text class="d4dW" x="632" y="112">6 · the flag</text>
+        <text class="d4dW" x="632" y="128">2 under 0.8</text>
+        <text class="d4dW" x="632" y="142">1.000 overall</text>
+        <text class="d4dL" x="748" y="112">7 · one person</text>
+        <text class="d4dS" x="748" y="128">offer 0.754</text>
+        <text class="d4dS" x="748" y="142">one more: 0.862</text>
+
+        <text class="d4dS" x="40" y="74">Station 5 is the metric. Station 6 applies the rule of thumb stage by stage. Station 7 says how far to trust it.</text>
+        <text class="d4dN" x="30" y="212">Save the stage table with both rates and both bases. Deep-dive session 9 puts it beside the law.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the moss station is one small function, and it is the same function whether there are two groups or twelve</figcaption>
+    </figure>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>The table.</strong> One row per stage, one column per group, typed in. The comment says what the numbers are before any code touches them.</p>
+        <div class="prompt-box good"><span class="label">★ Step 1 · the constructed funnel</span>import pandas as pd
+
+# constructed Apex funnel with an invented split by sex; nobody in it is real
+# cohort: one application cohort, every count is the same people moving through
+f = pd.DataFrame({
+    "stage": ["applied", "screened", "interviewed", "offered", "hired"],
+    "men":   [240, 80, 26, 7, 6],
+    "women": [160, 40, 14, 5, 4],
+})
+f["total"] = f["men"] + f["women"]
+print(f["total"].tolist())                       # [400, 120, 40, 12, 10]</div>
+      </div>
+      <div class="step">
+        <p><strong>Conversion, with the base as its own column.</strong> The base is the stage before; <code>shift(1)</code> puts it on the same row so it prints beside the ratio.</p>
+        <div class="prompt-box good"><span class="label">★ Step 2 · conversion and its base</span>f["base"] = f["total"].shift(1)
+f["conversion"] = (f["total"] / f["base"] * 100).round(1)
+print(f[["stage", "total", "base", "conversion"]].to_string(index=False))
+#       stage  total  base  conversion
+#     applied    400   NaN         NaN
+#    screened    120 400.0        30.0
+# interviewed     40 120.0        33.3
+#     offered     12  40.0        30.0
+#       hired     10  12.0        83.3</div>
+      </div>
+      <div class="step">
+        <p><strong>Yield, on the top of the funnel.</strong> A different base and a different column name, so the two can never be confused in a dashboard.</p>
+        <div class="prompt-box good"><span class="label">★ Step 3 · yield on 400</span>f["yield"] = (f["total"] / f["total"].iloc[0] * 100).round(1)
+print(dict(zip(f["stage"], f["yield"])))
+# {'applied': 100.0, 'screened': 30.0, 'interviewed': 10.0, 'offered': 3.0, 'hired': 2.5}
+print(f"end to end: {f['total'].iloc[-1]} hires of {f['total'].iloc[0]} applicants")
+# end to end: 10 hires of 400 applicants</div>
+      </div>
+      <div class="step">
+        <p><strong>Selection rates by group, at every stage, on each stage's own base.</strong> A long table with the selected count and the base on every row, because the ratio in the next step is built from these four columns.</p>
+        <div class="prompt-box good"><span class="label">★ Step 4 · rates with both counts</span>GROUPS = ["men", "women"]
+rows = []
+for i in range(1, len(f)):
+    for g in GROUPS:
+        sel, base = int(f.loc[i, g]), int(f.loc[i - 1, g])
+        rows.append((f.loc[i, "stage"], g, sel, base, round(sel / base * 100, 1)))
+rates = pd.DataFrame(rows, columns=["stage", "group", "selected", "base", "rate"])
+print(rates.to_string(index=False))
+#       stage group  selected  base  rate
+#    screened   men        80   240  33.3
+#    screened women        40   160  25.0
+# interviewed   men        26    80  32.5
+# interviewed women        14    40  35.0
+#     offered   men         7    26  26.9
+#     offered women         5    14  35.7
+#       hired   men         6     7  85.7
+#       hired women         4     5  80.0</div>
+      </div>
+      <div class="step">
+        <p><strong>The impact ratio, as a function of any number of groups.</strong> Each group's rate over the highest group's rate. With two groups the lower one is the number that matters; with twelve, every one under the rule of thumb does.</p>
+        <div class="prompt-box good"><span class="label">★ Step 5 · lower rate over highest</span>def impact_ratios(sel, base):
+    """Each group's selection rate over the highest group's rate. sel, base: {group: count}."""
+    r = {g: sel[g] / base[g] for g in sel}
+    top = max(r.values())
+    return {g: round(v / top, 3) for g, v in r.items()}
+
+print(impact_ratios({"men": 80, "women": 40}, {"men": 240, "women": 160}))
+# {'men': 1.0, 'women': 0.75}</div>
+      </div>
+      <div class="step">
+        <p><strong>Every stage, flagged, and the end-to-end row at the bottom.</strong> The flag is the four-fifths rule of thumb applied per stage; the last row shows what a single headline ratio would have reported.</p>
+        <div class="prompt-box good"><span class="label">★ Step 6 · the stage table</span>out = []
+for i in range(1, len(f)):
+    ir = impact_ratios({g: f.loc[i, g] for g in GROUPS}, {g: f.loc[i - 1, g] for g in GROUPS})
+    low = min(ir, key=ir.get) if min(ir.values()) &lt; 1 else "equal"
+    out.append((f.loc[i, "stage"], low, ir[low] if low != "equal" else 1.0, min(ir.values()) &lt; 0.8))
+e2e = impact_ratios({g: f[g].iloc[-1] for g in GROUPS}, {g: f[g].iloc[0] for g in GROUPS})
+out.append(("end to end", "equal" if min(e2e.values()) == 1 else min(e2e, key=e2e.get),
+            min(e2e.values()), min(e2e.values()) &lt; 0.8))
+table = pd.DataFrame(out, columns=["stage", "lower_group", "impact_ratio", "under_four_fifths"])
+print(table.to_string(index=False))
+#       stage lower_group  impact_ratio  under_four_fifths
+#    screened       women         0.750               True
+# interviewed         men         0.929              False
+#     offered         men         0.754               True
+#       hired       women         0.933              False
+#  end to end       equal         1.000              False</div>
+      </div>
+      <div class="step">
+        <p><strong>One person either way, and the distance to the line.</strong> Printed beside every ratio, so a reader can see which ones would survive a single changed decision.</p>
+        <div class="prompt-box good"><span class="label">★ Step 7 · the one-person test</span>print("offer as is:          ", impact_ratios({"men": 7, "women": 5}, {"men": 26, "women": 14}))
+print("offer, one more man:  ", impact_ratios({"men": 8, "women": 5}, {"men": 26, "women": 14}))
+print("hire, one fewer woman:", impact_ratios({"men": 6, "women": 3}, {"men": 7, "women": 5}))
+# offer as is:           {'men': 0.754, 'women': 1.0}
+# offer, one more man:   {'men': 0.862, 'women': 1.0}
+# hire, one fewer woman: {'men': 1.0, 'women': 0.7}
+need = next(k for k in range(40, 161)
+            if min(impact_ratios({"men": 80, "women": k}, {"men": 240, "women": 160}).values()) &gt;= 0.8)
+print("women screened in for the screen to reach 0.8:", need, "of 160")   # 43 of 160
+table.to_csv("funnel_impact_ratios_constructed.csv", index=False)</div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Keep the stage loop and the counts.</strong> A funnel report that computes one impact ratio, at the end, can pass while two stages fail. A report that loops over stages, prints both counts beside every rate and adds the one-person width is three more lines of pandas and is the version an auditor, a lawyer and a board can each read without asking which base you used.</p>
+    </div>
+  </section>
+
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before deep-dive session 5</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li><strong>Run the seven steps</strong> on the constructed funnel, then change the offer stage to 8 of 26 men and re-run step 6. Write which rows changed and why the end-to-end row changed too.</li>
+      <li><strong>Add a third group</strong> to the DataFrame with counts you invent and label as invented. Confirm <code>impact_ratios</code> needs no change, and note which group is now the highest at each stage.</li>
+      <li><strong>Build the table for a funnel you own,</strong> as one application cohort, with a "recorded" count per stage before any ratio. Mark every ratio whose one-person width crosses 0.8.</li>
+      <li><strong>Open the screening simulator</strong> in the <a href="https://phoebefu6.github.io/learn-ai-hr-with-phoebe/">AI + HR course</a> and move a threshold until the screen's impact ratio crosses four-fifths. Write one sentence on what moved: the rates, the bases, or both.</li>
+    </ol>
+  </section>
+
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+    <p>Clear all three and deep-dive session 4 gets stamped in your passport.</p>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · At Apex's screen, 80 of 240 men and 40 of 160 women were screened in (an invented split). What is the impact ratio?</p>
+      <button class="qopt" type="button">A · 0.50, because 40 women were screened in against 80 men</button>
+      <button class="qopt" type="button">B · 0.750: the lower selection rate, 25.0 percent on a base of 160, over the highest, 33.3 percent on a base of 240; the counts are ingredients, the ratio is of the two rates, and all four counts are printed beside it</button>
+      <button class="qopt" type="button">C · 0.33, because a third of all screened-in candidates were women</button>
+      <button class="qopt" type="button">D · 1.00, because both groups were screened by the same process</button>
+      <p class="qwhy">The impact ratio divides selection rates, each on its own base. Dividing the counts ignores that more men applied; the share of the screened pool is a composition, not a rate.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="3">
+      <p class="qtext">2 · The end-to-end impact ratio on the constructed funnel is exactly 1.000. A colleague writes "the funnel shows no adverse impact". What is wrong?</p>
+      <button class="qopt" type="button">A · Nothing; an end-to-end ratio of 1.000 is the best possible result</button>
+      <button class="qopt" type="button">B · The end-to-end ratio should use the offer stage as its base</button>
+      <button class="qopt" type="button">C · The ratio should be computed on men over women, not the lower over the higher</button>
+      <button class="qopt" type="button">D · The screen is at 0.750 with women lower and the offer stage at 0.754 with men lower; the two cancelled in the totals, so the headline hides two stages under four-fifths, and the audit belongs at each stage where a decision is made, on that stage's base</button>
+      <p class="qwhy">An end-to-end ratio is an outcome, not a process. It can hide a failing stage behind a lenient one, or compound mild stages into a failing whole. Loop over the stages.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · The offer stage is 7 of 26 men and 5 of 14 women, an impact ratio of 0.754. With one more man offered it would be 0.862. How should the stage be reported?</p>
+      <button class="qopt" type="button">A · With both rates, all four counts and the one-person width: 0.754 on 7 of 26 and 5 of 14, crossing four-fifths with a single changed decision, so the number describes the size of the base as much as the process; whether it is distinguishable from chance is a significance test's job</button>
+      <button class="qopt" type="button">B · As 0.754 and a failure under the rule of thumb, since the rule does not mention sample size</button>
+      <button class="qopt" type="button">C · Not at all, because stages with fewer than 30 people should be deleted from the report</button>
+      <button class="qopt" type="button">D · As 0.862, because the one-person test shows the true value</button>
+      <p class="qwhy">Small bases make ratios swing across the line on one person. The honest report shows the swing rather than hiding the stage or choosing the flattering version.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What this session teaches, and where it came from</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The Apex funnel 400 / 120 / 40 / 12 / 10; conversions 30.0 / 33.3 / 30.0 / 83.3; yields 30.0 / 10.0 / 3.0 / 2.5; the split by sex and the stage impact ratios 0.750 / 0.929 / 0.754 / 0.933, end to end 1.000</span><span class="note">Constructed; the funnel and the split by sex are invented, and every output is the arithmetic of the typed-in counts</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Conversion, yield, selection rate and impact ratio as definitions; the stage-by-stage audit; the one-person width</span><span class="note">Standard practice, no single source</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">29 CFR 1607.4(D), Uniform Guidelines 1978: a selection rate less than four-fifths (80 percent) of the highest group's rate is generally regarded as evidence of adverse impact</span><span class="note">Primary; stated in one card as a rule of thumb; the simulator and legal map are in the AI + HR course</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">New York City Local Law 144 of 2021, enforced from 5 July 2023: annual independent bias audit of automated employment decision tools, published summary, impact ratios by sex and race/ethnicity</span><span class="note">Primary</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Bertrand and Mullainathan 2004, "Are Emily and Greg More Employable Than Lakisha and Jamal?", AER 94(4) 991-1013: about 50 percent more callbacks for white-sounding names</span><span class="note">Primary</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Hoffman, Kahn and Li 2018, "Discretion in Hiring", QJE 133(2) 765-800: test-based hiring raised completed tenure by about 25 percent (0.23 log points); override hires left sooner</span><span class="note">Primary</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">The screening simulator, fairness in practice and the legal map</span><span class="note">Linked to the AI + HR course; not built here</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Significance tests for impact ratios on small counts</span><span class="note">Named; taught in the Statistics course</span></div>
+    </div>
+    <p class="mono" style="margin-top:14px">Every fact on this page, and its verification tier, is recorded in the course's source map.</p>
+  </section>
+
+  <section class="cheat" id="cheatsheet">
+    <h3>Deep-dive session 4 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Conversion vs yield</b><span>total / total.shift(1) vs total / total.iloc[0]. Apex: 33.3 of 120 vs 10.0 of 400. Print the base.</span></div>
+      <div class="cheat-item"><b>A funnel is a cohort</b><span>Same people through every stage. Monthly event counts divided by each other are not a conversion.</span></div>
+      <div class="cheat-item"><b>Impact ratio</b><span>Each group's selection rate over the highest group's, on that stage's own base. Four counts behind it.</span></div>
+      <div class="cheat-item"><b>Four-fifths</b><span>29 CFR 1607.4(D): under 80 percent of the highest rate is generally regarded as evidence of adverse impact. A rule of thumb.</span></div>
+      <div class="cheat-item"><b>Stage by stage</b><span>Screen 0.750, offer 0.754, end to end 1.000 (constructed). The headline hides both. Audit where the decision is.</span></div>
+      <div class="cheat-item"><b>One person</b><span>Offer 0.754 becomes 0.862 with one more man. Print the width; LL144 publishes the ratios, read the counts first.</span></div>
+    </div>
+  </section>
+
+  <div class="callout next">
+    <span class="nx-pill">Next session</span>
+    <p>Tonight's ratios were invented; the next ones are not. Deep-dive session 5 loads every UK gender pay gap filing for 2024 in pandas, 11,315 of them, keeps the 11,301 that can be decomposed, and finds a median reported gap of 8.4 percent sitting on a pyramid with 56.0 percent women in the bottom pay band and 40.0 in the top. Then it fits a pay ladder nobody publishes from everybody's gaps, asks how much of each employer's gap the pyramid alone would produce, and shows the lever that makes the gap wider when it is pulled in the wrong place.</p>
+  </div>
+
+  <footer class="pagefoot">
+    <span>Deep-dive session 4 of 10 · learn-people-analytics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="p3-regretted-and-benchmarked.html">← Prev: Regretted, and benchmarked</a> &nbsp;·&nbsp; <a href="p5-pay-gap-decomposition.html">Next: Pay gap decomposition on 11,301 employers →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

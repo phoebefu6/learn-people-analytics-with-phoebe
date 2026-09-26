@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Deep-dive session 9 of 10. What a model built on people data may see, and what the law says about the decision it makes: GDPR Articles 22 and 9, the EU AI Act's Annex III point 4, New York City's Local Law 144 bias audit, the recruiting tool Reuters reported Amazon scrapped, Hoffman, Kahn and Li on managers overriding a hiring test, and Goodhart. No model is trained; the build-along writes the checklist and the may-not-see list against the constructed Apex table.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="AI on people data, and what the law forbids - learn people analytics with phoebe">
+<meta property="og:description" content="Deep-dive session 9 of 10. The fence around a people model, the tool that learned the past, and the checklist written before any model.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/courses/p9-ai-on-people-data.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AI on people data, and what the law forbids - learn people analytics with phoebe">
+<meta name="twitter:description" content="Deep-dive session 9 of 10. Four rules, one checklist, and no model trained.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Deep-dive session 9 · AI on people data, and what the law forbids - learn people analytics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-people-analytics-with-phoebe</a> / Deep-dive session 9 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn People Analytics with Phoebe · Deep-dive session 9 of 10</div>
+    <h1>AI on people data, and <span class="accent">what the law forbids</span></h1>
+    <p class="sub">Every earlier session produced a number a person read. A model produces a decision, or something close enough to one that people treat it that way, and people data is where that stops being a technical question. Tonight draws the fence: GDPR Article 22 on decisions made solely by automated processing, Article 9 on special categories such as health and trade union membership, the EU AI Act's Annex III point 4, which lists recruitment, promotion, termination and monitoring among its high-risk uses, and New York City's Local Law 144, which since 5 July 2023 has required an annual independent bias audit. Then two stories about what goes wrong inside the fence: a recruiting tool Reuters reported Amazon had scrapped, and a study of what happened when managers overrode a hiring test. No model is trained tonight. The build-along writes the checklist and the list of what a model may not see, and runs both against Apex.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Core</span>
+      <span class="chip audience">People analysts, HR tech owners, anyone asked to "just add a model"</span>
+      <span class="chip audience">Python, pandas</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-18 · The fence, the past, the override</span>
+      <span class="a3" style="flex:5">18-40 · Build-along: the checklist in code</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we start</h2>
+    </div>
+    <p class="lede">The request usually arrives as a sentence: can we predict who is going to leave, or rank the applicants, or flag the managers whose teams are at risk. Each is a model on people data, and each can be built in an afternoon on a table like Apex. Whether it should be, what it may be fed, and who has to check it afterwards are questions the law has already partly answered, and they are cheapest to answer before the first line of modelling code. Apex is constructed and nobody in it is real; the columns are the shape of a real export, which is what makes the fence concrete.</p>
+
+    <div class="legend">
+      <span class="pill">🎫 Clear all three quiz questions to stamp your passport</span>
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">★ Build-along = run the code yourself</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> A may-not-see list with the reason and the rule beside every entry, a scan that finds the Apex columns able to carry health information, an outcome list that keeps a model from being fed its own answer, a seven-question checklist that refuses to report ready while any answer, evidence or owner is empty, and an audit record that says in one sentence what was dropped, what was allowed, and that no model was trained.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers GDPR Articles 22 and 9, the EU AI Act and NYC Local Law 144</span>
+      <h2>The fence around a people model</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">Four rules, and each asks a different question. GDPR Article 22 asks about the <em>decision</em>: was it made solely by automated processing, with a legal or similarly significant effect on the person? Article 9 asks about the <em>data</em>: does it include a special category, health and trade union membership among them? Annex III point 4 of the EU AI Act, Regulation (EU) 2024/1689, asks about the <em>use</em>: recruitment, selection, promotion, termination, task allocation and monitoring are listed as high-risk. New York City's Local Law 144 of 2021 asks about the <em>audit</em>. A people model can clear one and fail another, so the checklist asks all four.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 352" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn fenced pen holding four Apex columns that may be fed to a model after review: Department, Company, group tenure and is_transfer. Straddling the bottom fence is the Resignation Reason free-text column, hachured, because it can carry health information: the Personal/Health category holds 15 of the 210 leavers. Outside the fence, under Article 9, sit health and trade union membership. A moss box holds sex and race/ethnicity for the audit, which may see them while the model may not. Four signposts on the right: GDPR Article 22, the decision; Article 9, the data; the AI Act Annex III point 4, the use; NYC Local Law 144, the audit.">
+        <defs>
+          <filter id="d9aSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="113" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d9aHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d9aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d9aH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d9aL { font: 700 11.5px Inter, sans-serif; fill: #2A1A1E; }
+          .d9aS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d9aB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d9aW { font: 800 11.5px Inter, sans-serif; fill: #FFFFFF; }
+          .d9aA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .04em; }
+          .d9aN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d9aH" x="30" y="26">THE FENCE: WHAT A PEOPLE MODEL MAY SEE, AND FOUR RULES ON THE GATE</text>
+
+        <g filter="url(#d9aSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- the pen and its fence posts -->
+          <rect x="40" y="56" width="300" height="190" rx="4" transform="rotate(-0.4 190 151)" fill="#FFFFFF"/>
+          <path d="M60 50 L60 62 M90 50 L90 62 M120 50 L120 62 M150 50 L150 62 M180 50 L180 62 M210 50 L210 62 M240 50 L240 62 M270 50 L270 62 M300 50 L300 62 M330 50 L330 62"/>
+          <path d="M60 240 L60 252 M90 240 L90 252 M300 240 L300 252 M330 240 L330 252"/>
+          <!-- four allowed columns -->
+          <rect x="64" y="84" width="120" height="32" rx="5" transform="rotate(-1 124 100)" fill="#FFFFFF"/>
+          <rect x="200" y="84" width="120" height="32" rx="5" transform="rotate(0.8 260 100)" fill="#FFFFFF"/>
+          <rect x="64" y="134" width="120" height="32" rx="5" transform="rotate(0.6 124 150)" fill="#FFFFFF"/>
+          <rect x="200" y="134" width="120" height="32" rx="5" transform="rotate(-0.7 260 150)" fill="#FFFFFF"/>
+          <!-- the free-text column, straddling the fence -->
+          <path d="M125 226 L275 226 A5 5 0 0 1 280 231 L280 261 A5 5 0 0 1 275 266 L125 266 A5 5 0 0 1 120 261 L120 231 A5 5 0 0 1 125 226 Z" transform="rotate(-1.5 200 246)" fill="url(#d9aHc)" stroke="#7A2334"/><!-- intentional: drawn over an edge on purpose (straddle or stack), a path so the rect-overlap check reads only real collisions -->
+          <!-- outside: Article 9 -->
+          <rect x="400" y="64" width="170" height="30" rx="5" transform="rotate(0.8 485 79)" fill="#F9EEF0" stroke="#9A3A4C"/>
+          <rect x="400" y="104" width="170" height="30" rx="5" transform="rotate(-0.6 485 119)" fill="#F9EEF0" stroke="#9A3A4C"/>
+          <!-- held for the audit -->
+          <rect x="400" y="174" width="170" height="34" rx="6" transform="rotate(0.5 485 191)" fill="#3D6B2E" stroke="#3D6B2E"/>
+          <!-- a padlock doodle on the audit box -->
+          <rect x="548" y="160" width="16" height="12" rx="2" fill="#FFFFFF" stroke="#3D6B2E"/>
+          <path d="M551 160 L551 154 Q556 148 561 154 L561 160" stroke="#3D6B2E"/>
+          <!-- four signposts -->
+          <rect x="600" y="50" width="250" height="52" rx="6" transform="rotate(-0.4 725 76)" fill="#FFFFFF"/>
+          <rect x="600" y="110" width="250" height="52" rx="6" transform="rotate(0.4 725 136)" fill="#FFFFFF"/>
+          <rect x="600" y="170" width="250" height="52" rx="6" transform="rotate(-0.3 725 196)" fill="#FFFFFF"/>
+          <rect x="600" y="230" width="250" height="52" rx="6" transform="rotate(0.5 725 256)" fill="#FFFFFF"/>
+        </g>
+
+        <text class="d9aL" x="74" y="105">Department</text>
+        <text class="d9aL" x="210" y="105">Company</text>
+        <text class="d9aL" x="74" y="155">group tenure</text>
+        <text class="d9aL" x="210" y="155">is_transfer</text>
+        <text class="d9aB" x="64" y="200">inside: may be fed, after review</text>
+
+        <text class="d9aL" x="60" y="288">Resignation Reason, free text, on the fence</text>
+        <text class="d9aS" x="60" y="304">can carry health: Personal/Health holds 15 of the 210 leavers</text>
+
+        <text class="d9aA" x="400" y="56">OUTSIDE: ARTICLE 9</text>
+        <text class="d9aS" x="410" y="83">health</text>
+        <text class="d9aS" x="410" y="123">trade union membership</text>
+        <text class="d9aA" x="400" y="160">HELD FOR THE AUDIT</text>
+        <text class="d9aW" x="410" y="196">sex, race/ethnicity</text>
+        <text class="d9aS" x="400" y="226">the audit sees them;</text>
+        <text class="d9aS" x="400" y="242">the model does not</text>
+
+        <text class="d9aL" x="612" y="70">GDPR Article 22 · the decision</text>
+        <text class="d9aS" x="612" y="88">solely automated, significant effect</text>
+        <text class="d9aL" x="612" y="130">GDPR Article 9 · the data</text>
+        <text class="d9aS" x="612" y="148">special categories: health, union</text>
+        <text class="d9aL" x="612" y="190">AI Act, Annex III 4 · the use</text>
+        <text class="d9aS" x="612" y="208">hiring to monitoring: high-risk</text>
+        <text class="d9aL" x="612" y="250">NYC Local Law 144 · the audit</text>
+        <text class="d9aS" x="612" y="268">annual, independent, published</text>
+
+        <text class="d9aN" x="30" y="326">Apex's columns and the 15 are from the constructed table; the four rules each ask a different question.</text>
+        <text class="d9aN" x="30" y="342">The law in depth lives in the GDPR, PDPA and AI governance courses; the fence is the map, not the territory.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the hachured column is the one nobody thinks of as health data, and it sits on the fence because a person wrote it in their own words</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Four rules, four different questions<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>The decision (GDPR Article 22).</strong> It concerns decisions based solely on automated processing that produce legal or similarly significant effects on a person. A score that ranks applicants and a person who then decides is a different situation from a score that rejects applicants with nobody looking, and the difference has to be real: a reviewer who approves every score unread is automation with a signature. <strong>The data (GDPR Article 9).</strong> Special categories of personal data, health and trade union membership among them, carry stricter conditions for processing at all. <strong>The use (EU AI Act Annex III point 4).</strong> Systems used for recruitment and selection, for decisions on promotion and termination, for task allocation and for monitoring are listed as high-risk, which brings obligations that attach to the use, whatever the model. <strong>The audit (NYC Local Law 144).</strong> Enforced from 5 July 2023, it requires an annual independent bias audit of automated employment decision tools, a published summary of it, and impact ratios by sex and by race/ethnicity.</p>
+        <p>Read them as four gates, not one. An attrition model that only informs a manager may sit outside Article 22 and still be a monitoring use under Annex III. A screening tool that never sees a special category can still owe a bias audit. None of the four is the whole law of anywhere, and the jurisdiction you work in may add its own; the checklist leaves a line for it.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>What each rule does not say, and where the law in depth lives<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The four rules are named so that a people analyst recognises when a request has crossed into them. Each has exceptions, conditions and safeguards that decide real cases, and those belong with the courses that teach the law. The <a href="https://phoebefu6.github.io/learn-gdpr-with-phoebe/">GDPR course</a> covers Articles 22 and 9 in depth; the <a href="https://phoebefu6.github.io/learn-pdpa-dnc-with-phoebe/">PDPA course</a> is the Singapore counterpart; the <a href="https://phoebefu6.github.io/learn-ai-governance-with-phoebe/">AI Governance and EU AI Act course</a> covers what a high-risk classification requires; the <a href="https://phoebefu6.github.io/learn-data-governance-with-phoebe/">Data Governance course</a> covers who owns a column and who may grant access to it.</p>
+        <p>Local Law 144's audit reports impact ratios, and an impact ratio is a selection rate divided by the highest group's selection rate. The four-fifths rule of thumb (29 CFR 1607.4(D)) and a working screening simulator live in the <a href="https://phoebefu6.github.io/learn-ai-hr-with-phoebe/">AI + HR course</a>; deep-dive session 4 computed the ratio once on a constructed funnel. The habit carried here is narrower: whenever a ratio is printed, the two rates it divides are printed beside it.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The column nobody thought was health data.</strong> Constructed setting, real mechanism, on the Apex table itself. The export carries a free-text <code>Resignation Reason</code> typed by whoever processed the exit, and a <code>reason_category</code> derived from it. Fifteen of the 210 leavers fall in Personal/Health, and at least one of the free-text entries mentions maternity. Nobody designed a health field. It appeared because a person was asked why they left and answered honestly. A model fed "all the columns" would be fed that, and so would every dashboard that joins on it.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers the tool that learned the past, and Goodhart</span>
+      <h2>A model fitted to past decisions learns the decisions</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">A people model is usually trained on what the organisation did before: who was hired, who was promoted, who was rated highly, who stayed. Whatever shaped those decisions is in the labels, and a model rewarded for reproducing the labels reproduces it. Removing the protected column does not remove it, because the pattern is carried by everything that correlates with the column. And once the model's score is used to choose, tomorrow's decisions are the model's, and they become the next training set.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 334" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Left, a hand-drawn pile of past hiring decisions, hachured, feeding a pale moss box, a model fitted to them, which produces a score per applicant. A curved arrow loops from the score back to the pile: people hired by the score become the next training set. A small chip carries the word women's, labelled reported, 2018, a word the tool penalised. Right, a panel for Goodhart's law in Strathern's 1997 wording: a measure, made a target, stops measuring.">
+        <defs>
+          <filter id="d9bSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="127" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d9bHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d9bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d9bH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d9bL { font: 700 11.5px Inter, sans-serif; fill: #2A1A1E; }
+          .d9bS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d9bB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d9bA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .04em; }
+          .d9bN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d9bH" x="30" y="26">A MODEL FITTED TO PAST DECISIONS LEARNS THE DECISIONS</text>
+
+        <g filter="url(#d9bSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- the pile of past decisions -->
+          <path d="M55 58 L159 58 A3 3 0 0 1 162 61 L162 135 A3 3 0 0 1 159 138 L55 138 A3 3 0 0 1 52 135 L52 61 A3 3 0 0 1 55 58 Z" transform="rotate(2 107 98)" fill="#FFFFFF"/><!-- intentional: drawn over an edge on purpose (straddle or stack), a path so the rect-overlap check reads only real collisions -->
+          <path d="M49 64 L153 64 A3 3 0 0 1 156 67 L156 141 A3 3 0 0 1 153 144 L49 144 A3 3 0 0 1 46 141 L46 67 A3 3 0 0 1 49 64 Z" transform="rotate(-1.5 101 104)" fill="#FFFFFF"/><!-- intentional: drawn over an edge on purpose (straddle or stack), a path so the rect-overlap check reads only real collisions -->
+          <rect x="40" y="70" width="110" height="80" rx="3" transform="rotate(0.5 95 110)" fill="url(#d9bHc)" stroke="#7A2334"/>
+          <!-- pile to model to score -->
+          <path d="M156 110 L206 110" marker-end="url(#d9bAr)"/>
+          <rect x="212" y="80" width="130" height="60" rx="8" transform="rotate(-0.5 277 110)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <path d="M346 110 L396 110" marker-end="url(#d9bAr)"/>
+          <rect x="402" y="80" width="110" height="60" rx="8" transform="rotate(0.6 457 110)" fill="#FFFFFF"/>
+          <!-- the loop back to the pile -->
+          <path d="M456 146 C456 290 130 290 130 160" stroke="#3D6B2E" stroke-width="2.4" marker-end="url(#d9bAr)"/>
+          <!-- the token chip -->
+          <rect x="212" y="160" width="86" height="26" rx="6" transform="rotate(-2 255 173)" fill="#F9EEF0" stroke="#9A3A4C"/>
+          <!-- Goodhart panel -->
+          <rect x="560" y="56" width="290" height="200" rx="6" transform="rotate(0.4 705 156)" fill="#FFFFFF"/>
+          <rect x="600" y="100" width="170" height="30" rx="6" transform="rotate(-0.6 685 115)" fill="#F9EEF0"/>
+          <path d="M685 134 L685 148" marker-end="url(#d9bAr)"/>
+          <rect x="600" y="152" width="170" height="30" rx="6" transform="rotate(0.5 685 167)" fill="#F9EEF0"/>
+          <path d="M685 186 L685 200" marker-end="url(#d9bAr)"/>
+          <rect x="600" y="204" width="170" height="30" rx="6" transform="rotate(-0.5 685 219)" fill="url(#d9bHc)" stroke="#7A2334"/>
+        </g>
+
+        <text class="d9bL" x="24" y="172">past decisions</text>
+        <text class="d9bS" x="24" y="188">who was hired</text>
+        <text class="d9bB" x="224" y="104">a model</text>
+        <text class="d9bS" x="224" y="122">fitted to them</text>
+        <text class="d9bL" x="414" y="104">a score</text>
+        <text class="d9bS" x="414" y="122">per applicant</text>
+
+        <text class="d9bL" x="224" y="178">women's</text>
+        <text class="d9bA" x="308" y="162">REPORTED, 2018</text>
+        <text class="d9bS" x="308" y="178">a word it penalised</text>
+
+        <text class="d9bB" x="150" y="286">hired by the score, then fed back as the next pile</text>
+
+        <text class="d9bL" x="572" y="80">Goodhart, in Strathern's 1997 wording</text>
+        <text class="d9bS" x="612" y="120">a measure</text>
+        <text class="d9bS" x="612" y="172">made a target</text>
+        <text class="d9bL" x="612" y="224">stops measuring</text>
+
+        <text class="d9bN" x="30" y="310">Reported by Reuters, 10 October 2018 (Jeffrey Dastin); secondary, confirmed through a reproduction.</text>
+        <text class="d9bN" x="30" y="326">The loop is the general mechanism, drawn schematic; nothing here describes how that tool was built.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the moss loop is the part that makes it worse over time: the score chooses, and the chosen become the next lesson</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Why removing the protected column is not enough<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Delete the sex column and a model trained on past hiring can still separate the groups, through anything that differs between them in the pile: a word on a resume, a society, a school, a gap in the dates, a part-time spell. The reported case is the cleanest illustration. Reuters reported on 10 October 2018 that Amazon had scrapped an experimental recruiting tool that penalised resumes containing the word "women's". The penalised item, as reported, was a word, not a demographic field. The report is secondary here, confirmed through a reproduction, and it is quoted as reported, not as a finding about any system now in use.</p>
+        <p>The consequence for practice is a split that looks odd at first. <strong>The model may not see the protected attribute, and the audit must.</strong> A proxy can only be found by someone who holds the attribute and checks whether the features predict it, and whether the model's scores differ by it. So the attribute is kept, held apart from the modelling table by someone other than the model builder, and used for exactly that. Local Law 144's impact ratios by sex and race/ethnicity cannot be computed any other way.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Goodhart, and the score that becomes a target<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The usual wording of Goodhart's law is Marilyn Strathern's, from 1997: when a measure becomes a target, it ceases to be a good measure. People data is where it bites hardest, because the people being measured can see the measure. A time-to-fill target is met by filling the seat with whoever is available. An attrition target is met by moving an exit date across a quarter boundary. A model's risk score, once managers are judged on the number of high-risk people in their team, starts to measure how managers describe their teams.</p>
+        <p>The check is one question on the checklist: is the score, or the metric the model was trained to predict, also a target somebody is rewarded on? If yes, the score will drift from the thing it was built to measure, and the drift will look like improvement. Foundations session 6 asks the same question of every dashboard row.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The tool that was scrapped.</strong> As reported by Reuters on 10 October 2018 (Jeffrey Dastin), Amazon scrapped an experimental recruiting tool that penalised resumes containing "women's". The lesson most people take is about one company. The more useful one is about the method: any model fitted to past selection decisions inherits the reasons behind those decisions, stated or not, and the only way to know which reasons it inherited is an audit that holds the attributes the model was never given.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-3">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers discretion versus the test</span>
+      <h2>When the human overrides the score</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">Article 22 makes a human in the loop sound like the whole answer. The best evidence on what humans in the loop actually do is more uncomfortable. Hoffman, Kahn and Li 2018, "Discretion in Hiring", Quarterly Journal of Economics 133(2) 765-800, studied firms that introduced a job test and let managers override it. Test-based hiring raised the completed tenure of hires by about 25 percent, 0.23 log points; and the hires managers made by overriding the test left sooner. Neither the law nor the paper says the other is wrong. They ask different questions, and the habit that serves both is to log every override and audit it.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 326" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Left, a hand-drawn pair of scales weighing the test against a manager's call. Right, two panels. Panel 1, introducing the test: completed tenure of hires before the test and, in solid moss and longer, after the test, about 25 percent longer, 0.23 log points. Panel 2, overriding the test: hires made as the test said, pale moss, and a shorter wine bar for hires made by overriding it, which left sooner; bar lengths in panel 2 are schematic.">
+        <defs>
+          <filter id="d9cSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="131" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d9cHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d9cAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d9cH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d9cL { font: 700 11.5px Inter, sans-serif; fill: #2A1A1E; }
+          .d9cS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d9cB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d9cA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .04em; }
+          .d9cN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d9cH" x="30" y="26">DISCRETION VERSUS THE TEST, IN TWO FINDINGS</text>
+
+        <g filter="url(#d9cSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- the scales -->
+          <path d="M140 70 L140 210 M100 210 L180 210"/>
+          <path d="M60 96 L220 84"/>
+          <path d="M60 96 L44 140 M60 96 L76 140 M40 140 Q60 156 80 140"/>
+          <path d="M220 84 L204 128 M220 84 L236 128 M200 128 Q220 144 240 128"/>
+          <circle cx="140" cy="68" r="4" fill="#2A1A1E"/>
+          <!-- panel 1 -->
+          <rect x="310" y="50" width="540" height="106" rx="6" transform="rotate(-0.3 580 103)" fill="#FFFFFF"/>
+          <rect x="440" y="86" width="200" height="18" transform="rotate(-0.4 540 95)" fill="url(#d9cHc)" stroke="#7A2334"/>
+          <rect x="440" y="114" width="250" height="18" transform="rotate(0.4 565 123)" fill="#3D6B2E" stroke="#3D6B2E"/>
+          <!-- panel 2 -->
+          <rect x="310" y="172" width="540" height="100" rx="6" transform="rotate(0.3 580 222)" fill="#FFFFFF"/>
+          <rect x="440" y="206" width="230" height="18" transform="rotate(0.4 555 215)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="440" y="234" width="160" height="18" transform="rotate(-0.5 520 243)" fill="#7A2334" stroke="#7A2334"/>
+        </g>
+
+        <text class="d9cL" x="36" y="178">the test</text>
+        <text class="d9cL" x="172" y="166">a manager's call</text>
+
+        <text class="d9cL" x="322" y="72">1 · introducing the test</text>
+        <text class="d9cS" x="430" y="99" text-anchor="end">before the test</text>
+        <text class="d9cS" x="430" y="127" text-anchor="end">after the test</text>
+        <text class="d9cB" x="700" y="127">about 25% longer tenure</text>
+        <text class="d9cS" x="440" y="148">completed tenure of hires, 0.23 log points</text>
+
+        <text class="d9cL" x="322" y="194">2 · overriding the test</text>
+        <text class="d9cS" x="430" y="219" text-anchor="end">as the test said</text>
+        <text class="d9cS" x="430" y="247" text-anchor="end">test overridden</text>
+        <text class="d9cA" x="610" y="247">LEFT SOONER</text>
+        <text class="d9cS" x="440" y="266">bar lengths schematic</text>
+
+        <text class="d9cN" x="30" y="298">Hoffman, Kahn and Li 2018, QJE 133(2) 765-800. About 25 percent (0.23 log points) is the paper's figure.</text>
+        <text class="d9cN" x="30" y="314">Panel 2's bar lengths are schematic: the paper reports that hires made by overriding the test left sooner.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the wine bar is the override; the paper measured it, and a people team can measure its own the same way if it logs the overrides</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>What the study found, and what it does not license<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Two findings, both primary, from the full text. Introducing the test raised the completed tenure of hires by about 25 percent (0.23 log points). And among hires made once the test existed, those made by overriding it left sooner. On that outcome, managers' discretion was on average worse than the test.</p>
+        <p>What it does not license is "remove the humans". Tenure is one outcome, chosen by the study; it is not fairness, and a test can raise tenure while selecting unevenly across groups, which is what an impact ratio exists to catch. And Article 22 restricts decisions made solely by automated processing whatever their tenure. The two sources are not in conflict; they answer different questions. The practical synthesis is modest: keep the human, make the override visible, and record every one so that the organisation can ask of its own data what the paper asked of the firms it studied.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The override log, and the audit as a habit<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>An override log has five columns: who was recommended, who was chosen, who chose, the reason in a sentence, and the date. That is enough to compare, a year later, the outcomes of hires made as recommended and hires made against the recommendation, and to compute both groups' selection rates by the audit attributes. It is also enough to see a reviewer who never overrides anything, which is the signature of a human in the loop in name only.</p>
+        <p>The audit is then a habit rather than an event: the same checklist re-run each year, the same may-not-see list re-applied whenever a column is added to the export, the same impact ratios computed with both rates printed. Local Law 144 makes the annual cadence a legal requirement for tools in its scope; for everything else it is simply the cadence at which a people model drifts.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The finding that cuts against the obvious rule.</strong> Hoffman, Kahn and Li 2018 compares a test with the people allowed to overrule it, inside the same firms. The result, that overrides left sooner, is the reverse of the intuition that a human always improves on a score. The tension is real, and the literature has not resolved it. What it offers is the one design that lets any employer find out which way it runs in its own hiring: a logged override, and an outcome measured later.</p>
+    </div>
+
+    <div class="tryrow" data-fn="wordcount" data-multiline="1" data-title="Write your model's may-not-see list" data-hint="For a people model you have been asked for: the use in one line, then every field it may not see and why, then the attributes the audit must hold and who holds them. Name the rule beside each line." data-seed="" data-cta="Count it"></div>
+  </section>
+
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>The checklist and the may-not-see list, on the Apex columns</h2>
+      <span class="tag demo">★ 22 min · everyone builds</span>
+    </div>
+    <p class="lede">Seven steps on <code>materials/apex-staff.csv</code>, the constructed Apex table, and not one of them trains a model. The use under review is invented: an attrition-risk list for managers. The code decides what that list may be fed, finds the columns that can carry a special category, keeps the model from its own answer, and writes a checklist that will not report ready while any question is open. Printed values are Apex's where the source map states them; everything else prints on your machine.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The build-along as a hand-drawn track of seven stations: columns, 1,071 rows; may-not-see, Article 9 and the audit fields; scan, free text and the 15 Personal/Health rows; outcome, the answer is not an input; the checklist, seven questions all open; audit, drop or allow with reasons; and the record, no model trained. A line above says no station trains a model and the checklist refuses to report ready while any answer is empty.">
+        <defs>
+          <filter id="d9dSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="137" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d9dHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d9dAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d9dH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d9dL { font: 700 11px Inter, sans-serif; fill: #2A1A1E; }
+          .d9dS { font: 400 10.5px Inter, sans-serif; fill: #6B5459; }
+          .d9dB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d9dW { font: 800 11px Inter, sans-serif; fill: #FFFFFF; }
+          .d9dN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d9dH" x="30" y="26">SEVEN STATIONS, NO MODEL</text>
+
+        <g filter="url(#d9dSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M40 120 L840 120" stroke="#DCC9CD"/>
+          <rect x="40" y="90" width="96" height="60" rx="8" transform="rotate(-0.6 88 120)" fill="#FFFFFF"/>
+          <rect x="156" y="90" width="96" height="60" rx="8" transform="rotate(0.5 204 120)" fill="#F9EEF0"/>
+          <rect x="272" y="90" width="96" height="60" rx="8" transform="rotate(-0.4 320 120)" fill="#FFFFFF"/>
+          <rect x="388" y="90" width="96" height="60" rx="8" transform="rotate(0.6 436 120)" fill="#F9EEF0"/>
+          <rect x="504" y="90" width="96" height="60" rx="8" transform="rotate(-0.5 552 120)" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="620" y="90" width="96" height="60" rx="8" transform="rotate(0.4 668 120)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="736" y="90" width="104" height="60" rx="8" transform="rotate(-0.5 788 120)" fill="#FFFFFF"/>
+          <path d="M138 120 L152 120" marker-end="url(#d9dAr)"/>
+          <path d="M254 120 L268 120" marker-end="url(#d9dAr)"/>
+          <path d="M370 120 L384 120" marker-end="url(#d9dAr)"/>
+          <path d="M486 120 L500 120" marker-end="url(#d9dAr)"/>
+          <path d="M602 120 L616 120" marker-end="url(#d9dAr)"/>
+          <path d="M718 120 L732 120" marker-end="url(#d9dAr)"/>
+        </g>
+
+        <text class="d9dL" x="52" y="112">1 · columns</text>
+        <text class="d9dS" x="52" y="128">1,071 rows</text>
+        <text class="d9dS" x="52" y="142">read the list</text>
+        <text class="d9dL" x="168" y="112">2 · may not</text>
+        <text class="d9dS" x="168" y="128">Article 9</text>
+        <text class="d9dS" x="168" y="142">audit fields</text>
+        <text class="d9dL" x="284" y="112">3 · scan</text>
+        <text class="d9dS" x="284" y="128">free text</text>
+        <text class="d9dS" x="284" y="142">15 health</text>
+        <text class="d9dL" x="400" y="112">4 · outcome</text>
+        <text class="d9dS" x="400" y="128">the answer</text>
+        <text class="d9dS" x="400" y="142">not an input</text>
+        <text class="d9dW" x="516" y="112">5 · checklist</text>
+        <text class="d9dW" x="516" y="128">7 questions</text>
+        <text class="d9dW" x="516" y="142">all open</text>
+        <text class="d9dB" x="632" y="112">6 · audit()</text>
+        <text class="d9dS" x="632" y="128">drop, allow</text>
+        <text class="d9dS" x="632" y="142">with reasons</text>
+        <text class="d9dL" x="748" y="112">7 · record</text>
+        <text class="d9dS" x="748" y="128">no model</text>
+        <text class="d9dS" x="748" y="142">trained</text>
+
+        <text class="d9dS" x="40" y="74">No station trains a model. Station 5 refuses to report ready while any answer, evidence or owner is empty.</text>
+        <text class="d9dN" x="30" y="212">Keep the checklist beside the code it governs. Session 10 defends one number in public.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the wine station is the gate; the moss one is where each proposed input gets a verdict and a reason in words</figcaption>
+    </figure>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Read the columns before anything else.</strong> A people model is usually proposed as "use the export". The first step is to read what the export actually holds.</p>
+        <div class="prompt-box good"><span class="label">★ Step 1 · columns</span>import json
+import pandas as pd
+
+d = pd.read_csv("materials/apex-staff.csv", parse_dates=["Date Join", "Last Day"])
+print(len(d))                                    # 1071
+print(list(d.columns))
+# ['Company', 'Staff ID', 'Department', 'Service Year Date', 'Date Join', 'Last Day',
+#  'Resignation Reason', 'is_attrited', 'left_2026', 'company_tenure_years', 'group_tenure_years',
+#  'tenure_at_exit_years', 'is_transfer', 'pre_transfer_years', 'exit_month', 'tenure_band', 'reason_category']</div>
+      </div>
+      <div class="step">
+        <p><strong>The may-not-see list, with a reason on every line.</strong> Special categories first, then the audit attributes the model may not see and the audit must, then free text, then a line for your own jurisdiction.</p>
+        <div class="prompt-box good"><span class="label">★ Step 2 · may not see</span>MAY_NOT_SEE = {
+    # GDPR Article 9 special categories: health and trade union membership among them; read the article for the full list
+    "health":          "GDPR Article 9 special category",
+    "trade union":     "GDPR Article 9 special category",
+    # held apart for the audit: the audit may see them, the model may not
+    "sex":             "audit attribute (NYC Local Law 144 impact ratios): the audit may see it, the model may not",
+    "race/ethnicity":  "audit attribute (NYC Local Law 144 impact ratios): the audit may see it, the model may not",
+    # anything that can carry the above
+    "free text":       "can carry any of the above in the writer's own words",
+    # the line only your own law can fill
+    "your local list": "fill in from your own law before use; the GDPR and PDPA courses start it",
+}</div>
+      </div>
+      <div class="step">
+        <p><strong>Scan the export for what can carry a special category.</strong> By shape (free text) and by content (a category value that is health).</p>
+        <div class="prompt-box good"><span class="label">★ Step 3 · scan</span>FLAGGED = {}
+for c in d.columns:
+    col = d[c]
+    is_text = col.dtype == object and col.nunique() &gt; 20
+    if is_text and c != "Staff ID" and not c.startswith(("Date", "Last", "Service")):
+        FLAGGED[c] = MAY_NOT_SEE["free text"]
+if (d["reason_category"] == "Personal/Health").any():
+    FLAGGED["reason_category"] = "has a Personal/Health value: " + MAY_NOT_SEE["health"]
+
+print(list(FLAGGED))                             # ['Resignation Reason', 'reason_category']
+print(int((d["reason_category"] == "Personal/Health").sum()))   # 15, of the 210 leavers
+
+HEALTH_WORDS = "health|medical|illness|sick|maternity|pregnan"
+print(int(d["Resignation Reason"].str.contains(HEALTH_WORDS, case=False, na=False).sum()))
+# a word search finds its own count; neither it nor the category is the full list, which is why the column goes</div>
+      </div>
+      <div class="step">
+        <p><strong>Keep the model from its own answer.</strong> For an attrition-risk list the outcome is leaving, and every column written at or after the exit is the answer in disguise.</p>
+        <div class="prompt-box good"><span class="label">★ Step 4 · outcome and identifiers</span>OUTCOME = {"Last Day", "is_attrited", "left_2026", "tenure_at_exit_years", "exit_month",
+           "Resignation Reason", "reason_category"}          # the answer, or written after it
+IDENTIFIERS = {"Staff ID"}                                  # the person, not a property of the person
+
+print(sorted(OUTCOME &amp; set(d.columns)) == sorted(OUTCOME))  # True: all seven are in the export</div>
+      </div>
+      <div class="step">
+        <p><strong>The checklist, as a dict that knows it is unfinished.</strong> Seven questions, each with its source. Answer, evidence and owner start empty, and <code>ready</code> says no until all three are filled for every question.</p>
+        <div class="prompt-box good"><span class="label">★ Step 5 · the checklist</span>CHECKLIST = {
+    "art22_decision": {"ask": "Is any decision with legal or similarly significant effect made solely by the tool?",
+                       "source": "GDPR Article 22"},
+    "art9_data":      {"ask": "Does any input carry a special category, directly or through free text?",
+                       "source": "GDPR Article 9"},
+    "annex_iii_use":  {"ask": "Is the use recruitment, selection, promotion, termination, task allocation or monitoring?",
+                       "source": "EU AI Act, Regulation (EU) 2024/1689, Annex III point 4"},
+    "ll144_audit":    {"ask": "Used for employment decisions in New York City? Then: annual independent bias audit, "
+                              "published summary, impact ratios by sex and race/ethnicity.",
+                       "source": "NYC Local Law 144 of 2021, enforced from 5 July 2023"},
+    "rates_printed":  {"ask": "Are selection rates by group printed beside any impact ratio?",
+                       "source": "29 CFR 1607.4(D); the simulator lives in the AI + HR course"},
+    "override_log":   {"ask": "Is every human override of the score logged with a reason, and compared on outcomes later?",
+                       "source": "Hoffman, Kahn and Li 2018, QJE 133(2) 765-800"},
+    "goodhart":       {"ask": "Is the score, or the metric it optimises, also a target somebody is rewarded on?",
+                       "source": "Goodhart's law, in Strathern's 1997 wording"},
+}
+for item in CHECKLIST.values():
+    item.update(answer=None, evidence=None, owner=None)
+
+def ready(checklist):
+    open_items = [k for k, v in checklist.items()
+                  if v["answer"] is None or not v["evidence"] or not v["owner"]]
+    return len(open_items) == 0, open_items
+
+print(ready(CHECKLIST))                          # (False, [all seven keys]): nothing is ready until someone answers</div>
+      </div>
+      <div class="step">
+        <p><strong>Audit a proposed feature list.</strong> Every input gets a verdict and a reason in words. "Allowed" still means pending the proxy review, which needs the audit attributes that Apex, like most exports, does not hold.</p>
+        <div class="prompt-box good"><span class="label">★ Step 6 · audit()</span>def audit(features):
+    verdict = {}
+    for f in features:
+        reasons = []
+        if f in IDENTIFIERS: reasons.append("an identifier, not a feature")
+        if f in FLAGGED:     reasons.append(FLAGGED[f])
+        if f in OUTCOME:     reasons.append("the outcome, or written after it")
+        verdict[f] = ("drop: " + "; ".join(reasons)) if reasons else "allowed, pending the proxy review"
+    return verdict
+
+proposed = ["Department", "Company", "group_tenure_years", "is_transfer",      # invented proposal
+            "Resignation Reason", "reason_category", "left_2026", "Staff ID"]
+for f, v in audit(proposed).items():
+    print(f"{f:20s} {v}")
+# Resignation Reason   drop: can carry any of the above in the writer's own words; the outcome, or written after it
+# reason_category      drop: has a Personal/Health value: GDPR Article 9 special category; the outcome, or written after it
+# left_2026            drop: the outcome, or written after it
+# Staff ID             drop: an identifier, not a feature
+# (the four others print "allowed, pending the proxy review")
+allowed = [f for f, v in audit(proposed).items() if v.startswith("allowed")]</div>
+      </div>
+      <div class="step">
+        <p><strong>The record, and the sentence.</strong> What was dropped and why, what was allowed and on what condition, which questions are open, and the fact that no model was trained.</p>
+        <div class="prompt-box good"><span class="label">★ Step 7 · the record</span>ok, open_items = ready(CHECKLIST)
+record = {
+    "use": "attrition-risk list for managers, proposed",     # invented use
+    "inputs_allowed": allowed,
+    "inputs_dropped": {f: v for f, v in audit(proposed).items() if v.startswith("drop")},
+    "may_not_see": list(MAY_NOT_SEE),
+    "checklist_open": open_items,
+    "proxy_review": "needs sex and race/ethnicity, held apart by someone other than the model builder; not in Apex",
+    "model_trained": False,
+}
+sentence = (f"No model trained. {len(record['inputs_dropped'])} of {len(proposed)} proposed inputs dropped, each with a reason; "
+            f"{len(allowed)} allowed pending a proxy review that needs attributes held elsewhere. "
+            f"{len(open_items)} checklist questions open, so the tool is {'ready' if ok else 'not ready'} to build.")
+print(sentence)
+with open("apex_ai_checklist.json", "w") as fh:
+    json.dump(record, fh, indent=2)</div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Answer one question and run step 5 again.</strong> Fill <code>answer</code> for Article 22 but leave <code>owner</code> empty, and <code>ready</code> still says no. That is deliberate: an answer nobody owns is an opinion. Then add a column called <code>union_rep</code> to a copy of the table and re-run step 3, and decide whether the scan should have caught it by name. It will not, which is why the may-not-see list is read by a person every time a column is added.</p>
+    </div>
+  </section>
+
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before deep-dive session 10</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li><strong>Run the seven steps</strong> as written, then add your own jurisdiction's protected characteristics to the last line of <code>MAY_NOT_SEE</code>, with the rule beside each.</li>
+      <li><strong>Answer the checklist</strong> for one real people tool you use or have been asked for: an answer, the evidence, and an owner for each of the seven questions. Count how many you could not fill.</li>
+      <li><strong>Design the override log</strong> for that tool: the five columns, where it lives, who reads it, and the outcome you would compare a year later.</li>
+      <li><strong>Find the free text.</strong> List every free-text field in your own HR export and write which of the four rules each one could touch.</li>
+    </ol>
+  </section>
+
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+    <p>Clear all three and deep-dive session 9 gets stamped in your passport.</p>
+
+    <div class="quiz-q" data-answer="3">
+      <p class="qtext">1 · A colleague proposes feeding <code>Resignation Reason</code> into a model that predicts who will leave, "because it is the most informative column". What is wrong with it?</p>
+      <button class="qopt" type="button">A · Nothing, as long as the model is only used to inform managers</button>
+      <button class="qopt" type="button">B · Only that it has missing values for people still employed</button>
+      <button class="qopt" type="button">C · It is fine if the text is lower-cased first</button>
+      <button class="qopt" type="button">D · Two things: it is written at the exit, so it is the outcome in disguise and the model would be fed its own answer; and it is free text that can carry a special category, since Apex's Personal/Health category holds 15 of the 210 leavers and GDPR Article 9 sets stricter conditions on health data</button>
+      <p class="qwhy">It is informative because it is the answer. Step 4 drops it as an outcome and step 3 drops it as free text; either reason alone is enough.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">2 · The model never sees sex or race/ethnicity. Why keep those attributes at all?</p>
+      <button class="qopt" type="button">A · There is no reason; deleting them is the safest option</button>
+      <button class="qopt" type="button">B · Because a model can still separate groups through proxies, as the tool Reuters reported Amazon scrapped did with the word "women's"; only someone holding the attributes can check whether the features predict them and whether scores differ by them, and Local Law 144's impact ratios by sex and race/ethnicity cannot be computed without them, so they are held apart from the model, for the audit</button>
+      <button class="qopt" type="button">C · So that the model can be retrained with them later if accuracy is too low</button>
+      <button class="qopt" type="button">D · Because GDPR Article 22 requires every model to include them</button>
+      <p class="qwhy">The model may not see them; the audit must. That split, with a different person holding the attributes, is the design.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · Hoffman, Kahn and Li found that hires made by overriding a job test left sooner. What follows for a people team?</p>
+      <button class="qopt" type="button">A · Keep the human and log every override with a reason, then compare outcomes and selection rates later; tenure is one outcome and not fairness, and GDPR Article 22 restricts decisions made solely by automated processing, so the paper and the law answer different questions and the log is what lets an employer see which way its own overrides run</button>
+      <button class="qopt" type="button">B · Remove managers from hiring decisions, because the test is better</button>
+      <button class="qopt" type="button">C · Ignore the study, because it contradicts Article 22</button>
+      <button class="qopt" type="button">D · Let managers override only when the applicant is from their own team</button>
+      <p class="qwhy">The paper measured about 25 percent longer tenure from test-based hiring and shorter tenure for overrides. It did not measure fairness, and it does not change what the law requires of a solely automated decision.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What this session teaches, and where it came from</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">GDPR Article 22 (solely automated decisions with legal or similarly significant effects) and Article 9 (special categories, health and trade union membership among them)</span><span class="note">Primary; named, not taught in depth; the GDPR and PDPA courses own the law</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">EU AI Act, Regulation (EU) 2024/1689, Annex III point 4: recruitment, selection, promotion, termination, task allocation and monitoring are high-risk</span><span class="note">Primary (EUR-Lex); the AI Governance course owns what the classification requires</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">New York City Local Law 144 of 2021, enforced from 5 July 2023: annual independent bias audit, published summary, impact ratios by sex and race/ethnicity</span><span class="note">Primary; the four-fifths rule and the screening simulator stay in the AI + HR course</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Hoffman, Kahn and Li 2018, "Discretion in Hiring", Quarterly Journal of Economics 133(2) 765-800: test-based hiring raised completed tenure by about 25 percent (0.23 log points); hires made by overriding the test left sooner</span><span class="note">Primary (full text read by the checker)</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Reuters, 10 October 2018 (Jeffrey Dastin): Amazon scrapped an experimental recruiting tool that penalised resumes containing "women's"</span><span class="note">Secondary, confirmed through a reproduction; reported, and nothing claimed about how the tool was built</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Goodhart's law in Strathern's 1997 wording</span><span class="note">Named as a principle; no measured claim attached</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The Apex columns; Personal/Health 15 of 210 leavers; the checklist, may-not-see list and audit function</span><span class="note">Computed from the constructed Apex table; the proposed use and feature list are invented; standard practice, no single source, for the checklist form; no model trained</span></div>
+    </div>
+    <p class="mono" style="margin-top:14px">Every fact on this page, and its verification tier, is recorded in the course's source map.</p>
+  </section>
+
+  <section class="cheat" id="cheatsheet">
+    <h3>Deep-dive session 9 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Four gates</b><span>Article 22 the decision, Article 9 the data, Annex III point 4 the use, LL144 the audit.</span></div>
+      <div class="cheat-item"><b>Free text is special-category data</b><span>Apex: Personal/Health holds 15 of 210 leavers, in a column nobody designed for health.</span></div>
+      <div class="cheat-item"><b>The model may not see it; the audit must</b><span>Hold sex and race/ethnicity apart, with someone else, for proxy checks and impact ratios.</span></div>
+      <div class="cheat-item"><b>A model learns the decisions</b><span>Fitted to past choices, it inherits their reasons. Reuters, 2018, reported.</span></div>
+      <div class="cheat-item"><b>Log the override</b><span>Hoffman, Kahn and Li 2018: overrides left sooner. Keep the human; record every call.</span></div>
+      <div class="cheat-item"><b>Goodhart</b><span>A score that becomes a target stops measuring. Ask it on the checklist.</span></div>
+    </div>
+  </section>
+
+  <div class="callout next">
+    <span class="nx-pill">Next session</span>
+    <p>The last session is a bench night, and it runs in the browser on 3,000 real employers' 2024 gender pay gap filings. Deep-dive session 10 reads each employer's four-band pyramid, fits the band pay ladder live, sets the composition-only gap beside the reported one, pulls the anti-lever of adding women at the bottom versus the top, presses the break button that shuffles the bands to show when the fit collapses, and ends on the scorecard and the one sentence you would be willing to defend in public.</p>
+  </div>
+
+  <footer class="pagefoot">
+    <span>Deep-dive session 9 of 10 · learn-people-analytics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="p8-workforce-planning.html">← Prev: Workforce planning</a> &nbsp;·&nbsp; <a href="p10-the-pay-gap-bench.html">Next: The pay gap bench, and defending a number →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

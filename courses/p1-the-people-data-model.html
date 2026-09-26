@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Deep-dive session 1 of 10. The three tables every people question needs, employee, position and event, and why most HR exports are a snapshot of the first with a few events stapled on. Headcount at a date, the joiners and leavers between two dates, the identity, and the three bases, all computed in pandas on a constructed 1,071-row table.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="The people data model - learn people analytics with phoebe">
+<meta property="og:description" content="Deep-dive session 1 of 10. Snapshot or event log? The answer decides which questions the table can answer at all.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/courses/p1-the-people-data-model.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The people data model - learn people analytics with phoebe">
+<meta name="twitter:description" content="Deep-dive session 1 of 10. Three tables, one snapshot, and the identity in pandas.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Deep-dive session 1 · The people data model - learn people analytics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-people-analytics-with-phoebe</a> / Deep-dive session 1 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn People Analytics with Phoebe · Deep-dive session 1 of 10</div>
+    <h1>The people <span class="accent">data model</span></h1>
+    <p class="sub">Every people question is a question about one of three tables: who the people are, what positions exist, and what happened when. Most HR systems can produce the first as an export, the second as an org chart, and the third not at all, which is why the export you are handed is a snapshot with a handful of events stapled to it. Tonight builds the vocabulary and the first numbers: a constructed 1,071-row table that looks like a real export, the headcount on a date, the joiners and leavers between two dates, the identity that ties them together, and the three bases that turn 210 leavers into 20.5, 22.3 or 24.4 percent. By the end you will know from the shape of a table which questions it can answer, and you will have written the six decisions that make two analysts' numbers agree.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Core</span>
+      <span class="chip audience">HR analysts, people data teams, anyone who owns the export</span>
+      <span class="chip audience">Python, pandas</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-18 · Three tables, one snapshot</span>
+      <span class="a3" style="flex:5">18-40 · Build-along: the bridge in pandas</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we start</h2>
+    </div>
+    <p class="lede">The running data is Apex, a constructed group of four entities whose staff table was generated with a seeded script to look like what an HR system exports: one row per person, a join date, a last day if they left, a department, a free-text reason. Nobody in it is real and every page says so. What is real is the shape, because it is the shape of nearly every people dataset an analyst is handed, and the shape decides more than the numbers do.</p>
+
+    <div class="legend">
+      <span class="pill">🎫 Clear all three quiz questions to stamp your passport</span>
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">★ Build-along = run the code yourself</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> The three-table model and the test for which one you have been given, a headcount function that takes a date, the joiners and leavers between two dates with the identity asserted in code, and the three bases printed side by side so that the choice is visible.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the three tables</span>
+      <h2>Employee, position, event</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">Three tables answer every people question between them. The employee table has one row per person and says who they are. The position table has one row per seat and says what the organisation has decided it needs. The event table has one row per thing that happened to a person on a date: joined, moved, promoted, went on leave, left. Attrition, tenure, time-in-grade and every flow live in the third table, and the third table is the one you almost never get.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three hand-drawn tables. Employee: one row per person with id, name, department, join date. Position: one row per seat with grade, department, filled or open. Event: one row per happening with person id, date, type such as joined, transferred, left. Arrows show that headcount is a count of employee rows on a date, and that every flow is a count of event rows between two dates. A note says most exports are the first table with the last event stapled on.">
+        <defs>
+          <filter id="d1aSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="17" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d1aHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d1aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d1aH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d1aL { font: 700 11.5px Inter, sans-serif; fill: #2A1A1E; }
+          .d1aS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d1aB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d1aW { font: 800 11.5px Inter, sans-serif; fill: #FFFFFF; }
+          .d1aN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d1aH" x="30" y="26">THREE TABLES ANSWER EVERYTHING BETWEEN THEM</text>
+
+        <g filter="url(#d1aSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="30" y="50" width="240" height="130" rx="6" transform="rotate(-0.5 150 115)" fill="#FFFFFF"/>
+          <path d="M30 74 L270 74" stroke="#DCC9CD"/>
+          <rect x="320" y="50" width="240" height="130" rx="6" transform="rotate(0.4 440 115)" fill="#FFFFFF"/>
+          <path d="M320 74 L560 74" stroke="#DCC9CD"/>
+          <rect x="610" y="50" width="240" height="130" rx="6" transform="rotate(-0.4 730 115)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <path d="M610 74 L850 74" stroke="#3D6B2E"/>
+          <!-- arrows down to the two answers -->
+          <path d="M150 186 L150 222" marker-end="url(#d1aAr)"/>
+          <path d="M730 186 L730 222" stroke="#3D6B2E" marker-end="url(#d1aAr)"/>
+          <rect x="60" y="226" width="180" height="34" rx="8" transform="rotate(0.5 150 243)" fill="url(#d1aHc)"/>
+          <rect x="640" y="226" width="180" height="34" rx="8" transform="rotate(-0.5 730 243)" fill="#3D6B2E" stroke="#3D6B2E"/>
+          <!-- a small staple doodle on the employee table -->
+          <path d="M236 62 L248 62 L248 70 L236 70" stroke="#7A2334" stroke-width="2.4"/>
+        </g>
+
+        <text class="d1aL" x="42" y="68">EMPLOYEE · one row per person</text>
+        <text class="d1aS" x="42" y="96">id · name · department · grade</text>
+        <text class="d1aS" x="42" y="114">join date · last day (if any)</text>
+        <text class="d1aS" x="42" y="132">the export you are usually given</text>
+        <text class="d1aB" x="42" y="164">last day = one event stapled on</text>
+
+        <text class="d1aL" x="332" y="68">POSITION · one row per seat</text>
+        <text class="d1aS" x="332" y="96">position id · grade · department</text>
+        <text class="d1aS" x="332" y="114">filled by · open since</text>
+        <text class="d1aS" x="332" y="132">the org chart, as a table</text>
+        <text class="d1aB" x="332" y="164">vacancies and spans live here</text>
+
+        <text class="d1aL" x="622" y="68">EVENT · one row per happening</text>
+        <text class="d1aS" x="622" y="96">person id · date · type</text>
+        <text class="d1aS" x="622" y="114">joined · moved · promoted · left</text>
+        <text class="d1aS" x="622" y="132">the table you almost never get</text>
+        <text class="d1aB" x="622" y="164">every flow is a count of these rows</text>
+
+        <text class="d1aL" x="150" y="248" text-anchor="middle">headcount on a date</text>
+        <text class="d1aW" x="730" y="248" text-anchor="middle">joiners, leavers, moves</text>
+
+        <text class="d1aN" x="30" y="288">A snapshot of the first table with "last day" filled in can rebuild SOME events: the last one per person. It cannot rebuild the ones before.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the staple on the employee table is the last day column: one event per person, and only the final one</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Which table have you been given, and the test that tells you<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The test is one question: <strong>can a person appear more than once?</strong> If every person is exactly one row, you have an employee snapshot, and every flow will have to be reconstructed from date columns. If a person can appear many times with a date and a type on each row, you have an event log, and flows are counts. Apex is the first kind: 1,071 rows, 1,071 people, a join date on every row and a last day on 210 of them.</p>
+        <p>A snapshot with a last day column can rebuild <em>one</em> event per person: the join, and the exit if there was one. It cannot rebuild a transfer three years ago, a promotion, a period of leave, or the exit of anybody who left before the snapshot was taken and was therefore never in it. Apex marks transfers with a flag and a "pre-transfer years" column, which is the snapshot's way of stapling a second event on, and it is a sign the table was built by somebody who knew what was missing.</p>
+        <p>The consequence for every later session: <strong>attrition, tenure and survival are event questions asked of a snapshot,</strong> and the honest analysis says which events the snapshot can see and which it cannot.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The id that is the person, and the one that is the seat<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Apex's <code>Staff ID</code> is one per person. Some systems issue a new id on every rehire or every transfer between legal entities, and then a person is two rows, a transfer looks like an exit and a hire, and the identity breaks by exactly the number of transfers. Check the cardinality before anything else: the number of distinct ids against the number of rows, and both against what the payroll says. The retention course found the same trap in a customer table, where an order-side key made every customer a one-time buyer; the people version makes every transferee a leaver.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The event log that existed and was never exported.</strong> Most HR systems record every change to a person's record with a timestamp, in an audit table nobody has been asked for. An analyst who asks for "the employee export" gets the snapshot. An analyst who asks for "the change history for the join date, department, grade and status fields" gets an event log, from the same system, for the same people. The second request is the one that makes deep-dive sessions 2 and 8 possible. Constructed setting; the mechanism is common.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers snapshot vs event log</span>
+      <h2>A snapshot is a photograph, an event log is a film</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">Apex's table holds everyone employed on 1 January 2026 and the 210 people who left between then and 17 June. Nobody who left in 2025 is in it. Ask it "how many people left in 2024" and it will answer zero, confidently, because the people who did are not there to be counted. That is not a bug in the table; it is what a snapshot is.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two hand-drawn panels. Left, the snapshot: a camera above a vertical line at 1 January 2026, and a set of employment lines; only the lines crossing the date are dark, the rest faint. A count reads 1,071 rows, 210 leavers, zero leavers in any year before 2026. Right, the event log: a film strip of dated rows, joined, moved, left, from 2012 onward, all dark. A count reads every leaver of every year.">
+        <defs>
+          <filter id="d1bSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="29" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d1bHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d1bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d1bH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d1bL { font: 600 11px Inter, sans-serif; fill: #2A1A1E; }
+          .d1bS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d1bB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d1bV { font: 800 16px Inter, sans-serif; fill: #4F1521; }
+          .d1bA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .05em; }
+          .d1bN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d1bH" x="30" y="26">THE SNAPSHOT</text>
+        <text class="d1bS" x="140" y="26">what Apex's export is</text>
+        <text class="d1bH" x="480" y="26">THE EVENT LOG</text>
+        <text class="d1bS" x="600" y="26">what would answer every flow question</text>
+
+        <g filter="url(#d1bSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- left: employment lines and the camera line -->
+          <path d="M40 240 L420 240" stroke="#7A2334" marker-end="url(#d1bAr)"/>
+          <path d="M330 50 L330 246" stroke="#3D6B2E" stroke-width="3"/>
+          <path d="M60 70 L150 70 M90 90 L230 90 M140 110 L260 110 M200 130 L300 130 M240 150 L310 150" stroke="#DCC9CD" stroke-width="2.5"/>
+          <path d="M100 80 L420 80 M170 100 L390 100 M220 120 L420 120 M270 140 L360 140 M290 160 L420 160 M310 180 L420 180"/>
+          <circle cx="390" cy="100" r="5" fill="#7A2334" stroke="#7A2334"/>
+          <circle cx="360" cy="140" r="5" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="312" y="34" width="36" height="20" rx="4" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <!-- right: film strip of rows -->
+          <rect x="480" y="50" width="370" height="190" rx="6" transform="rotate(0.3 665 145)" fill="#FFFFFF"/>
+          <path d="M480 76 L850 76 M480 102 L850 102 M480 128 L850 128 M480 154 L850 154 M480 180 L850 180 M480 206 L850 206" stroke="#DCC9CD"/>
+          <path d="M480 50 L480 240 M850 50 L850 240" stroke="#DCC9CD"/>
+          <rect x="484" y="54" width="8" height="8" fill="#DCC9CD" stroke="none"/><rect x="484" y="80" width="8" height="8" fill="#DCC9CD" stroke="none"/><rect x="484" y="106" width="8" height="8" fill="#DCC9CD" stroke="none"/><rect x="484" y="132" width="8" height="8" fill="#DCC9CD" stroke="none"/><rect x="484" y="158" width="8" height="8" fill="#DCC9CD" stroke="none"/><rect x="484" y="184" width="8" height="8" fill="#DCC9CD" stroke="none"/><rect x="484" y="210" width="8" height="8" fill="#DCC9CD" stroke="none"/>
+        </g>
+
+        <text class="d1bA" x="330" y="262" text-anchor="middle">1 JAN 2026</text>
+        <text class="d1bS" x="60" y="62">faint: left before the photograph, absent</text>
+        <text class="d1bL" x="60" y="200">dark: 1,071 rows in the table</text>
+        <text class="d1bB" x="60" y="218">dots: the 210 leavers, all Jan to Jun 2026</text>
+        <text class="d1bV" x="30" y="296">leavers in 2024 or 2025: 0, by construction</text>
+
+        <text class="d1bS" x="500" y="70">2012-02-16 · S10001 · joined · Engineering</text>
+        <text class="d1bS" x="500" y="96">2015-06-01 · S10001 · moved · Apex Logistics</text>
+        <text class="d1bS" x="500" y="122">2018-03-12 · S10233 · left · resigned</text>
+        <text class="d1bS" x="500" y="148">2019-05-15 · S10001 · promoted · grade 4</text>
+        <text class="d1bS" x="500" y="174">2023-11-15 · S10003 · joined · R&amp;D</text>
+        <text class="d1bS" x="500" y="200">2026-02-09 · S10420 · left · compensation</text>
+        <text class="d1bS" x="500" y="226">... one row per happening, every year</text>
+        <text class="d1bV" x="480" y="296">leavers in 2024: a count, not a guess</text>
+
+        <text class="d1bN" x="30" y="316">Same people, two tables. The snapshot answers "who is here now"; the film answers "what happened". Constructed rows for the illustration.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the snapshot's zero leavers in 2024 is not a finding about 2024; it is a property of the photograph</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>What a snapshot can and cannot answer, in one table<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>Can answer:</strong> headcount on the snapshot date; headcount on any earlier date for people still present at the snapshot (a biased count, because the earlier leavers are absent); joiners in any period, if the join date is kept for everyone; leavers in the window after the snapshot, if the export includes them, which Apex's does for six months.</p>
+        <p><strong>Cannot answer:</strong> leavers before the snapshot; the true tenure distribution of everyone who ever joined; how many people left in their first year, historically; any flow before the photograph. Ask any of these of a snapshot and it will return a number, and the number will describe the survivors.</p>
+        <p>The rule for the rest of the track: <strong>every flow computed from Apex is a flow inside the window January to June 2026,</strong> the only window the table can see. Foundations session 1 taught the same lesson with a camera drawing; here it becomes a filter in the code, and the filter is written at the top.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Building an event log from snapshots you already have<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>If the system will not give you the change history, monthly snapshots will. Keep every month's export with the date in the filename, and the difference between two consecutive snapshots is the event log for that month: ids present in the second and not the first joined, ids present in the first and not the second left, ids whose department changed moved. It is coarse, one event per person per month at most, and it is the single most valuable habit a people data team can adopt, because it turns the photograph problem into a film from the day you start.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="section" id="part-3">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers the identity and the three bases</span>
+      <h2>The identity, and the base under the rate</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">With a snapshot that includes six months of leavers, the bridge for that window can be computed exactly: 1,022 people on 1 January, 49 joined, 210 left, 861 on 1 July. The identity holds by construction, and asserting it in code is the cheapest test a people pipeline can have. Then the same 210 over three bases: 20.5, 22.3 and 24.4 percent, printed side by side so the choice is a choice.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn map of the Apex columns to the four bridge numbers. Date Join feeds headcount at start and joiners; Last Day feeds leavers and headcount at end; the four numbers 1,022, 49, 210, 861 sit in boxes with the identity written between them; below, three fraction boxes show 210 over 1,022, over 941.5 and over 861 with 20.5, 22.3 and 24.4 percent.">
+        <defs>
+          <filter id="d1cSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="41" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d1cHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d1cAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d1cH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d1cL { font: 700 11.5px Inter, sans-serif; fill: #2A1A1E; }
+          .d1cS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d1cB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d1cV { font: 800 17px Inter, sans-serif; fill: #4F1521; }
+          .d1cW { font: 800 12px Inter, sans-serif; fill: #FFFFFF; }
+          .d1cN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d1cH" x="30" y="26">TWO DATE COLUMNS, FOUR NUMBERS, ONE IDENTITY, THREE RATES</text>
+
+        <g filter="url(#d1cSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- the two columns -->
+          <rect x="30" y="50" width="120" height="40" rx="6" transform="rotate(-1 90 70)" fill="#FFFFFF"/>
+          <rect x="30" y="110" width="120" height="40" rx="6" transform="rotate(0.8 90 130)" fill="#FFFFFF"/>
+          <!-- four number boxes -->
+          <rect x="210" y="46" width="120" height="50" rx="8" transform="rotate(-0.4 270 71)" fill="url(#d1cHc)"/>
+          <rect x="360" y="46" width="100" height="50" rx="8" transform="rotate(0.5 410 71)" fill="#3D6B2E" stroke="#3D6B2E"/>
+          <rect x="490" y="46" width="100" height="50" rx="8" transform="rotate(-0.5 540 71)" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="620" y="46" width="120" height="50" rx="8" transform="rotate(0.4 680 71)" fill="url(#d1cHc)"/>
+          <!-- arrows from columns -->
+          <path d="M156 66 L204 68" marker-end="url(#d1cAr)"/>
+          <path d="M156 70 C260 100 330 100 356 80" marker-end="url(#d1cAr)"/>
+          <path d="M156 130 C300 150 440 150 486 90" marker-end="url(#d1cAr)"/>
+          <path d="M156 134 C400 180 580 160 616 92" marker-end="url(#d1cAr)"/>
+          <!-- three fraction boxes -->
+          <rect x="210" y="180" width="170" height="80" rx="8" transform="rotate(0.4 295 220)" fill="#FFFFFF"/>
+          <rect x="400" y="180" width="170" height="80" rx="8" transform="rotate(-0.4 485 220)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="590" y="180" width="170" height="80" rx="8" transform="rotate(0.3 675 220)" fill="#FFFFFF"/>
+          <path d="M240 220 L350 220 M430 220 L540 220 M620 220 L730 220"/>
+          <!-- a tick doodle for the identity -->
+          <path d="M780 62 L790 74 L810 50" stroke="#3D6B2E" stroke-width="3"/>
+        </g>
+
+        <text class="d1cL" x="42" y="74">Date Join</text>
+        <text class="d1cL" x="42" y="134">Last Day</text>
+        <text class="d1cS" x="42" y="164">NaT for 861 rows</text>
+        <text class="d1cS" x="222" y="66">start, 1 Jan</text>
+        <text class="d1cV" x="222" y="86">1,022</text>
+        <text class="d1cW" x="372" y="66">joiners</text>
+        <text class="d1cW" x="372" y="86">+ 49</text>
+        <text class="d1cW" x="502" y="66">leavers</text>
+        <text class="d1cW" x="502" y="86">- 210</text>
+        <text class="d1cS" x="632" y="66">end, 1 Jul</text>
+        <text class="d1cV" x="632" y="86">861</text>
+        <text class="d1cB" x="850" y="112" text-anchor="end">assert start + in - out == end</text>
+
+        <text class="d1cS" x="295" y="204" text-anchor="middle">210 / 1,022 start</text>
+        <text class="d1cV" x="295" y="248" text-anchor="middle">20.5%</text>
+        <text class="d1cS" x="485" y="204" text-anchor="middle">210 / 941.5 average</text>
+        <text class="d1cV" x="485" y="248" text-anchor="middle">22.3%</text>
+        <text class="d1cS" x="675" y="204" text-anchor="middle">210 / 861 end</text>
+        <text class="d1cV" x="675" y="248" text-anchor="middle">24.4%</text>
+
+        <text class="d1cN" x="30" y="288">Two columns make all four numbers, and the four numbers make three rates. Print all three; choose one; say which. Constructed Apex data.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the tick is an assert statement, and it is the one line of this pipeline most worth keeping</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Headcount as a function of a date, and why that shape matters<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Headcount is not a column; it is a function: the number of rows whose join date is on or before the date and whose last day is either missing or after it. Written that way once, it gives a consistent stock for any date, and the bridge becomes three calls: headcount at the start, headcount at the end, and the two flows as date-range counts. Written any other way, as a column somebody filled in, a total on a slide, or a figure from a different system, it drifts from the flows and the identity breaks.</p>
+        <p>Two details decide whether the identity holds. <strong>The boundary:</strong> a person whose last day is exactly the end date is in the end stock or not, and a joiner on the start date is in the start stock or not; pick one convention and use it in both the stock and the flow. <strong>The window:</strong> only events inside the window count, so a person who left after the end date is still in the end headcount. Get both right and the assert passes; get either wrong and it fails by exactly the number of boundary cases, which is a useful number to see.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Six decisions, written at the top of the script<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Which id is the person. Which rows are in the stock (payroll employees; contractors; people on leave). Which date is the join (offer, start, first payroll). Which date is the exit (notice, last day, last payroll). How transfers are treated on this bridge. Which base the rate uses. Six lines of comment above the code, and when a colleague's bridge differs from yours the diff between the two comment blocks is the answer. The same discipline the retention and RFM courses use for a customer table, applied to people, where the disagreements are more emotional and the fix is the same.</p>
+      </div>
+    </details>
+
+    <div class="tryrow" data-fn="wordcount" data-multiline="1" data-title="Write your six decisions" data-hint="For an HR table you own: the person id, who is in the stock, the join date, the exit date, how transfers are treated, which base. Six lines." data-seed="" data-cta="Count it"></div>
+  </section>
+
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>The bridge in pandas, on 1,071 constructed rows</h2>
+      <span class="tag demo">★ 22 min · everyone builds</span>
+    </div>
+    <p class="lede">Seven steps on <code>materials/apex-staff.csv</code>, the constructed Apex table that ships with these pages. Every printed number is what the code produces on that table; on your own export the numbers will differ and the decisions will not.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The build-along as a hand-drawn track of seven stations: load and check the id, write the six decisions, headcount as a function of a date, the two flows in the window, assert the identity, the three bases, and the entity and department split. Each station carries the count it produces: 1,071 rows, 1,022 and 861, 49 and 210, the assert, 20.5 22.3 24.4, and eight departments.">
+        <defs>
+          <filter id="d1dSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="53" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d1dHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d1dAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d1dH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d1dL { font: 700 11px Inter, sans-serif; fill: #2A1A1E; }
+          .d1dS { font: 400 10.5px Inter, sans-serif; fill: #6B5459; }
+          .d1dB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d1dW { font: 800 11px Inter, sans-serif; fill: #FFFFFF; }
+          .d1dN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d1dH" x="30" y="26">SEVEN STATIONS</text>
+
+        <g filter="url(#d1dSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M40 120 L840 120" stroke="#DCC9CD"/>
+          <rect x="40" y="90" width="96" height="60" rx="8" transform="rotate(-0.6 88 120)" fill="#FFFFFF"/>
+          <rect x="156" y="90" width="96" height="60" rx="8" transform="rotate(0.5 204 120)" fill="#F9EEF0"/>
+          <rect x="272" y="90" width="96" height="60" rx="8" transform="rotate(-0.4 320 120)" fill="url(#d1dHc)"/>
+          <rect x="388" y="90" width="96" height="60" rx="8" transform="rotate(0.6 436 120)" fill="#F9EEF0"/>
+          <rect x="504" y="90" width="96" height="60" rx="8" transform="rotate(-0.5 552 120)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="620" y="90" width="96" height="60" rx="8" transform="rotate(0.4 668 120)" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="736" y="90" width="104" height="60" rx="8" transform="rotate(-0.5 788 120)" fill="#FFFFFF"/>
+          <path d="M138 120 L152 120" marker-end="url(#d1dAr)"/>
+          <path d="M254 120 L268 120" marker-end="url(#d1dAr)"/>
+          <path d="M370 120 L384 120" marker-end="url(#d1dAr)"/>
+          <path d="M486 120 L500 120" marker-end="url(#d1dAr)"/>
+          <path d="M602 120 L616 120" marker-end="url(#d1dAr)"/>
+          <path d="M718 120 L732 120" marker-end="url(#d1dAr)"/>
+        </g>
+
+        <text class="d1dL" x="52" y="112">1 · load</text>
+        <text class="d1dS" x="52" y="128">1,071 rows</text>
+        <text class="d1dS" x="52" y="142">1,071 ids</text>
+        <text class="d1dL" x="168" y="112">2 · decisions</text>
+        <text class="d1dS" x="168" y="128">six comments</text>
+        <text class="d1dS" x="168" y="142">at the top</text>
+        <text class="d1dL" x="284" y="112">3 · headcount(d)</text>
+        <text class="d1dS" x="284" y="128">1,022 on 1 Jan</text>
+        <text class="d1dS" x="284" y="142">861 on 1 Jul</text>
+        <text class="d1dL" x="400" y="112">4 · the flows</text>
+        <text class="d1dS" x="400" y="128">49 joined</text>
+        <text class="d1dS" x="400" y="142">210 left</text>
+        <text class="d1dB" x="516" y="112">5 · assert</text>
+        <text class="d1dS" x="516" y="128">1,022 + 49 - 210</text>
+        <text class="d1dS" x="516" y="142">== 861</text>
+        <text class="d1dW" x="632" y="112">6 · three bases</text>
+        <text class="d1dW" x="632" y="128">20.5 · 22.3</text>
+        <text class="d1dW" x="632" y="142">24.4 percent</text>
+        <text class="d1dL" x="748" y="112">7 · split</text>
+        <text class="d1dS" x="748" y="128">4 entities</text>
+        <text class="d1dS" x="748" y="142">8 departments</text>
+
+        <text class="d1dS" x="40" y="74">Station 3 is the whole trick: headcount is a function of a date, not a column. Station 5 is the test. Station 6 is where the choice becomes visible.</text>
+        <text class="d1dN" x="30" y="212">Save the bridge with both dates in the filename. Session 3 compares it with a benchmark and session 8 plans from it.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the moss station is a single assert, and it catches more people-data errors than any dashboard review</figcaption>
+    </figure>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Load, and check that the id is the person.</strong> Rows and distinct ids should agree; if they do not, somebody is two rows.</p>
+        <div class="prompt-box good"><span class="label">★ Step 1 · load</span>import pandas as pd
+
+d = pd.read_csv("materials/apex-staff.csv", parse_dates=["Date Join", "Last Day"])
+print(len(d), d["Staff ID"].nunique())          # 1071 1071
+print(d["Company"].value_counts().to_dict())
+# {'Apex Manufacturing': 460, 'Apex Retail': 250, 'Apex Logistics': 231, 'Apex Digital': 130}
+print(d["Last Day"].notna().sum())               # 210 rows have a last day</div>
+      </div>
+      <div class="step">
+        <p><strong>The six decisions, as comments.</strong> Written before any number, so that a colleague's different number is a diff and not an argument.</p>
+        <div class="prompt-box good"><span class="label">★ Step 2 · decisions</span># person id:   Staff ID, one per person (checked: 1071 == 1071)
+# in the stock: every row (the table is payroll employees; no contractor flag exists)
+# join date:    Date Join
+# exit date:    Last Day; NaT means still employed at the export
+# transfers:    is_transfer marks moves between Apex entities; NOT exits on the group bridge
+# base:         average of start and end headcount, stated on every rate
+# window:       the export is a snapshot on 2026-01-01 plus leavers to 2026-06-17;
+#               NO flow before 2026-01-01 can be computed from it</div>
+      </div>
+      <div class="step">
+        <p><strong>Headcount as a function of a date.</strong> On the payroll on that date: joined on or before it, and not yet left (no last day, or a last day after it).</p>
+        <div class="prompt-box good"><span class="label">★ Step 3 · headcount(date)</span>def headcount(df, date):
+    date = pd.Timestamp(date)
+    joined = df["Date Join"] &lt;= date
+    still  = df["Last Day"].isna() | (df["Last Day"] &gt;= date)
+    return int((joined &amp; still).sum())
+
+START, END = "2026-01-01", "2026-07-01"
+print(headcount(d, START), headcount(d, END))    # 1022 861</div>
+      </div>
+      <div class="step">
+        <p><strong>The two flows, inside the window.</strong> Joiners with a join date on or after the start; leavers with a last day inside the window. Nothing before the start can be seen, and the code says so.</p>
+        <div class="prompt-box good"><span class="label">★ Step 4 · flows</span>joiners = int((d["Date Join"] &gt;= START).sum())
+leavers = int(((d["Last Day"] &gt;= START) &amp; (d["Last Day"] &lt; END)).sum())
+print(joiners, leavers)                          # 49 210
+print(d["Last Day"].min().date(), d["Last Day"].max().date())
+# 2026-01-01 2026-06-17   -&gt; every exit the table can see is inside the window</div>
+      </div>
+      <div class="step">
+        <p><strong>Assert the identity.</strong> One line. If it fails, the difference is the number of boundary cases or double counts, and that is the next thing to look at.</p>
+        <div class="prompt-box good"><span class="label">★ Step 5 · the identity</span>assert headcount(d, START) + joiners - leavers == headcount(d, END), "bridge does not reconcile"
+print("bridge reconciles:", headcount(d, START), "+", joiners, "-", leavers, "=", headcount(d, END))
+# bridge reconciles: 1022 + 49 - 210 = 861</div>
+      </div>
+      <div class="step">
+        <p><strong>Three bases, printed together.</strong> The choice is the average base, and the other two are printed beside it so the choice is visible. Annualised by doubling, with the assumption in the label.</p>
+        <div class="prompt-box good"><span class="label">★ Step 6 · the rate with its base</span>start, end = headcount(d, START), headcount(d, END)
+bases = {"start": start, "average": (start + end) / 2, "end": end}
+for name, base in bases.items():
+    print(f"{name:8s} base {base:7.1f}  H1 attrition {leavers / base * 100:5.1f}%")
+# start    base  1022.0  H1 attrition  20.5%
+# average  base   941.5  H1 attrition  22.3%
+# end      base   861.0  H1 attrition  24.4%
+print(f"annualised (x2, assumes H2 repeats H1): {leavers / bases['average'] * 200:.1f}%")   # 44.6%</div>
+      </div>
+      <div class="step">
+        <p><strong>Split by entity and department, start base.</strong> The base is printed under every rate, because the next session is about what a base of 75 does to a rate.</p>
+        <div class="prompt-box good"><span class="label">★ Step 7 · the split</span>def bridge_rows(df, by):
+    out = []
+    for key, g in df.groupby(by):
+        s = headcount(g, START); l = int(((g["Last Day"] &gt;= START) &amp; (g["Last Day"] &lt; END)).sum())
+        out.append((key, s, l, round(l / s * 100, 1)))
+    return pd.DataFrame(out, columns=[by, "start", "leavers", "rate_on_start_base"])
+
+print(bridge_rows(d, "Company").to_string(index=False))
+#            Company  start  leavers  rate_on_start_base
+#       Apex Digital    124       31                25.0
+#     Apex Logistics    221       52                23.5
+# Apex Manufacturing    440       85                19.3
+#        Apex Retail    237       42                17.7
+print(bridge_rows(d, "Department").sort_values("rate_on_start_base").to_string(index=False))
+# R&amp;D 94 / 7 / 7.4 ... Sales 108 / 54 / 50.0
+
+bridge_rows(d, "Department").to_csv("bridge_2026-01-01_to_2026-07-01.csv", index=False)</div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Keep the assert.</strong> A people pipeline with the identity asserted in it fails loudly the day a system starts issuing new ids on transfer, a contractor feed is added to the export, or a last day is entered in the wrong year. Without it, the rate quietly moves and somebody presents the movement as a trend.</p>
+    </div>
+  </section>
+
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before deep-dive session 2</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li><strong>Run the seven steps</strong> on Apex, then on your own export. Write the six decisions as comments before any code below them.</li>
+      <li><strong>Move the window</strong> to 1 February to 1 June and re-run. Write which of the four bridge numbers changed and why the identity still holds.</li>
+      <li><strong>Answer "which table is this"</strong> for your export: can a person appear twice? What events can it rebuild, and what can it not?</li>
+      <li><strong>Bring the table.</strong> Session 2 fits a survival curve to it and shows how far the photograph problem bends the curve.</li>
+    </ol>
+  </section>
+
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+    <p>Clear all three and deep-dive session 1 gets stamped in your passport.</p>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · You are handed a table with one row per person, a join date, and a last day that is empty for most rows. Which table is it, and what follows?</p>
+      <button class="qopt" type="button">A · An event log, because it has dates</button>
+      <button class="qopt" type="button">B · A position table, because it has one row per seat</button>
+      <button class="qopt" type="button">C · An employee snapshot with one event stapled on; it can give headcount on a date and the joins and exits it happens to contain, and it cannot see any exit that happened before the snapshot, so every flow it yields is a flow inside its own window</button>
+      <button class="qopt" type="button">D · A complete history, because every person has a join date</button>
+      <p class="qwhy">The test is whether a person can appear more than once. One row per person is a photograph; the last day column is the final event only. Apex can see exits from 1 January to 17 June 2026 and nothing before.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · Why is headcount written as a function of a date rather than read from a column or a slide?</p>
+      <button class="qopt" type="button">A · Because a stock needs a date, and computing it the same way for any date from the same join and exit columns is what makes the start stock, the end stock and the flows consistent enough for the identity to be asserted; a figure from another source drifts from the flows and the bridge silently breaks</button>
+      <button class="qopt" type="button">B · Because pandas cannot store a headcount column</button>
+      <button class="qopt" type="button">C · Because HR systems never publish a headcount</button>
+      <button class="qopt" type="button">D · Because a function is faster than a column</button>
+      <p class="qwhy">The boundary convention and the window convention live inside the function once, and both stock and flow use them. That is what lets one assert line catch double counts and boundary errors.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · The script prints 20.5, 22.3 and 24.4 percent for the same 210 leavers and then chooses one. Why print all three?</p>
+      <button class="qopt" type="button">A · Because the true rate is the average of the three</button>
+      <button class="qopt" type="button">B · Because the base is a decision that moves the rate by four points, and printing the alternatives beside the chosen one makes the decision visible to whoever reads the number next; the chosen average base approximates the people exposed to the risk of leaving and is stated on every rate</button>
+      <button class="qopt" type="button">C · Because different departments should use different bases</button>
+      <button class="qopt" type="button">D · Because the end base is always wrong and printing it proves that</button>
+      <p class="qwhy">None of the three is wrong; an undeclared one is. The same habit applies to the annualised figure, which carries the words "assumes H2 repeats H1" in its label.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What this session teaches, and where it came from</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The employee, position and event tables; snapshot vs event log</span><span class="note">Standard practice, no single source</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The Apex bridge: 1,071 rows and ids; 1,022, 49, 210, 861; 20.5 / 22.3 / 24.4; annualised 44.6; entity rates 25.0 / 23.5 / 19.3 / 17.7; Sales 50.0 and R&amp;D 7.4</span><span class="note">Computed from the constructed Apex table that ships with these pages; Apex and everyone in it are invented; annualising is labelled as an assumption</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The identity as an assert; headcount as a function of a date; the six decisions</span><span class="note">Standard practice; the same discipline the retention and RFM courses apply to a customer table</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Rebuilding an event log from monthly snapshots</span><span class="note">Named in self-study; not built here</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Survival and the photograph bias</span><span class="note">Named; measured in session 2</span></div>
+    </div>
+    <p class="mono" style="margin-top:14px">Every fact on this page, and its verification tier, is recorded in the course's source map.</p>
+  </section>
+
+  <section class="cheat" id="cheatsheet">
+    <h3>Deep-dive session 1 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Three tables</b><span>Employee (who), position (seats), event (what happened when). Flows live in the third.</span></div>
+      <div class="cheat-item"><b>Which one is this?</b><span>Can a person appear twice? No: a snapshot. Yes: an event log.</span></div>
+      <div class="cheat-item"><b>headcount(date)</b><span>Joined on or before, not yet left. A function, never a column.</span></div>
+      <div class="cheat-item"><b>assert start + in - out == end</b><span>Apex: 1,022 + 49 - 210 = 861. Keep the line.</span></div>
+      <div class="cheat-item"><b>Three bases, printed</b><span>20.5 start, 22.3 average, 24.4 end. Choose, say which.</span></div>
+      <div class="cheat-item"><b>The window is the snapshot's</b><span>Apex sees exits from 1 Jan to 17 Jun 2026 and nothing earlier.</span></div>
+    </div>
+  </section>
+
+  <div class="callout next">
+    <span class="nx-pill">Next session</span>
+    <p>You have a bridge that reconciles and a table you know to be a photograph. Deep-dive session 2 asks the photograph a question it cannot honestly answer, how long do people stay, fits a Kaplan-Meier survival curve to it by hand, gets 94 percent at one year and 78 at five, and then shows why every one of those numbers is too high: nobody who left before 2026 is in the table. The fix is an event log, and the session ends with what one would have to contain.</p>
+  </div>
+
+  <footer class="pagefoot">
+    <span>Deep-dive session 1 of 10 · learn-people-analytics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="../index.html">← Course home</a> &nbsp;·&nbsp; <a href="p2-attrition-survival.html">Next: Attrition as survival →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

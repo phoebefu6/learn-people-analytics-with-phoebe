@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Deep-dive session 3 of 10. Why people leave is a classification somebody chose: eleven reason categories on 210 constructed exits, five of them declared regretted for 65.2 percent, and the share moves the moment the list changes. Department rates with the base printed under each, then the first outside number of the track, the US quits rate from BLS JOLTS fetched live in Python, with the arithmetic that keeps a monthly rate from being read as an annual one.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Regretted, and benchmarked - learn people analytics with phoebe">
+<meta property="og:description" content="Deep-dive session 3 of 10. Regretted is a list you chose; a benchmark is a rate with a different base and clock.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/courses/p3-regretted-and-benchmarked.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Regretted, and benchmarked - learn people analytics with phoebe">
+<meta name="twitter:description" content="Deep-dive session 3 of 10. Eleven reasons, eight bases, and JOLTS fetched in Python.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Deep-dive session 3 · Regretted, and benchmarked - learn people analytics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-people-analytics-with-phoebe</a> / Deep-dive session 3 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn People Analytics with Phoebe · Deep-dive session 3 of 10</div>
+    <h1>Regretted, and <span class="accent">benchmarked</span></h1>
+    <p class="sub">Two questions follow every attrition number: was it the people we wanted to keep, and is it high? Both sound like measurements and both are choices dressed as measurements. "Regretted" is a list of reason categories somebody ticked, and the share moves when the list does: on Apex's 210 constructed exits, five ticked categories give 65.2 percent, seven give 81.4, three give 45.2. "High" needs a comparison, and the only open, monthly, national one is the US quits rate from BLS JOLTS, which is a different base on a different clock. Tonight computes both in pandas, fetches JOLTS live without a key, and writes the arithmetic that stops a monthly 2.0 from being read as an annual 2.0, or an annual 44.6 from being read as twenty times the nation.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Core</span>
+      <span class="chip audience">HR analysts, people data teams, anyone asked "is our attrition high"</span>
+      <span class="chip audience">Python, pandas, requests to a public API</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-18 · Reasons, bases, the benchmark</span>
+      <span class="a3" style="flex:5">18-40 · Build-along: Apex reasons and JOLTS in Python</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we start</h2>
+    </div>
+    <p class="lede">Deep-dive session 2 left the 210 exits on a curve and proved the curve too high. Tonight leaves the curve alone and asks two things of the same 210 rows: the reason column, and the department column with its base. Then it reaches outside the constructed company for the first time, to a real monthly series from the US Bureau of Labor Statistics, and spends most of its care on why that number and Apex's cannot be laid side by side without a sentence of arithmetic between them. Apex is constructed; JOLTS is real and fetched on the page's build date, 26 September 2026.</p>
+
+    <div class="legend">
+      <span class="pill">🎫 Clear all three quiz questions to stamp your passport</span>
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">★ Build-along = run the code yourself</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> A regretted share whose list is printed beside it; department rates with the base under every one; a working call to the BLS public API in seven lines; the peak, the trough and two annual means of the US quits rate; and the two-line caveat that turns a monthly rate into a rough annual scale without pretending it is one.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers reason categories and regretted as a classification</span>
+      <h2>Regretted is a list you chose</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">Apex's exits carry a free-text reason, already coded into eleven categories: Better Opportunity 33, Career Growth 33, Compensation 29, Management/Culture 23, Relocation 19, Work-Life Balance 19, Unknown 17, Personal/Health 15, Involuntary/Performance 10, Retirement 9, Further Study 3. None of those is "regretted". Regretted is a line drawn through the list, and where the line goes is a decision that deserves to be printed next to the share it produces.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 326" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Eleven hand-drawn horizontal bars, one per reason category, with counts from 33 down to 3, each with a small tick box; five boxes are ticked and those bars are filled moss: Better Opportunity, Career Growth, Compensation, Management and Culture, Work-Life Balance. The Unknown bar is hachured. A panel on the right reads regretted is a list you chose, and gives four shares from the same table: 137 of 210 is 65.2 percent for the five ticked; 171 of 210 is 81.4 with Relocation and Personal and Health added; 95 of 210 is 45.2 with only the three market reasons; 137 of 193 is 71.0 with Unknown out of the base.">
+        <defs>
+          <filter id="d3aSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="103" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d3aHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d3aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d3aH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d3aL { font: 700 11.5px Inter, sans-serif; fill: #2A1A1E; }
+          .d3aS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d3aB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d3aV { font: 800 14px Inter, sans-serif; fill: #4F1521; }
+          .d3aN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d3aH" x="30" y="26">ELEVEN REASONS, AND A LINE SOMEBODY DREW THROUGH THEM</text>
+
+        <g filter="url(#d3aSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- tick boxes -->
+          <rect x="40" y="56" width="11" height="11" rx="2" fill="#FFFFFF"/><path d="M42 62 L45 65 L50 58" stroke="#3D6B2E" stroke-width="2.2"/>
+          <rect x="40" y="76" width="11" height="11" rx="2" fill="#FFFFFF"/><path d="M42 82 L45 85 L50 78" stroke="#3D6B2E" stroke-width="2.2"/>
+          <rect x="40" y="96" width="11" height="11" rx="2" fill="#FFFFFF"/><path d="M42 102 L45 105 L50 98" stroke="#3D6B2E" stroke-width="2.2"/>
+          <rect x="40" y="116" width="11" height="11" rx="2" fill="#FFFFFF"/><path d="M42 122 L45 125 L50 118" stroke="#3D6B2E" stroke-width="2.2"/>
+          <rect x="40" y="136" width="11" height="11" rx="2" fill="#FFFFFF"/>
+          <rect x="40" y="156" width="11" height="11" rx="2" fill="#FFFFFF"/><path d="M42 162 L45 165 L50 158" stroke="#3D6B2E" stroke-width="2.2"/>
+          <rect x="40" y="176" width="11" height="11" rx="2" fill="#FFFFFF"/>
+          <rect x="40" y="196" width="11" height="11" rx="2" fill="#FFFFFF"/>
+          <rect x="40" y="216" width="11" height="11" rx="2" fill="#FFFFFF"/>
+          <rect x="40" y="236" width="11" height="11" rx="2" fill="#FFFFFF"/>
+          <rect x="40" y="256" width="11" height="11" rx="2" fill="#FFFFFF"/>
+          <!-- bars: 8 px per exit -->
+          <rect x="214" y="55" width="264" height="14" rx="3" transform="rotate(-0.4 346 62)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="214" y="75" width="264" height="14" rx="3" transform="rotate(0.4 346 82)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="214" y="95" width="232" height="14" rx="3" transform="rotate(-0.3 330 102)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="214" y="115" width="184" height="14" rx="3" transform="rotate(0.5 306 122)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="214" y="135" width="152" height="14" rx="3" transform="rotate(-0.5 290 142)" fill="#FFFFFF"/>
+          <rect x="214" y="155" width="152" height="14" rx="3" transform="rotate(0.4 290 162)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="214" y="175" width="136" height="14" rx="3" transform="rotate(-0.4 282 182)" fill="url(#d3aHc)"/>
+          <rect x="214" y="195" width="120" height="14" rx="3" transform="rotate(0.3 274 202)" fill="#FFFFFF"/>
+          <rect x="214" y="215" width="80" height="14" rx="3" transform="rotate(-0.5 254 222)" fill="#FFFFFF"/>
+          <rect x="214" y="235" width="72" height="14" rx="3" transform="rotate(0.5 250 242)" fill="#FFFFFF"/>
+          <rect x="214" y="255" width="24" height="14" rx="3" transform="rotate(-0.4 226 262)" fill="#FFFFFF"/>
+          <!-- the choice panel -->
+          <rect x="530" y="50" width="320" height="226" rx="8" transform="rotate(0.3 690 163)" fill="#FFFFFF"/>
+          <path d="M542 82 L838 82" stroke="#DCC9CD"/>
+        </g>
+
+        <text class="d3aS" x="60" y="66">Better Opportunity</text><text class="d3aL" x="486" y="66">33</text>
+        <text class="d3aS" x="60" y="86">Career Growth</text><text class="d3aL" x="486" y="86">33</text>
+        <text class="d3aS" x="60" y="106">Compensation</text><text class="d3aL" x="454" y="106">29</text>
+        <text class="d3aS" x="60" y="126">Management/Culture</text><text class="d3aL" x="406" y="126">23</text>
+        <text class="d3aS" x="60" y="146">Relocation</text><text class="d3aL" x="374" y="146">19</text>
+        <text class="d3aS" x="60" y="166">Work-Life Balance</text><text class="d3aL" x="374" y="166">19</text>
+        <text class="d3aS" x="60" y="186">Unknown</text><text class="d3aL" x="358" y="186">17</text>
+        <text class="d3aS" x="60" y="206">Personal/Health</text><text class="d3aL" x="342" y="206">15</text>
+        <text class="d3aS" x="60" y="226">Involuntary/Performance</text><text class="d3aL" x="302" y="226">10</text>
+        <text class="d3aS" x="60" y="246">Retirement</text><text class="d3aL" x="294" y="246">9</text>
+        <text class="d3aS" x="60" y="266">Further Study</text><text class="d3aL" x="246" y="266">3</text>
+
+        <text class="d3aL" x="542" y="72">REGRETTED IS A LIST YOU CHOSE</text>
+        <text class="d3aB" x="542" y="104">five ticked categories: 137 of 210</text>
+        <text class="d3aV" x="800" y="105" text-anchor="end">65.2%</text>
+        <text class="d3aS" x="542" y="134">add Relocation and Personal/Health: 171 of 210</text>
+        <text class="d3aV" x="838" y="135" text-anchor="end">81.4%</text>
+        <text class="d3aS" x="542" y="164">only the three market reasons: 95 of 210</text>
+        <text class="d3aV" x="838" y="165" text-anchor="end">45.2%</text>
+        <text class="d3aS" x="542" y="194">same five, Unknown out of the base: 137 of 193</text>
+        <text class="d3aV" x="838" y="195" text-anchor="end">71.0%</text>
+        <text class="d3aB" x="542" y="232">one table, four defensible shares</text>
+        <text class="d3aS" x="542" y="250">the list is the finding; print it beside the number</text>
+
+        <text class="d3aN" x="30" y="300">Constructed Apex table, 210 exits. The five ticked rows are the list these pages use.</text>
+        <text class="d3aN" x="30" y="316">The other three lists are computed on the same rows to show the swing.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the tick boxes are the analysis; the bars are only the data</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Four shares from one table, and which one is right<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The list these pages use ticks five categories as regretted: Better Opportunity, Career Growth, Compensation, Management/Culture and Work-Life Balance. The idea behind the line is "could we have kept them": those five are reasons an employer might have answered, and the rest are reasons it could not (Retirement, Further Study, Relocation), did not want to (Involuntary/Performance), or cannot classify (Unknown, Personal/Health). Five ticks give <strong>137 of 210 = 65.2 percent</strong>.</p>
+        <p>Every one of those placements is arguable. Relocation is unavoidable unless remote work was on the table; Personal/Health is unknowable unless the exit interview said more. Tick both and the share is 171 of 210 = 81.4 percent. Decide that only the three market reasons count, the ones a counter-offer could have touched, and it is 95 of 210 = 45.2 percent. Keep the five but take the 17 Unknowns out of the base, because they might be anything, and it is 137 of 193 = 71.0 percent. All four are computed on the same constructed rows; none is wrong.</p>
+        <p>So the deliverable is not a share. It is a share with its list printed beside it, and the list is what a colleague can disagree with. "Regretted attrition is 65 percent" is an assertion; "65.2 percent, counting these five categories as regretted" is a finding, and it tells the reader exactly which tick to argue about.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Where the categories came from, and the row that says "offer I couldn't refuse"<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Apex's <code>reason_category</code> is itself a coding of a free-text column, and the free text is what the exit interview actually captured: "offer i couldnt refuse", "underpaid for the work", "bad manager", "no growth path here". A coding step sits between those phrases and the eleven categories, and it was a person or a rule that put "offer i couldnt refuse" under Better Opportunity rather than Compensation. Print the raw phrases under each category once a year. If the coding drifts, the regretted share drifts with it, and nobody will see the drift in the category counts. On a real table, the coding rule belongs in the six decisions from deep-dive session 1, as a seventh line.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The regretted rate that fell nine points in a quarter.</strong> A people team reported regretted attrition dropping from the high sixties to the high fifties and was congratulated. The list had changed: a new HR system shipped with "Relocation" and "Work-Life Balance" mapped to a non-regretted bucket by default, and nobody had ticked them back. The 210 exits were the same kind of exits. The line had moved. Constructed setting; the mechanism is the figure above.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers rates by department with the base</span>
+      <h2>Eight rates, eight bases, one start date</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">Cut the 210 exits by department and divide by each department's headcount on 1 January 2026: Sales 50.0 percent, Customer Service 37.6, Operations 25.2, Marketing 19.7, Engineering 11.3, HR 10.7, Finance 8.3, R&amp;D 7.4. Eight numbers that look like one kind of thing. The base printed under each one shows they are not: Sales is 54 of 108, HR is 8 of 75, and one person leaving HR moves its rate by more than a point.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 314" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Eight hand-drawn horizontal bars, one per department, sorted by rate: Sales 50.0 percent, 54 of 108; Customer Service 37.6, 35 of 93; Operations 25.2, 55 of 218; Marketing 19.7, 15 of 76; Engineering 11.3, 24 of 213; HR 10.7, 8 of 75; Finance 8.3, 12 of 145; R and D 7.4, 7 of 94. The base is printed under every bar. A magnifier doodle sits on the HR bar and a panel on the right shows that one more HR exit gives 12.0 percent and one fewer gives 9.3.">
+        <defs>
+          <filter id="d3bSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="107" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d3bHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d3bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d3bH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d3bL { font: 700 11.5px Inter, sans-serif; fill: #2A1A1E; }
+          .d3bS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d3bT { font: 400 10.5px Inter, sans-serif; fill: #6B5459; }
+          .d3bB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d3bV { font: 800 13px Inter, sans-serif; fill: #4F1521; }
+          .d3bN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d3bH" x="30" y="26">EIGHT RATES, EIGHT BASES, ONE START DATE</text>
+
+        <g filter="url(#d3bSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- bars: 5 px per point of rate -->
+          <rect x="170" y="54" width="250" height="14" rx="3" transform="rotate(-0.4 295 61)" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="170" y="82" width="188" height="14" rx="3" transform="rotate(0.4 264 89)" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="170" y="110" width="126" height="14" rx="3" transform="rotate(-0.3 233 117)" fill="#F9EEF0"/>
+          <rect x="170" y="138" width="99" height="14" rx="3" transform="rotate(0.4 220 145)" fill="#F9EEF0"/>
+          <rect x="170" y="166" width="57" height="14" rx="3" transform="rotate(-0.5 198 173)" fill="#F9EEF0"/>
+          <rect x="170" y="194" width="54" height="14" rx="3" transform="rotate(0.5 197 201)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="170" y="222" width="42" height="14" rx="3" transform="rotate(-0.4 191 229)" fill="#F9EEF0"/>
+          <rect x="170" y="250" width="37" height="14" rx="3" transform="rotate(0.4 188 257)" fill="#F9EEF0"/>
+          <!-- magnifier on the HR bar -->
+          <circle cx="238" cy="201" r="12" fill="none" stroke="#3D6B2E"/>
+          <path d="M247 210 L258 221" stroke="#3D6B2E"/>
+          <!-- the small-base panel -->
+          <rect x="560" y="50" width="290" height="176" rx="8" transform="rotate(-0.3 705 138)" fill="#FFFFFF"/>
+          <path d="M572 82 L838 82" stroke="#DCC9CD"/>
+        </g>
+
+        <text class="d3bS" x="40" y="65">Sales</text><text class="d3bV" x="428" y="66">50.0%</text><text class="d3bT" x="170" y="80">54 of 108</text>
+        <text class="d3bS" x="40" y="93">Customer Service</text><text class="d3bV" x="366" y="94">37.6%</text><text class="d3bT" x="170" y="108">35 of 93</text>
+        <text class="d3bS" x="40" y="121">Operations</text><text class="d3bV" x="304" y="122">25.2%</text><text class="d3bT" x="170" y="136">55 of 218</text>
+        <text class="d3bS" x="40" y="149">Marketing</text><text class="d3bV" x="277" y="150">19.7%</text><text class="d3bT" x="170" y="164">15 of 76</text>
+        <text class="d3bS" x="40" y="177">Engineering</text><text class="d3bV" x="235" y="178">11.3%</text><text class="d3bT" x="170" y="192">24 of 213</text>
+        <text class="d3bS" x="40" y="205">HR</text><text class="d3bV" x="262" y="206">10.7%</text><text class="d3bT" x="170" y="220">8 of 75</text>
+        <text class="d3bS" x="40" y="233">Finance</text><text class="d3bV" x="220" y="234">8.3%</text><text class="d3bT" x="170" y="248">12 of 145</text>
+        <text class="d3bS" x="40" y="261">R&amp;D</text><text class="d3bV" x="215" y="262">7.4%</text><text class="d3bT" x="170" y="276">7 of 94</text>
+
+        <text class="d3bL" x="572" y="72">THE BASE UNDER THE RATE</text>
+        <text class="d3bB" x="572" y="104">HR: 10.7% is eight people</text>
+        <text class="d3bS" x="572" y="124">one more exit: 9 of 75 = 12.0%</text>
+        <text class="d3bS" x="572" y="142">one fewer: 7 of 75 = 9.3%</text>
+        <text class="d3bB" x="572" y="172">Sales: 50.0% is 54 people</text>
+        <text class="d3bS" x="572" y="192">one more: 55 of 108 = 50.9%</text>
+        <text class="d3bS" x="572" y="210">a rate that survives a person</text>
+
+        <text class="d3bN" x="30" y="304">Leavers January to June 2026 over headcount on 1 January 2026. Constructed Apex table; one exit moves HR by 1.3 points.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the small grey line under each bar is the whole argument: a rate without its base is a number without a size</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The base under every rate, and the rate that is one person wide<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>All eight rates use the same recipe from deep-dive session 1: leavers in the window over headcount on the start date. That makes them comparable in construction. It does not make them comparable in precision. Sales at 50.0 percent is 54 exits over 108 people; one more exit would read 50.9. HR at 10.7 percent is 8 exits over 75; one more exit reads 12.0, one fewer reads 9.3. The HR rate is a number about one person wide, and a ranking that puts HR at 10.7 above Finance at 8.3 is a ranking of noise.</p>
+        <p>The habit is to print the base under the rate, every time, in the table and on the slide. <strong>"HR 10.7 percent (8 of 75)"</strong> lets the reader do the one-person arithmetic in their head; "HR 10.7 percent" invites them to compare it with Finance. On a dashboard the same discipline is one row per rate with the numerator and denominator visible, which Foundations session 6 builds without code.</p>
+        <p>The two big rates are the ones worth a meeting: Sales at 50.0 percent on a base of 108 and Customer Service at 37.6 on 93 are far from the rest and wide enough to survive a person or two. That is what a base tells you: which differences are worth a conversation and which are the arithmetic of small numbers.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Regretted by department, and why the table gets thin fast<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Cross regretted with department and the cells shrink: HR has 8 exits in total, so its regretted count is at most 8 and its regretted share is a fraction of a handful. Two cuts on 210 rows produce a table where most cells are under ten, and a share computed on a cell under ten should be shown as the count, not the percentage. The same limit applies to reason categories by entity, by tenure band, by anything. A useful rule for a people table: below about 20 in the base, print the count and the base and no rate at all; the reader can divide, and will be reminded not to.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>"HR attrition has risen 40 percent."</strong> The rate had gone from 10.7 to about 15 percent, from 8 exits to 11 on a base of 75. Three people. The headline was arithmetically correct and it triggered a retention programme for a department where three departures in six months is a normal spread. Printing "8 of 75" beside the 10.7 in the earlier report would have stopped the sentence before it was written. Constructed setting; the arithmetic is the figure above.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-3">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers the JOLTS benchmark and its arithmetic</span>
+      <h2>A benchmark is a rate with a different base and a different clock</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">"Is 44.6 percent high?" wants a comparison, and the only open, monthly, national one is the US Job Openings and Labor Turnover Survey. Its quits rate is quits during the month as a percent of employment, seasonally adjusted, all US employers, voluntary quits only. It peaked at 3.0 percent in November 2021, fell to 1.5 in April 2020, averaged 2.32 across 2019 and 2.02 across 2025, and stood at 2.0 in December 2025. Every one of those is a monthly number, and Apex's 44.6 is an annual one built by doubling a half year. They share a word and nothing else until the arithmetic is written down.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 338" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn line of the US total nonfarm quits rate, monthly from January 2016 to December 2025, on axes from 1.0 to 3.5 percent. The line runs a little above 2 through 2016 to 2019, drops to a trough of 1.5 in April 2020 marked with a dot, climbs to a peak of 3.0 in November 2021 marked with a dot, and drifts back to 2.0 by December 2025. Legend lines give the 2019 mean 2.32, the 2025 mean 2.02, and December 2025 by industry: leisure and hospitality 4.4, professional and business 1.9, education and health 1.9, manufacturing 1.4.">
+        <defs>
+          <filter id="d3cSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="109" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d3cHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d3cAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d3cH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d3cL { font: 600 11px Inter, sans-serif; fill: #2A1A1E; }
+          .d3cS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d3cB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d3cV { font: 800 13px Inter, sans-serif; fill: #4F1521; }
+          .d3cA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .05em; }
+          .d3cN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d3cH" x="30" y="26">THE US QUITS RATE, 120 MONTHS, DRAWN FROM THE FETCHED SERIES</text>
+        <text class="d3cA" x="80" y="42">QUITS, % OF EMPLOYMENT PER MONTH</text>
+        <text class="d3cA" x="800" y="42" text-anchor="end">MONTH</text>
+
+        <g filter="url(#d3cSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M80 50 L80 230 L806 230" marker-end="url(#d3cAr)"/>
+          <path d="M76 194 L84 194 M76 158 L84 158 M76 122 L84 122 M76 86 L84 86 M76 50 L84 50"/>
+          <path d="M224 226 L224 234 M368 226 L368 234 M512 226 L512 234 M656 226 L656 234 M800 226 L800 234"/>
+          <!-- 2019 and 2025 means as short dashed rules -->
+          <path d="M296 135 L368 135" stroke="#3D6B2E" stroke-width="2.4" stroke-dasharray="5 4"/>
+          <path d="M728 157 L800 157" stroke="#3D6B2E" stroke-width="2.4" stroke-dasharray="5 4"/>
+          <!-- the series -->
+          <path d="M80 158 L86 151 L92 158 L98 151 L104 151 L110 151 L116 151 L122 151 L128 151 L134 151 L140 151 L146 151 L152 144 L158 151 L164 144 L170 151 L176 151 L182 144 L188 151 L194 151 L200 144 L206 144 L212 144 L218 144 L224 158 L230 144 L236 144 L242 136 L248 136 L254 136 L260 136 L266 136 L272 136 L278 136 L284 136 L290 136 L296 136 L302 129 L308 136 L314 136 L320 136 L326 136 L332 129 L338 136 L344 136 L350 136 L356 136 L362 136 L368 136 L374 136 L380 165 L386 194 L392 180 L398 165 L404 144 L410 151 L416 144 L422 136 L428 144 L434 129 L440 136 L446 129 L452 122 L458 108 L464 115 L470 100 L476 100 L482 100 L488 93 L494 100 L500 86 L506 93 L512 93 L518 100 L524 93 L530 86 L536 100 L542 108 L548 115 L554 100 L560 108 L566 115 L572 115 L578 108 L584 122 L590 122 L596 129 L602 136 L608 115 L614 129 L620 136 L626 136 L632 136 L638 136 L644 136 L650 144 L656 151 L662 144 L668 151 L674 144 L680 151 L686 151 L692 151 L698 151 L704 158 L710 158 L716 165 L722 165 L728 158 L734 158 L740 144 L746 158 L752 151 L758 151 L764 158 L770 158 L776 165 L782 165 L788 158 L794 158" stroke="#7A2334" stroke-width="2.4"/>
+          <circle cx="500" cy="86" r="5" fill="#7A2334" stroke="#7A2334"/>
+          <circle cx="386" cy="194" r="5" fill="#7A2334" stroke="#7A2334"/>
+          <!-- calendar doodle -->
+          <rect x="812" y="56" width="36" height="30" rx="3" fill="#FFFFFF"/>
+          <path d="M812 66 L848 66 M820 52 L820 60 M840 52 L840 60"/>
+        </g>
+
+        <text class="d3cS" x="70" y="198" text-anchor="end">1.5</text>
+        <text class="d3cS" x="70" y="162" text-anchor="end">2.0</text>
+        <text class="d3cS" x="70" y="126" text-anchor="end">2.5</text>
+        <text class="d3cS" x="70" y="90" text-anchor="end">3.0</text>
+        <text class="d3cS" x="70" y="54" text-anchor="end">3.5</text>
+        <text class="d3cS" x="80" y="248" text-anchor="middle">2016</text>
+        <text class="d3cS" x="224" y="248" text-anchor="middle">2018</text>
+        <text class="d3cS" x="368" y="248" text-anchor="middle">2020</text>
+        <text class="d3cS" x="512" y="248" text-anchor="middle">2022</text>
+        <text class="d3cS" x="656" y="248" text-anchor="middle">2024</text>
+        <text class="d3cS" x="800" y="248" text-anchor="middle">2026</text>
+
+        <text class="d3cV" x="500" y="72" text-anchor="middle">3.0 · November 2021</text>
+        <text class="d3cV" x="386" y="214" text-anchor="middle">1.5 · April 2020</text>
+        <text class="d3cB" x="296" y="118">2019 mean 2.32</text>
+        <text class="d3cB" x="800" y="184" text-anchor="end">2025 mean 2.02 · Dec 2.0</text>
+
+        <text class="d3cS" x="30" y="274">Peak 3.0 in November 2021; trough 1.5 in April 2020; 2019 mean 2.32; 2025 mean 2.02; December 2025 total 2.0.</text>
+        <text class="d3cS" x="30" y="290">December 2025 by industry: leisure and hospitality 4.4 · professional and business 1.9 · education and health 1.9 · manufacturing 1.4.</text>
+        <text class="d3cN" x="30" y="314">BLS JOLTS, seasonally adjusted: quits during the month as a percent of employment, January 2016 to December 2025.</text>
+        <text class="d3cN" x="30" y="330">US, all employers, voluntary quits only. Fetched 26 September 2026. Not a target for any one company.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the whole series lives between 1.5 and 3.0 percent per month; the unit is the first thing to say about it</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Monthly is not annual, and the two-line caveat<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A quits rate of 2.0 percent means that in that month, quits equalled 2.0 percent of employment. Twelve such months are about 24 percent of employment in quits over a year, <strong>if</strong> the same people never quit twice and the base never moves. Neither holds exactly, so 24 is a rough scale, not an annual rate, and the honest sentence carries both conditions: "roughly 24 percent a year, multiplying the monthly rate by 12, which assumes no repeat quits and a fixed base". Written that way it is useful. Written as "the US annual quit rate is 24 percent" it is a number nobody measured.</p>
+        <p>Apex's side has the same shape with a different clock. 22.3 percent for the half year, times two, is 44.6 percent a year, <strong>if</strong> the second half repeats the first. Now the two numbers can sit on one line: "Apex roughly 45 percent a year (H1 doubled), the US roughly 24 (monthly times 12)". Both are labelled scales, and the labels say why a reader should not subtract one from the other and call it a gap.</p>
+        <p>Then the bases. JOLTS counts voluntary quits only, across every US employer, in every industry, on the employer's own employment count. Apex's 210 include involuntary exits, retirements and study leave, in one constructed group of four entities. Remove the 22 involuntary, retirement and study exits from Apex and the comparison is a little closer; it is still a different country, a different mix of industries, and a different definition of a person. The benchmark answers "is this order of magnitude unusual", and nothing finer.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Industries, and the cost figure that is not claimed<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The total hides a spread. In December 2025 the quits rate was 4.4 percent in leisure and hospitality, 1.9 in professional and business services, 1.9 in private education and health, 1.4 in manufacturing; across 2025 the means were 3.92, 2.34, 1.93 and 1.39. A company in hospitality comparing itself with the total is comparing itself with the wrong line, and the API returns the industry line for the same seven lines of code. Which industry Apex "is" is itself a choice: four entities, one of them retail and one logistics, and no single JOLTS series describes the group.</p>
+        <p>One number that does not appear on any page of the track is the cost of a departure. The figure that circulates, "replacing someone costs 1.5 to 2 times salary", has no measured source; it is attributed to an analyst rather than to a study, and the range SHRM itself publishes is 50 to 200 percent of salary, which is wide enough to mean anything. A cost model can be built for one employer from its own recruiting spend, ramp time and vacancy cover, and that is a finance exercise with the employer's own inputs. It is not a benchmark, and quoting the folk number as one is the fastest way to lose the room when someone asks where it came from.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>"Our attrition is twenty times the national rate."</strong> The slide compared an annualised 44.6 with a monthly 2.0 and found a ratio of twenty-two. The audience included a finance director who asked what the unit of the 2.0 was, and the meeting did not recover. The same two numbers on the same clock, 44.6 against roughly 24, both labelled with their assumption, would have made a real point: about double, on a rough scale, with a different definition of an exit. Constructed setting; the arithmetic is the build-along's last step.</p>
+    </div>
+
+    <div class="tryrow" data-fn="wordcount" data-multiline="1" data-title="Write the comparison sentence" data-hint="One sentence that puts your annualised rate beside the JOLTS scale, names both assumptions, and says what the benchmark can and cannot tell you." data-seed="" data-cta="Count it"></div>
+  </section>
+
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>Apex reasons in pandas, and JOLTS from the BLS public API</h2>
+      <span class="tag demo">★ 22 min · everyone builds</span>
+    </div>
+    <p class="lede">Seven steps: four on <code>materials/apex-staff.csv</code>, three on a live request to the BLS public API version 1, which needs no key and returns ten years of monthly data in one call. Every Apex number is what the code prints on the constructed table. The JOLTS numbers are what it printed on 26 September 2026; BLS revises recent months, so a later fetch can differ by a tenth, and the honest report carries its fetch date.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 348" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two hand-drawn panels. Left, JOLTS monthly: 2.0 percent per month, times 12, about 24 percent a year, with the conditions that nobody quits twice and the base never moves; a rough scale, not an annual rate. Right, Apex half year: 22.3 percent for H1, times 2, 44.6 percent a year, if H2 repeats H1, on the average base of 941.5; an assumption printed in the label. Below, a fence reading not comparable: US, all employers, voluntary quits only, per month, against one constructed group, all exits, per half year. Under that a faint dashed box says the cost of attrition is not computed because the circulating 1.5 to 2 times salary figure has no measured source.">
+        <defs>
+          <filter id="d3dSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="113" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d3dHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d3dAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d3dH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d3dL { font: 700 11.5px Inter, sans-serif; fill: #2A1A1E; }
+          .d3dS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d3dB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d3dV { font: 800 16px Inter, sans-serif; fill: #4F1521; }
+          .d3dA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .05em; }
+          .d3dN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d3dH" x="30" y="26">TWO CLOCKS, TWO ASSUMPTIONS, ONE LINE THEY CAN SHARE</text>
+
+        <g filter="url(#d3dSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="30" y="50" width="390" height="150" rx="8" transform="rotate(-0.4 225 125)" fill="#FFFFFF"/>
+          <rect x="460" y="50" width="390" height="150" rx="8" transform="rotate(0.4 655 125)" fill="#F9EEF0"/>
+          <path d="M150 98 L200 98" marker-end="url(#d3dAr)"/>
+          <path d="M628 98 L678 98" marker-end="url(#d3dAr)"/>
+          <!-- the fence -->
+          <rect x="30" y="222" width="820" height="40" rx="8" transform="rotate(0.2 440 242)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <!-- the box that stays empty -->
+          <rect x="30" y="278" width="820" height="46" rx="8" fill="#FFFFFF" stroke="#DCC9CD" stroke-dasharray="7 5"/>
+          <!-- a clock doodle on each panel -->
+          <circle cx="392" cy="72" r="12" fill="#FFFFFF"/><path d="M392 72 L392 64 M392 72 L398 75"/>
+          <circle cx="822" cy="72" r="12" fill="#FFFFFF"/><path d="M822 72 L822 64 M822 72 L816 76"/>
+        </g>
+
+        <text class="d3dL" x="50" y="74">JOLTS · monthly, US, real</text>
+        <text class="d3dV" x="50" y="104">2.0 % / month</text>
+        <text class="d3dA" x="175" y="88" text-anchor="middle">x 12</text>
+        <text class="d3dV" x="210" y="104">about 24 % / year</text>
+        <text class="d3dS" x="50" y="134">if nobody quits twice in the year</text>
+        <text class="d3dS" x="50" y="152">and the base never moves</text>
+        <text class="d3dB" x="50" y="182">a rough scale, not an annual rate</text>
+
+        <text class="d3dL" x="480" y="74">Apex · half year, constructed</text>
+        <text class="d3dV" x="480" y="104">22.3 % / H1</text>
+        <text class="d3dA" x="653" y="88" text-anchor="middle">x 2</text>
+        <text class="d3dV" x="688" y="104">44.6 % / year</text>
+        <text class="d3dS" x="480" y="134">if H2 repeats H1</text>
+        <text class="d3dS" x="480" y="152">average base 941.5; all exits, not only quits</text>
+        <text class="d3dB" x="480" y="182">an assumption, printed in the label</text>
+
+        <text class="d3dB" x="42" y="246">NOT COMPARABLE: US, all employers, voluntary quits only, per month · one constructed group, all exits, per half year</text>
+        <text class="d3dS" x="42" y="298">cost of attrition: not computed. The circulating "1.5 to 2x salary" has no measured source;</text>
+        <text class="d3dS" x="42" y="314">SHRM's own published range is 50 to 200 percent of salary, which is wide enough to mean anything.</text>
+
+        <text class="d3dN" x="30" y="340">Two annualisations, two assumptions, both printed. Each is a scale for the other; neither is a gap.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the dashed box is the honest shape of a number nobody measured: drawn, labelled, and left empty</figcaption>
+    </figure>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Load, keep the exits, count the reasons.</strong> The eleven categories with their counts are the data; nothing below this step is.</p>
+        <div class="prompt-box good"><span class="label">★ Step 1 · the eleven categories</span>import json, urllib.request
+import numpy as np, pandas as pd
+
+d = pd.read_csv("materials/apex-staff.csv", parse_dates=["Date Join", "Last Day"])
+ex = d[d["is_attrited"]].copy()
+print(len(ex))                                                     # 210
+print(ex["reason_category"].value_counts().to_dict())
+# {'Better Opportunity': 33, 'Career Growth': 33, 'Compensation': 29, 'Management/Culture': 23,
+#  'Relocation': 19, 'Work-Life Balance': 19, 'Unknown': 17, 'Personal/Health': 15,
+#  'Involuntary/Performance': 10, 'Retirement': 9, 'Further Study': 3}</div>
+      </div>
+      <div class="step">
+        <p><strong>Regretted as a list, printed beside its share.</strong> Three lists, three shares, one table. The function takes the list as an argument so that the list is visible in every call.</p>
+        <div class="prompt-box good"><span class="label">★ Step 2 · regretted is an argument</span>def regretted_share(exits, categories, drop_unknown=False):
+    base = exits if not drop_unknown else exits[exits["reason_category"] != "Unknown"]
+    n = int(base["reason_category"].isin(categories).sum())
+    return n, len(base), round(n / len(base) * 100, 1)
+
+FIVE  = ["Better Opportunity", "Career Growth", "Compensation", "Management/Culture", "Work-Life Balance"]
+SEVEN = FIVE + ["Relocation", "Personal/Health"]
+THREE = ["Better Opportunity", "Career Growth", "Compensation"]
+print("five: ", regretted_share(ex, FIVE))                    # (137, 210, 65.2)
+print("seven:", regretted_share(ex, SEVEN))                   # (171, 210, 81.4)
+print("three:", regretted_share(ex, THREE))                   # (95, 210, 45.2)
+print("five, Unknown out of base:", regretted_share(ex, FIVE, drop_unknown=True))   # (137, 193, 71.0)</div>
+      </div>
+      <div class="step">
+        <p><strong>Department rates with the base printed.</strong> The same headcount function as deep-dive session 1, and a table that carries the numerator and denominator on every row.</p>
+        <div class="prompt-box good"><span class="label">★ Step 3 · the base under the rate</span>START, END = pd.Timestamp("2026-01-01"), pd.Timestamp("2026-07-01")
+
+def headcount(df, date):
+    return int(((df["Date Join"] &lt;= date) &amp; (df["Last Day"].isna() | (df["Last Day"] &gt;= date))).sum())
+
+rows = []
+for dept, g in d.groupby("Department"):
+    base = headcount(g, START)
+    left = int(((g["Last Day"] &gt;= START) &amp; (g["Last Day"] &lt; END)).sum())
+    rows.append((dept, left, base, round(left / base * 100, 1)))
+rates = pd.DataFrame(rows, columns=["department", "leavers", "base", "rate"]).sort_values("rate", ascending=False)
+print(rates.to_string(index=False))
+#       department  leavers  base  rate
+#            Sales       54   108  50.0
+# Customer Service       35    93  37.6
+#       Operations       55   218  25.2
+#        Marketing       15    76  19.7
+#      Engineering       24   213  11.3
+#               HR        8    75  10.7
+#          Finance       12   145   8.3
+#              R&amp;D        7    94   7.4</div>
+      </div>
+      <div class="step">
+        <p><strong>How wide is each rate?</strong> One exit more, one exit fewer. The width is the base talking, and it goes on the slide next to the rate.</p>
+        <div class="prompt-box good"><span class="label">★ Step 4 · one person either way</span>rates["plus_one"]  = ((rates["leavers"] + 1) / rates["base"] * 100).round(1)
+rates["minus_one"] = ((rates["leavers"] - 1) / rates["base"] * 100).round(1)
+print(rates[rates["department"].isin(["Sales", "HR"])].to_string(index=False))
+# department  leavers  base  rate  plus_one  minus_one
+#      Sales       54   108  50.0      50.9       49.1
+#         HR        8    75  10.7      12.0        9.3
+rates.to_csv("dept_rates_2026-01-01_to_2026-07-01_with_base.csv", index=False)</div>
+      </div>
+      <div class="step">
+        <p><strong>Fetch JOLTS from the BLS public API, version 1, no key.</strong> One POST with the series ids. The total quits rate id is JTS followed by fifteen zeros and QUR; industry ids carry a six-digit code in place of the first six zeros. Ten years is the most version 1 returns in one call.</p>
+        <div class="prompt-box good"><span class="label">★ Step 5 · the request</span>IDS = {"total": "JTS000000000000000QUR", "manufacturing": "JTS300000000000000QUR",
+       "leisure_hospitality": "JTS700000000000000QUR", "prof_business": "JTS540099000000000QUR",
+       "health_education": "JTS600000000000000QUR"}
+body = json.dumps({"seriesid": list(IDS.values()), "startyear": "2016", "endyear": "2025"}).encode()
+req = urllib.request.Request("https://api.bls.gov/publicAPI/v1/timeseries/data/", data=body,
+                             headers={"Content-Type": "application/json"})
+resp = json.load(urllib.request.urlopen(req, timeout=60))
+print(resp["status"])                                              # REQUEST_SUCCEEDED
+series = {}
+for s in resp["Results"]["series"]:
+    name = [k for k, v in IDS.items() if v == s["seriesID"]][0]
+    series[name] = pd.Series({r["year"] + "-" + r["period"][1:]: float(r["value"])
+                              for r in s["data"] if r["period"] != "M13"}).sort_index()
+print(len(series["total"]), series["total"].index[0], series["total"].index[-1])   # 120 2016-01 2025-12</div>
+      </div>
+      <div class="step">
+        <p><strong>Peak, trough, two annual means, and the industries.</strong> The printed values are the fetch of 26 September 2026. Print the fetch date with them; BLS revises.</p>
+        <div class="prompt-box good"><span class="label">★ Step 6 · the benchmark numbers</span>q = series["total"]
+print("peak", q.idxmax(), q.max(), "| trough", q.idxmin(), q.min())     # peak 2021-11 3.0 | trough 2020-04 1.5
+print("2019 mean", round(q[q.index.str.startswith("2019")].mean(), 2))   # 2.32
+print("2025 mean", round(q[q.index.str.startswith("2025")].mean(), 2))   # 2.02
+print("Dec 2025", q["2025-12"])                                          # 2.0
+for k in ("leisure_hospitality", "prof_business", "health_education", "manufacturing"):
+    s = series[k]
+    print(f"{k:20s} 2025 mean {s[s.index.str.startswith('2025')].mean():.2f}   Dec 2025 {s['2025-12']}")
+# leisure_hospitality  2025 mean 3.92   Dec 2025 4.4
+# prof_business        2025 mean 2.34   Dec 2025 1.9
+# health_education     2025 mean 1.93   Dec 2025 1.9
+# manufacturing        2025 mean 1.39   Dec 2025 1.4
+print("fetched", pd.Timestamp.today().date())</div>
+      </div>
+      <div class="step">
+        <p><strong>The two clocks on one line, and the number that stays uncomputed.</strong> Both annualisations carry their assumption in the string. The cost line prints a refusal, on purpose, so the script cannot be read as having a cost figure in it.</p>
+        <div class="prompt-box good"><span class="label">★ Step 7 · the comparison sentence</span>jolts_scale = q["2025-12"] * 12                       # 24.0
+apex_annual = 210 / 941.5 * 200                       # 44.6, average base, H1 doubled
+print(f"US quits, December 2025: {q['2025-12']} per month; x12 = roughly {jolts_scale:.0f} a year "
+      f"(assumes no repeat quits and a fixed base). Voluntary quits only, all US employers.")
+print(f"Apex H1 2026: 22.3 percent on the average base; x2 = {apex_annual:.1f} a year "
+      f"(assumes H2 repeats H1). All exits, including 22 involuntary, retirement and study.")
+print("Same order of magnitude test only. Different country, industries, exit definition and clock.")
+print("cost of attrition: NOT computed; the 1.5 to 2x salary figure has no measured source.")</div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Keep the list in the function signature and the fetch date in the output.</strong> <code>regretted_share(ex, FIVE)</code> cannot be run without showing which five. A JOLTS printout with a date on it can be reproduced or explained a year later when the revised series says 2.1 where the slide said 2.0. Both habits cost one line and save a meeting.</p>
+    </div>
+  </section>
+
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before deep-dive session 4</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li><strong>Write your own regretted list</strong> for your export, as a Python list with a one-line comment per category saying why it is in or out. Run <code>regretted_share</code> with it and with the five-category list, and keep both numbers.</li>
+      <li><strong>Print the base under every rate</strong> in your department table, then add the plus-one and minus-one columns. Mark every row whose width is over two points; those rates get a count on the slide, not a percentage.</li>
+      <li><strong>Fetch one more JOLTS series</strong>, the industry closest to yours, and re-run step 7 with it in place of the total. Write the comparison sentence with both assumptions in it.</li>
+      <li><strong>Bring a funnel.</strong> Deep-dive session 4 leaves the leavers and turns to the joiners: applicants, screens, interviews, offers, hires, and the one ratio in hiring that the law has an opinion about.</li>
+    </ol>
+  </section>
+
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+    <p>Clear all three and deep-dive session 3 gets stamped in your passport.</p>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · Regretted attrition on Apex is 65.2 percent with five categories ticked, 81.4 with seven, 45.2 with three. Which is the correct regretted rate?</p>
+      <button class="qopt" type="button">A · 65.2, because five is the standard number of regretted categories</button>
+      <button class="qopt" type="button">B · The average of the three, since each list is partly right</button>
+      <button class="qopt" type="button">C · None of them alone; regretted is a classification and the share is a finding only when the list that produced it is printed beside it, so the deliverable is "65.2 percent, counting these five categories", and the list is what a colleague can disagree with</button>
+      <button class="qopt" type="button">D · 45.2, because the narrowest list is the most conservative</button>
+      <p class="qwhy">All four shares on the figure are computed correctly on the same 210 rows. The number is not the analysis; the line through the eleven categories is.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · HR shows 10.7 percent and Finance 8.3. A slide ranks HR above Finance on attrition. What is wrong with the ranking?</p>
+      <button class="qopt" type="button">A · HR's rate is 8 of 75, so one exit either way moves it to 12.0 or 9.3; the gap to Finance is inside the width of one person, and a ranking on it is a ranking of noise; the fix is to print the base under every rate so the reader can see which differences are wide enough to mean anything</button>
+      <button class="qopt" type="button">B · Nothing; 10.7 is larger than 8.3 and the ranking is correct</button>
+      <button class="qopt" type="button">C · Finance should use the end base and HR the start base</button>
+      <button class="qopt" type="button">D · Departments should never be compared; only entities can be</button>
+      <p class="qwhy">The rates share a recipe, not a precision. Sales at 54 of 108 survives a person; HR at 8 of 75 does not. The base under the rate is what says which is which.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · The US quits rate was 2.0 percent in December 2025. Apex's annualised attrition is 44.6 percent. A colleague writes "Apex is 22 times the national rate". What is the honest version?</p>
+      <button class="qopt" type="button">A · The colleague is right; 44.6 divided by 2.0 is about 22</button>
+      <button class="qopt" type="button">B · Put both on one clock with their assumptions printed: JOLTS 2.0 a month times 12 is roughly 24 a year, if nobody quits twice and the base is fixed; Apex 22.3 for H1 times 2 is 44.6, if H2 repeats H1; then say the bases differ, US voluntary quits across all employers against one constructed group's exits of every kind, so the benchmark tests order of magnitude and nothing finer</button>
+      <button class="qopt" type="button">C · Divide 44.6 by 12 to get a monthly Apex rate of 3.7 and compare that with 2.0</button>
+      <button class="qopt" type="button">D · Use the 2021 peak of 3.0 instead, because it is the most recent high</button>
+      <p class="qwhy">A monthly rate and an annual rate share a word and nothing else until the arithmetic is written. Option C is arithmetic on a different base and clock again; the assumptions still have to be said.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What this session teaches, and where it came from</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The eleven Apex reason categories and counts; regretted as a five-category list, 137 of 210 = 65.2 percent; the alternative lists 81.4, 45.2 and 71.0</span><span class="note">Computed from the constructed Apex table that ships with these pages; the five-category list is a stated choice</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Department rates on the start base with n: Sales 50.0 (54 of 108) to R&amp;D 7.4 (7 of 94); the one-person width of HR at 8 of 75</span><span class="note">Computed from the constructed Apex table</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">BLS JOLTS quits rate: definition; peak 3.0 November 2021; trough 1.5 April 2020; 2019 mean 2.32; 2025 mean 2.02; December 2025 total 2.0; industries 4.4 / 1.9 / 1.9 / 1.4</span><span class="note">Primary; fetched from the BLS public API version 1 on 26 September 2026; the December 2025 figure matches the BLS release of 5 February 2026</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Monthly times 12 as a rough scale; H1 times 2 as 44.6</span><span class="note">Modelled; both assumptions are printed with the number, and neither is a benchmark for the other</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">"Replacing an employee costs 1.5 to 2 times salary"</span><span class="note">Not claimed; no measured source; SHRM's own range is 50 to 200 percent of salary; the page teaches why it is left uncomputed</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">The free-text to category coding step</span><span class="note">Named in self-study as a seventh decision; not audited here</span></div>
+    </div>
+    <p class="mono" style="margin-top:14px">Every fact on this page, and its verification tier, is recorded in the course's source map.</p>
+  </section>
+
+  <section class="cheat" id="cheatsheet">
+    <h3>Deep-dive session 3 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Regretted is an argument</b><span>regretted_share(exits, LIST). Apex: 137 of 210 = 65.2 with five ticked; 81.4 with seven; 45.2 with three.</span></div>
+      <div class="cheat-item"><b>Print the list with the share</b><span>The list is the finding. The share is what the list produces.</span></div>
+      <div class="cheat-item"><b>Base under every rate</b><span>HR 10.7 is 8 of 75: one exit moves it to 12.0 or 9.3. Below about 20 in the base, print the count.</span></div>
+      <div class="cheat-item"><b>JOLTS in seven lines</b><span>POST to api.bls.gov v1, no key, ids JTS + 15 zeros + QUR; industries swap the first six.</span></div>
+      <div class="cheat-item"><b>The benchmark</b><span>Peak 3.0 Nov 2021, trough 1.5 Apr 2020, 2025 mean 2.02, Dec 2025 2.0. Monthly, US, voluntary quits.</span></div>
+      <div class="cheat-item"><b>Two clocks, both labelled</b><span>2.0 x 12 is roughly 24 (no repeats, fixed base). 22.3 x 2 = 44.6 (H2 repeats H1). No cost figure.</span></div>
+    </div>
+  </section>
+
+  <div class="callout next">
+    <span class="nx-pill">Next session</span>
+    <p>Three sessions on the people who leave; the next is about the people who arrive. Deep-dive session 4 builds a constructed hiring funnel, 400 applicants to 10 hires, computes the conversion at every stage with its base printed, and then the one ratio in hiring that has a regulation attached to it: the impact ratio between two groups' selection rates, the four-fifths rule of thumb from 29 CFR 1607.4(D), and what New York City's Local Law 144 asks an employer to publish about it.</p>
+  </div>
+
+  <footer class="pagefoot">
+    <span>Deep-dive session 3 of 10 · learn-people-analytics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="p2-attrition-survival.html">← Prev: Attrition as survival</a> &nbsp;·&nbsp; <a href="p4-funnel-maths.html">Next: Funnel maths and adverse impact →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

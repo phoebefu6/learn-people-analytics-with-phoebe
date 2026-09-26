@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Foundations session 1 of 6. Headcount is a stock and attrition is a flow, and every people number that goes wrong goes wrong at the join between them. The identity that ties start, joiners, leavers and end together; why the same 210 leavers give three different attrition rates; and what an HR export cannot show you.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Headcount is a stock, attrition is a flow - learn people analytics with phoebe">
+<meta property="og:description" content="Foundations session 1 of 6. Start plus joiners minus leavers equals end. Everything else is a ratio of those four, and the ratio depends on which one you divide by.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/courses/a1-headcount-and-flows.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Headcount is a stock, attrition is a flow - learn people analytics with phoebe">
+<meta name="twitter:description" content="Foundations session 1 of 6. The identity, the three bases, and the photograph of survivors.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Foundations session 1 · Headcount is a stock, attrition is a flow - learn people analytics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-people-analytics-with-phoebe</a> / Foundations session 1 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn People Analytics with Phoebe · Foundations session 1 of 6</div>
+    <h1>Headcount is a stock, <span class="accent">attrition is a flow</span></h1>
+    <p class="sub">Ask "how many people do we have" and the honest answer starts with "on which date". Ask "what is our attrition" and it starts with "divided by what". Every people number is either a stock, a count of people at an instant, or a flow, a count of people moving during a period, and the trouble begins where the two meet: a flow divided by a stock is a rate, and the same flow over three reasonable stocks gives three reasonable rates. Tonight is the grammar. One identity, start plus joiners minus leavers equals end, that every dashboard has to satisfy; the three bases and the 20.5, 22.3 and 24.4 percent they produce from one set of 210 leavers; and the photograph problem, which is that most HR exports contain only the people who survived long enough to be in them.</p>
+    <div class="chip-row">
+      <span class="chip level">🟢 Foundations</span>
+      <span class="chip audience">Leaders, HR partners, anyone who reads a people dashboard</span>
+      <span class="chip audience">No code</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-18 · Stocks, flows, and the three bases</span>
+      <span class="a3" style="flex:5">18-40 · Build-along: the Apex headcount bridge</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we start</h2>
+    </div>
+    <p class="lede">People analytics has a reputation for being soft, and it is the opposite: it is the one domain where every number describes a person who can be counted exactly, so there is no excuse for a number that cannot be reconciled. The running company is Apex, a constructed group of four entities and 1,071 staff rows, built to look like the export any HR system produces. Every Apex figure is invented and the pages say so. What is real is the mechanism: the identity, the bases, and the survivor problem are the same in every company, and once you can see them you can read any people dashboard and know which numbers to believe.</p>
+
+    <div class="legend">
+      <span class="pill">🎫 Clear all three quiz questions to stamp your passport</span>
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">★ Build-along = everyone works it through</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> The habit of asking "stock or flow, and on which date" before believing any people number, the identity you can check any dashboard against in ten seconds, the three bases and why each is defensible, and the question that catches the survivor problem: who is not in this table?</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers stocks, flows and the identity</span>
+      <h2>The tank, and the identity</h2>
+      <span class="tag concept">6 min live</span>
+    </div>
+    <p class="lede">Picture headcount as water in a tank. Joiners pour in, leavers drain out, and the level at any instant is the headcount on that date. The level is a stock: it needs a date. The pouring and draining are flows: they need a period. And the tank obeys one identity that no reporting convention can escape: the level at the end of a period equals the level at the start plus what poured in minus what drained out.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn tank of water labelled headcount. A pipe pours in from the top left labelled joiners, a drain runs out at the bottom right labelled leavers. Two level marks on the tank read 1 January 2026, 1,022 and 1 July 2026, 861. A side panel writes the identity: start 1,022 plus joiners 49 minus leavers 210 equals end 861.">
+        <defs>
+          <filter id="s1aSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="s1aHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="s1aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .s1aH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s1aL { font: 600 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s1aS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .s1aB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .s1aV { font: 800 18px Inter, sans-serif; fill: #4F1521; }
+          .s1aW { font: 800 12px Inter, sans-serif; fill: #FFFFFF; }
+          .s1aN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="s1aH" x="30" y="26">THE TANK</text>
+        <text class="s1aS" x="120" y="26">a stock has a date, a flow has a period, and one identity ties them together</text>
+
+        <g filter="url(#s1aSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- the tank -->
+          <path d="M120 90 L120 280 L440 280 L440 90" stroke-width="2.5"/>
+          <!-- water, hatched, up to the July level -->
+          <rect x="122" y="176" width="316" height="102" fill="url(#s1aHc)" stroke="none"/>
+          <!-- the January level, dashed, higher -->
+          <path d="M122 140 L438 140" stroke="#7A2334" stroke-dasharray="6 4"/>
+          <!-- the July level, solid -->
+          <path d="M122 176 L438 176" stroke="#7A2334" stroke-width="2.5"/>
+          <!-- inlet pipe top left -->
+          <path d="M40 60 L100 60 L100 96" stroke="#3D6B2E" stroke-width="3"/>
+          <path d="M100 96 L100 124" stroke="#3D6B2E" stroke-width="3" marker-end="url(#s1aAr)"/>
+          <!-- drain bottom right -->
+          <path d="M440 262 L500 262 L500 300" stroke="#7A2334" stroke-width="3" marker-end="url(#s1aAr)"/>
+          <!-- side panel -->
+          <rect x="560" y="70" width="290" height="210" rx="10" transform="rotate(0.4 705 175)" fill="#F9EEF0"/>
+          <!-- a small person by the inlet -->
+          <circle cx="60" cy="90" r="9"/>
+          <path d="M60 99 L60 120 M60 106 L50 114 M60 106 L70 114 M60 120 L52 134 M60 120 L68 134"/>
+        </g>
+
+        <text class="s1aB" x="30" y="52">joiners: a flow</text>
+        <text class="s1aS" x="30" y="150">Jan to Jun 2026</text>
+        <text class="s1aV" x="30" y="170">49</text>
+        <text class="s1aL" x="132" y="134">1 January 2026</text>
+        <text class="s1aV" x="330" y="134">1,022</text>
+        <text class="s1aL" x="132" y="196">1 July 2026</text>
+        <text class="s1aV" x="350" y="196">861</text>
+        <text class="s1aS" x="132" y="214">the stock, on a date</text>
+        <text class="s1aB" x="452" y="250">leavers: a flow</text>
+        <text class="s1aS" x="452" y="316">Jan to Jun 2026</text>
+        <text class="s1aV" x="520" y="296">210</text>
+
+        <text class="s1aH" x="578" y="98">THE IDENTITY</text>
+        <text class="s1aS" x="578" y="122">start, 1 January</text>
+        <text class="s1aV" x="760" y="122">1,022</text>
+        <text class="s1aS" x="578" y="150">plus joiners</text>
+        <text class="s1aV" x="760" y="150">+ 49</text>
+        <text class="s1aS" x="578" y="178">minus leavers</text>
+        <text class="s1aV" x="760" y="178">- 210</text>
+        <text class="s1aS" x="578" y="206">equals end, 1 July</text>
+        <text class="s1aV" x="760" y="206">861</text>
+        <text class="s1aB" x="578" y="238">If a dashboard breaks this,</text>
+        <text class="s1aB" x="578" y="254">it is counting somebody twice</text>
+        <text class="s1aB" x="578" y="270">or not at all. Constructed Apex data.</text>
+
+        <text class="s1aN" x="30" y="332">Two levels, two flows, one equation. Every people dashboard has to satisfy it, and most of them are never checked against it.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the dashed line is the January level; the water is July's; the difference is exactly what flowed in and out</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Stock or flow: the question to ask before any people number<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>A stock is a count at an instant.</strong> Headcount, open positions, people on leave, people in a grade. It has no meaning without a date, and two stocks from different dates cannot be subtracted to give a flow unless nothing else moved between them, which it always did.</p>
+        <p><strong>A flow is a count over a period.</strong> Joiners, leavers, promotions, transfers, hires, offers. It has no meaning without a start and end date, and a flow reported "for the year" in March is a different number from the same flow reported in December.</p>
+        <p><strong>The identity</strong> is the only check that needs no judgement: start stock, plus every flow in, minus every flow out, equals end stock. At Apex, 1,022 on 1 January, 49 joiners and 210 leavers to the end of June, 861 on 1 July. It reconciles. When it does not, the usual reasons are a transfer counted as a leaver on one side and not as a joiner on the other, a contractor in one stock and not the other, or a leaver whose last day was entered in the wrong month.</p>
+        <p>The reason this matters beyond tidiness: <strong>every rate on a people dashboard is a flow divided by a stock,</strong> and if the two were not measured on consistent dates, the rate is a fraction of two unrelated numbers.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Transfers, contractors and leave: the flows that are not exits<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Apex has four entities and 291 of its 1,071 rows carry a transfer flag: somebody who moved from Apex Retail to Apex Logistics is a leaver on Retail's dashboard and a joiner on Logistics', and neither on the group's. Whether a transfer counts as attrition depends entirely on whose tank you are looking at, and a group-level attrition figure built by adding up entity-level figures will count every transfer as a loss.</p>
+        <p>The same applies to people on long leave (in the stock or not?), contractors converting to staff (a joiner or not?), and rehires (a joiner, but not a new person). None of these has a universal answer. Each has to be written down once, in the definition of the stock, so that the identity can be checked with the same rules on both sides.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>Two headcounts for the same company.</strong> Finance reports 1,022 full-time equivalents; HR reports 1,071 people. Neither is wrong. One counts hours, the other counts heads, and 49 people on part-time contracts explain the gap. The meeting that spends twenty minutes arguing about which is "right" has skipped the only useful question, which is what each number is a stock of. Constructed example; the mechanism is not.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers the three bases</span>
+      <h2>One count of leavers, three attrition rates</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">Apex lost 210 people between January and June. What is its attrition rate? Divide by the January headcount and it is 20.5 percent. Divide by the average of January and July and it is 22.3. Divide by July's and it is 24.4. All three are defensible, all three appear in real reports, and a four-point spread from the same 210 people is what happens when the base is not written down.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three hand-drawn fractions side by side, each with the same numerator of 210 leavers. The first divides by the start headcount 1,022 and reads 20.5 percent. The second divides by the average headcount 941.5 and reads 22.3 percent. The third divides by the end headcount 861 and reads 24.4 percent. A note says the spread is four points and the leavers did not change.">
+        <defs>
+          <filter id="s1bSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="19" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="s1bHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="s1bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .s1bH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s1bL { font: 600 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s1bS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .s1bB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .s1bV { font: 800 22px Inter, sans-serif; fill: #4F1521; }
+          .s1bT { font: 800 16px Inter, sans-serif; fill: #2A1A1E; }
+          .s1bN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="s1bH" x="30" y="26">THE SAME 210 LEAVERS, THREE BASES</text>
+        <text class="s1bS" x="330" y="26">Apex, January to June 2026, constructed · every base is one somebody uses</text>
+
+        <g filter="url(#s1bSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- three fraction cards -->
+          <rect x="40" y="60" width="250" height="200" rx="10" transform="rotate(-0.5 165 160)" fill="#FFFFFF"/>
+          <rect x="315" y="60" width="250" height="200" rx="10" transform="rotate(0.4 440 160)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="590" y="60" width="250" height="200" rx="10" transform="rotate(-0.3 715 160)" fill="#FFFFFF"/>
+          <!-- fraction bars -->
+          <path d="M80 150 L250 150" stroke-width="2.5"/>
+          <path d="M355 150 L525 150" stroke-width="2.5"/>
+          <path d="M630 150 L800 150" stroke-width="2.5"/>
+          <!-- the pile of 210 on each numerator, hatched -->
+          <rect x="120" y="92" width="90" height="34" rx="3" fill="url(#s1bHc)" stroke="none"/>
+          <rect x="395" y="92" width="90" height="34" rx="3" fill="url(#s1bHc)" stroke="none"/>
+          <rect x="670" y="92" width="90" height="34" rx="3" fill="url(#s1bHc)" stroke="none"/>
+        </g>
+
+        <text class="s1bL" x="60" y="82">start base</text>
+        <text class="s1bT" x="165" y="118" text-anchor="middle">210</text>
+        <text class="s1bT" x="165" y="184" text-anchor="middle">1,022</text>
+        <text class="s1bS" x="165" y="202" text-anchor="middle">headcount 1 January</text>
+        <text class="s1bV" x="165" y="244" text-anchor="middle">20.5%</text>
+
+        <text class="s1bL" x="335" y="82">average base</text>
+        <text class="s1bT" x="440" y="118" text-anchor="middle">210</text>
+        <text class="s1bT" x="440" y="184" text-anchor="middle">941.5</text>
+        <text class="s1bS" x="440" y="202" text-anchor="middle">(1,022 + 861) / 2</text>
+        <text class="s1bV" x="440" y="244" text-anchor="middle">22.3%</text>
+
+        <text class="s1bL" x="610" y="82">end base</text>
+        <text class="s1bT" x="715" y="118" text-anchor="middle">210</text>
+        <text class="s1bT" x="715" y="184" text-anchor="middle">861</text>
+        <text class="s1bS" x="715" y="202" text-anchor="middle">headcount 1 July</text>
+        <text class="s1bV" x="715" y="244" text-anchor="middle">24.4%</text>
+
+        <text class="s1bB" x="30" y="292">Four points of spread and nothing about the people changed. The moss card is the one most standards use; the other two are not wrong, they are undeclared.</text>
+        <text class="s1bN" x="30" y="316">Write the base under the rate, every time. A rate without its base is a numerator wearing a percent sign.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the hatched block is the same 210 people in all three cards; only the number under the line moved</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Which base, and why the average is the usual answer<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>The start base</strong> asks "of the people we had in January, what share left". Clean, but it ignores the 49 who joined and were also at risk of leaving, and it understates the rate in a growing company. <strong>The end base</strong> asks the question backwards: it divides by a headcount that is smaller <em>because</em> people left, so the more people leave, the more the rate inflates. <strong>The average base</strong> approximates the number of people who were exposed to the risk of leaving during the period, which is what an attrition rate is trying to measure, and it is why most standards use it.</p>
+        <p>None of this makes the average base right in every case. A company that doubled in size in a month has an average that describes nobody. The point is narrower: <strong>the base is a decision, it moves the rate by points, and it goes under the number in writing.</strong> Foundations session 2 takes the same 210 leavers by department and by entity, where the base problem gets worse because the bases get small.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Annualising, and the assumption it smuggles in<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Apex's 22.3 percent covers six months. Doubled, it is 44.6 percent a year, and that is the number that will be quoted. The doubling assumes the second half repeats the first, which for a company that lost 54 of 108 salespeople in six months is a guess in either direction: the exodus may be over or may be halfway. Annualised figures should carry the word "annualised" and the period they were built from, and a half-year figure compared with last year's full-year figure is not a comparison.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="section" id="part-3">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers the survivor table</span>
+      <h2>The export is a photograph of survivors</h2>
+      <span class="tag concept">4 min live</span>
+    </div>
+    <p class="lede">Open the Apex table and every one of its 1,071 rows is either somebody employed on 1 January 2026 or somebody who left in the six months after. Nobody who left in 2025 is there. Nobody who joined in 2019 and quit in 2020 is there. The table is a photograph taken on one date, plus a short film of what happened next, and anything you compute about "how long people stay" from it will describe the survivors, not the staff.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn timeline from 2012 to mid 2026. Many short horizontal lines start and end before 2026 and are drawn faint: people who joined and left before the photograph, and are not in the table. A vertical line at 1 January 2026 is the photograph. Lines that cross it are drawn dark: they are in the table. A few dark lines end between January and June 2026 with a small mark: the 210 leavers. A note says a survival curve from the dark lines only is biased upward.">
+        <defs>
+          <filter id="s1cSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="31" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="s1cHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="s1cAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .s1cH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s1cL { font: 600 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s1cS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .s1cB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .s1cA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .05em; }
+          .s1cN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="s1cH" x="30" y="26">WHO IS IN THE TABLE</text>
+        <text class="s1cS" x="190" y="26">each line is one person's employment · the photograph is taken on 1 January 2026</text>
+
+        <g filter="url(#s1cSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- time axis -->
+          <path d="M60 270 L840 270" stroke="#7A2334" marker-end="url(#s1cAr)"/>
+          <!-- the photograph line -->
+          <path d="M690 50 L690 276" stroke="#3D6B2E" stroke-width="3"/>
+          <!-- faint lines: joined and left before 2026 (not in the table) -->
+          <path d="M80 70 L200 70 M120 90 L330 90 M170 110 L260 110 M230 130 L470 130 M300 150 L390 150 M360 170 L600 170 M420 190 L520 190 M480 210 L640 210 M540 230 L610 230" stroke="#DCC9CD" stroke-width="2.5"/>
+          <!-- dark lines: cross the photograph (in the table), some end before June -->
+          <path d="M140 80 L840 80 M260 100 L840 100 M330 120 L760 120 M400 140 L840 140 M450 160 L730 160 M520 180 L840 180 M580 200 L840 200 M640 220 L750 220 M660 240 L840 240"/>
+          <!-- exit marks on the ones that end between Jan and Jun 2026 -->
+          <circle cx="760" cy="120" r="5" fill="#7A2334" stroke="#7A2334"/>
+          <circle cx="730" cy="160" r="5" fill="#7A2334" stroke="#7A2334"/>
+          <circle cx="750" cy="220" r="5" fill="#7A2334" stroke="#7A2334"/>
+          <!-- a camera doodle at the top of the photograph line -->
+          <rect x="672" y="30" width="36" height="22" rx="4" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <circle cx="690" cy="41" r="6" stroke="#3D6B2E"/>
+        </g>
+
+        <text class="s1cA" x="60" y="290">2012</text>
+        <text class="s1cA" x="370" y="290">2019</text>
+        <text class="s1cA" x="690" y="290" text-anchor="middle">1 JAN 2026</text>
+        <text class="s1cA" x="800" y="290" text-anchor="middle">JUN</text>
+        <text class="s1cS" x="80" y="62">faint: joined and left before the photograph</text>
+        <text class="s1cS" x="80" y="256">not one of them is in the table</text>
+        <text class="s1cL" x="716" y="74">dark: in the table</text>
+        <text class="s1cB" x="716" y="258">dots: the 210 leavers</text>
+
+        <text class="s1cN" x="30" y="312">Compute "how long do people stay" from the dark lines only and the answer describes the people who stayed long enough to be photographed.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the faint lines are the leavers you will never see, and there are more of them than there are dots</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Who is not in this table, and what that does to every tenure number<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Take the median tenure of Apex's active staff: 5.01 years. It sounds like "people stay about five years". It is not that. It is the median tenure of the people who were still there on 1 January, which is a group that by construction excludes everyone who left earlier, and people who leave tend to leave early. The 210 who left in the first half of 2026 had a median tenure at exit of 1.52 years, and 61 percent of them had been at Apex under two years. Two very different pictures of the same company, and both are computed correctly from the table; the table itself is the problem.</p>
+        <p><strong>The question that catches it:</strong> what would a person have to have done to be missing from this table? For Apex, the answer is "left before 2026". Any statistic about how long people stay, how many leave in their first year, or which cohort is loyal has to be read knowing that the early leavers of every year before 2026 are absent. Deep-dive session 2 measures exactly how far this pushes a survival curve, and what kind of table fixes it, which is an event log rather than a photograph.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The other photographs: surveys, reviews, and exit interviews<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Every people dataset is a photograph of who was around to be measured. Engagement surveys measure the people who filled them in, which excludes the disengaged in proportion to their disengagement. Performance reviews measure the people who stayed to the review date. Exit interviews measure the leavers who agreed to talk, and the reason they give is the reason they were willing to give. None of these are useless. Each has a missing group whose shape can be guessed, and the guess belongs in the sentence that reports the number. Foundations session 5 is the survey version of this problem.</p>
+      </div>
+    </details>
+
+    <div class="tryrow" data-fn="wordcount" data-multiline="1" data-title="Who is not in your table?" data-hint="For an HR export you have seen: what would somebody have to have done to be missing from it? Then name one number computed from it that the missing people would change. Three lines." data-seed="" data-cta="Count it"></div>
+  </section>
+
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>The Apex headcount bridge, on paper</h2>
+      <span class="tag demo">★ 22 min · everyone works it through</span>
+    </div>
+    <p class="lede">No code tonight. Six worksheet steps that turn "we lost a lot of people this year" into a bridge that reconciles, a rate with its base written under it, and one sentence a board can use. Every Apex number is constructed; the deep-dive track's first session rebuilds each of them from the table in pandas. Work each step for your own company as we go.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn headcount bridge: a tall bar at the left reads 1,022 on 1 January; a short moss bar rises by 49 for joiners; a taller wine bar falls by 210 for leavers; a final bar reads 861 on 1 July. Under the bridge, four entity boxes show start headcount, leavers and rate: Digital 124, 31, 25.0 percent; Logistics 221, 52, 23.5; Manufacturing 440, 85, 19.3; Retail 237, 42, 17.7.">
+        <defs>
+          <filter id="s1dSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="43" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="s1dHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="s1dAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .s1dH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s1dL { font: 700 11.5px Inter, sans-serif; fill: #2A1A1E; }
+          .s1dS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .s1dB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .s1dV { font: 800 16px Inter, sans-serif; fill: #4F1521; }
+          .s1dW { font: 800 12px Inter, sans-serif; fill: #FFFFFF; }
+          .s1dN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="s1dH" x="30" y="26">THE BRIDGE, THEN THE BASES BY ENTITY</text>
+        <text class="s1dS" x="330" y="26">constructed Apex · bar heights to scale from 800 · rates on the start base</text>
+
+        <g filter="url(#s1dSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- bridge baseline at y=170 represents 800; scale 0.3px per head above 800 -->
+          <path d="M40 170 L440 170" stroke="#DCC9CD"/>
+          <rect x="50" y="103" width="70" height="67" rx="3" transform="rotate(-0.4 85 137)" fill="url(#s1dHc)"/>
+          <rect x="150" y="88" width="60" height="15" rx="3" transform="rotate(0.6 180 96)" fill="#3D6B2E" stroke="#3D6B2E"/>
+          <rect x="240" y="88" width="60" height="63" rx="3" transform="rotate(-0.5 270 120)" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="340" y="151" width="70" height="19" rx="3" transform="rotate(0.4 375 161)" fill="url(#s1dHc)"/>
+          <path d="M122 103 L148 103 M212 88 L238 88 M302 151 L338 151" stroke="#6B5459" stroke-dasharray="3 3" stroke-width="1.4"/>
+          <!-- entity boxes -->
+          <rect x="480" y="60" width="180" height="56" rx="8" transform="rotate(-0.5 570 88)" fill="#F9EEF0"/>
+          <rect x="680" y="60" width="180" height="56" rx="8" transform="rotate(0.4 770 88)" fill="#F9EEF0"/>
+          <rect x="480" y="130" width="180" height="56" rx="8" transform="rotate(0.5 570 158)" fill="#F9EEF0"/>
+          <rect x="680" y="130" width="180" height="56" rx="8" transform="rotate(-0.4 770 158)" fill="#F9EEF0"/>
+          <!-- a little calendar doodle -->
+          <rect x="40" y="200" width="30" height="26" rx="3" fill="#FFFFFF"/>
+          <path d="M40 208 L70 208 M48 196 L48 204 M62 196 L62 204"/>
+        </g>
+
+        <text class="s1dV" x="85" y="96" text-anchor="middle">1,022</text>
+        <text class="s1dS" x="85" y="186" text-anchor="middle">1 Jan</text>
+        <text class="s1dB" x="180" y="80" text-anchor="middle">+49</text>
+        <text class="s1dS" x="180" y="186" text-anchor="middle">joiners</text>
+        <text class="s1dW" x="270" y="124" text-anchor="middle">-210</text>
+        <text class="s1dS" x="270" y="186" text-anchor="middle">leavers</text>
+        <text class="s1dV" x="375" y="144" text-anchor="middle">861</text>
+        <text class="s1dS" x="375" y="186" text-anchor="middle">1 Jul</text>
+
+        <text class="s1dL" x="492" y="80">Apex Digital</text>
+        <text class="s1dS" x="492" y="98">124 start · 31 left</text>
+        <text class="s1dV" x="648" y="98" text-anchor="end">25.0%</text>
+        <text class="s1dL" x="692" y="80">Apex Logistics</text>
+        <text class="s1dS" x="692" y="98">221 start · 52 left</text>
+        <text class="s1dV" x="848" y="98" text-anchor="end">23.5%</text>
+        <text class="s1dL" x="492" y="150">Apex Manufacturing</text>
+        <text class="s1dS" x="492" y="168">440 start · 85 left</text>
+        <text class="s1dV" x="648" y="168" text-anchor="end">19.3%</text>
+        <text class="s1dL" x="692" y="150">Apex Retail</text>
+        <text class="s1dS" x="692" y="168">237 start · 42 left</text>
+        <text class="s1dV" x="848" y="168" text-anchor="end">17.7%</text>
+
+        <text class="s1dS" x="80" y="218">The bridge reconciles: 1,022 + 49 - 210 = 861. The four entity rates use the start base and sum to 210 leavers over 1,022 starters.</text>
+        <text class="s1dN" x="30" y="284">Digital reads worst and has the smallest base: 124 people, so one leaver is 0.8 of a point. Foundations session 2 is about what a small base does to a rate.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the moss bar is a fifth the height of the wine bar, which is the whole story of Apex's first half in one glance</figcaption>
+    </figure>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Step 1 · Fix the two dates.</strong> A bridge needs a start and an end. Write both, and write what counts as "in the headcount" on those dates: employees on payroll, excluding contractors, including people on leave. Apex's are 1 January and 1 July 2026.</p>
+        <div class="prompt-box good"><span class="label">★ Step 1 · dates and the definition of the stock</span>start date:        ______________   end date:  ______________
+in the stock:      ________________________________________
+not in the stock:  ________________________________________</div>
+      </div>
+      <div class="step">
+        <p><strong>Step 2 · Count the two stocks.</strong> Headcount on each date, by the definition in step 1. Apex: 1,022 and 861. If the two come from different systems, say which.</p>
+        <div class="prompt-box good"><span class="label">★ Step 2 · the stocks</span>headcount at start:  1,022      (Apex, constructed)
+headcount at end:      861
+yours:               ______  and  ______</div>
+      </div>
+      <div class="step">
+        <p><strong>Step 3 · Count the two flows.</strong> Joiners and leavers between the dates, by the same definition. Transfers between entities count on entity bridges and not on the group bridge. Apex: 49 and 210.</p>
+        <div class="prompt-box good"><span class="label">★ Step 3 · the flows</span>joiners:  49     leavers:  210     (Apex)
+yours:    ____            ____
+transfers handled how:  ________________________________</div>
+      </div>
+      <div class="step">
+        <p><strong>Step 4 · Check the identity.</strong> Start plus joiners minus leavers should equal end. If it does not, the difference is the number of people counted twice or not at all, and finding them is the next task, before any rate is computed.</p>
+        <div class="prompt-box good"><span class="label">★ Step 4 · the identity</span>1,022 + 49 - 210 = 861   reconciles (Apex)
+_____ + ___ - ____ = _____   yours   difference: _____</div>
+      </div>
+      <div class="step">
+        <p><strong>Step 5 · Write the rate with its base under it.</strong> Three bases, three rates. Pick one, say which, and keep it. Apex on the average base: 22.3 percent for the half-year.</p>
+        <div class="prompt-box good"><span class="label">★ Step 5 · the rate and the base</span>leavers / start base:    210 / 1,022 = 20.5 percent
+leavers / average base:  210 / 941.5 = 22.3 percent   (chosen)
+leavers / end base:      210 / 861   = 24.4 percent
+annualised (x2):         44.6 percent, assumes H2 repeats H1</div>
+      </div>
+      <div class="step">
+        <p><strong>Step 6 · The sentence.</strong> One line with the flow, the base, the period, and the annualising assumption if there is one. This is the line that goes on the slide.</p>
+        <div class="prompt-box good"><span class="label">★ Step 6 · the sentence</span>"Between 1 January and 30 June, 210 people left against an average headcount of 941,
+ 22.3 percent for the half-year; doubled, 44.6 percent annualised, if the second half repeats."</div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Keep the bridge as your standing check.</strong> Any people report that cannot be reconciled to start plus in minus out equals end is a report with a counting error in it, and the error is usually bigger than the trend the report is trying to show.</p>
+    </div>
+  </section>
+
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before Foundations session 2</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li><strong>Build the bridge for your own team or company</strong> for the last six months: two stocks, two flows, the identity checked. Write the difference if it does not reconcile; that number is your first finding.</li>
+      <li><strong>Compute the rate on all three bases</strong> and write the spread. If your organisation already reports a rate, find out which base it uses; if nobody knows, that is your second finding.</li>
+      <li><strong>Answer "who is not in this table"</strong> for the export you used, in one sentence.</li>
+      <li><strong>Bring the bridge.</strong> Session 2 splits the same leavers by department and the bases get small enough to lie.</li>
+    </ol>
+  </section>
+
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+    <p>Clear all three and Foundations session 1 gets stamped in your passport.</p>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · A dashboard shows headcount 1,022 in January, 861 in July, and 210 leavers for the half-year. What is the first thing to check?</p>
+      <button class="qopt" type="button">A · Whether 210 is above or below the industry benchmark</button>
+      <button class="qopt" type="button">B · Whether start plus joiners minus leavers equals end: 1,022 plus the joiners minus 210 should be 861, so joiners should be 49; if the dashboard shows a different joiner count, somebody is counted twice or not at all</button>
+      <button class="qopt" type="button">C · Whether July's headcount is lower because of the summer</button>
+      <button class="qopt" type="button">D · Whether the 210 includes retirements</button>
+      <p class="qwhy">The identity is the one check that needs no judgement. Every rate on the dashboard is a flow over a stock, and if the flows and stocks do not reconcile, the rates are fractions of unrelated numbers.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · The same 210 leavers give attrition of 20.5, 22.3 or 24.4 percent. Why, and which is usual?</p>
+      <button class="qopt" type="button">A · Three different definitions of "leaver"; the highest is usual because it is conservative</button>
+      <button class="qopt" type="button">B · Rounding differences between systems; any of the three is fine</button>
+      <button class="qopt" type="button">C · Three different bases: the start headcount, the average of start and end, and the end headcount; the average base is usual because it approximates the people exposed to the risk of leaving during the period, and whichever base is used goes in writing under the rate</button>
+      <button class="qopt" type="button">D · Three different periods; the annual figure is usual</button>
+      <p class="qwhy">The numerator never changed. The end base inflates because it shrinks as people leave; the start base ignores joiners who were also at risk. The base is a decision, and an undeclared base is the most common way a people number misleads.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · Apex's active staff have a median tenure of 5.01 years, and its recent leavers a median tenure at exit of 1.52 years. What does the table let you say about how long people stay?</p>
+      <button class="qopt" type="button">A · Less than it seems: the table holds only people employed on 1 January 2026 plus the six months of leavers after it, so everyone who left in earlier years is absent, and any tenure or survival statistic describes the survivors; the question "who is not in this table" has to be answered before "how long do people stay"</button>
+      <button class="qopt" type="button">B · People stay about five years on average</button>
+      <button class="qopt" type="button">C · Most people leave within two years</button>
+      <button class="qopt" type="button">D · Both numbers are wrong because they disagree</button>
+      <p class="qwhy">Both numbers are computed correctly from a table that is a photograph of survivors. Deep-dive session 2 measures how far that biases a survival curve and what an event log fixes.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What this session teaches, and where it came from</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Stocks, flows and the headcount identity</span><span class="note">Standard practice, no single source</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The three bases: 20.5, 22.3, 24.4 percent; annualised 44.6</span><span class="note">Computed from the constructed Apex table for these pages; annualising is labelled as an assumption</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The Apex bridge: 1,022, 49, 210, 861; entity rates 25.0 / 23.5 / 19.3 / 17.7; median tenures 5.01 and 1.52; 61 percent of leavers under two years</span><span class="note">Computed from the constructed table; Apex and everyone in it are invented</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">The survivor-table bias on a survival curve</span><span class="note">Named here; measured in deep-dive session 2</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Transfers, contractors, leave and rehires</span><span class="note">Named as definition decisions; no universal rule claimed</span></div>
+    </div>
+    <p class="mono" style="margin-top:14px">Every fact on this page, and its verification tier, is recorded in the course's source map.</p>
+  </section>
+
+  <section class="cheat" id="cheatsheet">
+    <h3>Foundations session 1 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Stock or flow?</b><span>A stock needs a date. A flow needs a period. A rate is a flow over a stock.</span></div>
+      <div class="cheat-item"><b>The identity</b><span>Start + joiners - leavers = end. Check it before any rate. Apex: 1,022 + 49 - 210 = 861.</span></div>
+      <div class="cheat-item"><b>Three bases</b><span>Start 20.5, average 22.3, end 24.4 percent. Same 210 people. Write the base under the rate.</span></div>
+      <div class="cheat-item"><b>Annualised means assumed</b><span>44.6 is 22.3 doubled, and doubling assumes the second half repeats.</span></div>
+      <div class="cheat-item"><b>Who is not in the table?</b><span>An export is a photograph of survivors. Early leavers of every earlier year are missing.</span></div>
+      <div class="cheat-item"><b>Transfers are not exits</b><span>A leaver on one entity's bridge, a joiner on another's, neither on the group's.</span></div>
+    </div>
+  </section>
+
+  <div class="callout next">
+    <span class="nx-pill">Next session</span>
+    <p>You can reconcile a bridge and write a rate with its base. Foundations session 2 splits Apex's 210 leavers by entity and department, where Sales lost 54 of 108 people and R&amp;D 7 of 94, and the bases get small enough that one resignation moves a department's rate by a point. Then it puts a national benchmark beside them, the quits rate the US Bureau of Labor Statistics publishes every month, and shows why a monthly rate and an annual rate are not the same animal.</p>
+  </div>
+
+  <footer class="pagefoot">
+    <span>Foundations session 1 of 6 · learn-people-analytics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="../index.html">← Course home</a> &nbsp;·&nbsp; <a href="a2-attrition-needs-a-base.html">Next: An attrition rate needs a base →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

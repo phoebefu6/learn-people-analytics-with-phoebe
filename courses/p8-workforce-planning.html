@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Deep-dive session 8 of 10. A workforce plan is the headcount identity run forwards. Apex's computed counts are the inputs, 1,022 at the start, 49 joiners, 210 leavers, 861 at the end, 22.3 percent attrition on the average base; hiring need is written as growth plus replacement; a transition-rate plan across four entities fits on one page; and three scenarios are reported as ranges, with every invented rate labelled.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Workforce planning - learn people analytics with phoebe">
+<meta property="og:description" content="Deep-dive session 8 of 10. The identity run forwards: growth plus replacement, a one-page transition plan, and three scenarios as ranges.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/courses/p8-workforce-planning.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Workforce planning - learn people analytics with phoebe">
+<meta name="twitter:description" content="Deep-dive session 8 of 10. Most hiring is replacement, and a plan is a range.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Deep-dive session 8 · Workforce planning - learn people analytics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-people-analytics-with-phoebe</a> / Deep-dive session 8 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn People Analytics with Phoebe · Deep-dive session 8 of 10</div>
+    <h1>Workforce <span class="accent">planning</span></h1>
+    <p class="sub">Seven sessions measured what happened. A workforce plan says what will, and the honest version is smaller and stranger than the spreadsheet it usually lives in: it is the headcount identity from deep-dive session 1, start plus joiners minus leavers equals end, run forwards with a rate in place of the leavers. Tonight the inputs are Apex's computed counts, 1,022 on 1 January 2026, 49 joiners, 210 leavers and 861 on 1 July, with 22.3 percent attrition on the average base for the half. The plan writes hiring need as growth plus replacement and finds that replacement is most of it. A transition-rate plan across Apex's four entities fits on one page. And three scenarios are reported as ranges, because the rates that drive them are guesses, and every guess below is labelled invented.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Core</span>
+      <span class="chip audience">People analysts, HR business partners, finance partners who own the headcount budget</span>
+      <span class="chip audience">Python, pandas, numpy</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-18 · The tank, the need, the bands</span>
+      <span class="a3" style="flex:5">18-40 · Build-along: a plan from 861</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we start</h2>
+    </div>
+    <p class="lede">Apex is constructed: a seeded table of 1,071 invented people in four invented entities. What is not invented is the arithmetic. The four bridge numbers and the attrition rate come out of that table by the same code as deep-dive session 1, so they are inputs a planner would actually have. Everything a planner would have to decide, how much to grow, how many will move between entities, whether the second half of the year looks like the first, is invented here and says so. That split, measured inputs on one side and chosen inputs on the other, is the whole discipline of workforce planning.</p>
+
+    <div class="legend">
+      <span class="pill">🎫 Clear all three quiz questions to stamp your passport</span>
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">★ Build-along = run the code yourself</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> A hiring-need function that returns growth and replacement separately and asserts the identity every half, a projection loop that runs it forwards from 861, three scenarios whose output is a low and a high and never a middle, a four-entity transition matrix whose rows sum to one, and a plan sentence that names every measured input and flags every invented one.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the stock-flow model</span>
+      <h2>The tank, and the line a plan draws on it</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">A workforce is a stock with two pipes: joiners in, leavers out. The history is a bridge; a plan is the same bridge with the end number chosen first. Pick the target stock, estimate the leavers from a rate, and the joiners are what is left over. Nothing more elaborate is going on in any planning tool, and every elaboration is a way of splitting the stock into smaller tanks or the rate into smaller pieces.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn tank holding the Apex stock. A pipe on the left brings 49 joiners in during the first half of 2026 and a pipe at the bottom right takes 210 leavers out, at 22.3 percent on the average base; the stock falls from 1,022 on 1 January to 861 on 1 July. A dashed moss line across the tank is the plan's target stock T, which is invented. A moss panel writes hiring need as growth, T minus H, plus replacement, a times H plus T over two.">
+        <defs>
+          <filter id="d8aSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="101" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d8aHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d8aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d8aH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d8aL { font: 700 11.5px Inter, sans-serif; fill: #2A1A1E; }
+          .d8aS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d8aB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d8aV { font: 800 17px Inter, sans-serif; fill: #4F1521; }
+          .d8aN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d8aH" x="30" y="26">A PLAN IS THE BRIDGE WITH THE END NUMBER CHOSEN FIRST</text>
+
+        <g filter="url(#d8aSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- the tank -->
+          <rect x="260" y="60" width="240" height="190" rx="8" transform="rotate(-0.4 380 155)" fill="#FFFFFF"/>
+          <!-- the stock, as water -->
+          <rect x="266" y="140" width="228" height="104" rx="4" transform="rotate(0.3 380 192)" fill="url(#d8aHc)" stroke="#7A2334"/>
+          <!-- inflow and outflow pipes -->
+          <path d="M60 96 L254 96" marker-end="url(#d8aAr)"/>
+          <path d="M504 226 L636 226" marker-end="url(#d8aAr)"/>
+          <!-- the plan's target line -->
+          <path d="M246 108 L512 108" stroke="#3D6B2E" stroke-width="3" stroke-dasharray="8 6"/>
+          <!-- the hiring-need panel -->
+          <rect x="650" y="60" width="200" height="150" rx="8" transform="rotate(0.5 750 135)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <path d="M650 92 L850 92" stroke="#3D6B2E"/>
+        </g>
+
+        <text class="d8aL" x="60" y="84">joiners, H1: + 49</text>
+        <text class="d8aS" x="60" y="118">the pipe the plan controls</text>
+
+        <text class="d8aS" x="60" y="166">stock on 1 Jan 2026</text>
+        <text class="d8aV" x="60" y="188">1,022</text>
+        <text class="d8aS" x="60" y="222">stock on 1 Jul 2026</text>
+        <text class="d8aV" x="60" y="244">861</text>
+
+        <text class="d8aB" x="276" y="100">target stock T, invented</text>
+        <text class="d8aS" x="276" y="130">the stock, H</text>
+
+        <text class="d8aL" x="512" y="216">leavers, H1: - 210</text>
+        <text class="d8aS" x="512" y="248">22.3% on the average base</text>
+        <text class="d8aS" x="512" y="266">44.6% a year only by doubling</text>
+
+        <text class="d8aH" x="662" y="84">HIRING NEED</text>
+        <text class="d8aL" x="662" y="112">= growth</text>
+        <text class="d8aS" x="662" y="130">T - H</text>
+        <text class="d8aL" x="662" y="154">+ replacement</text>
+        <text class="d8aS" x="662" y="172">a x (H + T) / 2</text>
+        <text class="d8aB" x="662" y="196">a: per half, stated</text>
+
+        <text class="d8aN" x="30" y="292">Apex's four counts are computed from the constructed table, and the identity holds: 1,022 + 49 - 210 = 861.</text>
+        <text class="d8aN" x="30" y="308">The target line T and the growth that sets it are invented, and your numbers will differ.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the dashed line is the only thing a plan chooses; the leavers come from a measured rate and the joiners are what closes the gap</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The model is the identity, run forwards<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Deep-dive session 1 asserted <code>start + joiners - leavers == end</code> on history. A plan rearranges it: <strong>joiners = end - start + leavers</strong>. The end is the target, chosen. The start is measured. The leavers are not known yet, so they are a rate times a base, and that is the first place a plan can go quietly wrong. For Apex the measured half is H1 2026: 210 leavers over an average base of 941.5, which is 22.3 percent per half. Written that way, with the base named, it is a statement about one half-year of one constructed table and nothing more.</p>
+        <p>The shape of the code follows the shape of the identity. One function takes the stock at the start of a half, the planned growth and the rate, and returns the target, the growth, the expected leavers and the hires, <em>separately</em>. Then it asserts that start plus hires minus leavers equals the target. The assert cannot fail on a correct function, which is the point: the day someone edits the function and it does fail, the plan has stopped reconciling and the number on the slide is not a headcount any more.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The rate and its base travel together<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The 22.3 percent was measured on the <strong>average</strong> of the start and end stocks. Apply it to the start stock alone and it predicts more leavers than the 210 that actually left; apply it to the end stock and it predicts fewer. Neither is a mistake in arithmetic. Both are a rate used on a base it was not measured on. The hiring-need function therefore applies the rate to the average of the start and the target, the same base it came from, and the comment above it says so.</p>
+        <p>The annual figure has the same problem one level up. Doubling 22.3 gives 44.6 percent a year, which assumes the second half repeats the first and that the base stays where it was. Compounding the half-year survival gives a different annual figure under a different assumption. A plan that steps in halves needs neither: it uses the rate at the grain it was measured and never converts it. When a leader asks for the annual number, print 44.6 with the words "annualised by doubling H1, which assumes H2 repeats" beside it, every time.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The annual rate that became a hiring budget.</strong> Constructed setting, common mechanism. A planning deck carried "attrition: 44.6 percent" in a box, and a finance partner multiplied it by the year-end headcount to size the recruiting budget. The 44.6 was a doubled half-year, measured in a half that included a restructuring; the year-end headcount was a target, not a stock. Two assumptions, each reasonable in isolation, multiplied into one number nobody had chosen. The fix was not a better rate. It was a half-year model with the rate, its base and its measurement window printed in the same row.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers hiring need as growth plus replacement</span>
+      <h2>Most hiring is replacement</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">Split the hires a plan needs into two parts and the conversation changes. Growth is the change in the stock, and it is what leaders argue about. Replacement is the leavers the plan expects at the measured rate, and at Apex's rate it is most of the number, in every scenario, including the one where the company shrinks. A flat plan is not a plan that hires nobody. It is a plan that hires everybody who leaves.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Left, three hand-drawn stacked bars for one half: shrink, flat and grow. Each has a tall hachured replacement segment of similar height; the grow bar adds a small solid moss growth segment on top, and the shrink bar has a pale moss negative growth segment below the baseline, so even the shrinking plan hires. Right, Apex's H1 2026 leavers per 100 people on the 1 January headcount by department: Sales 50.0, Customer Service 37.6, Operations 25.2, Marketing 19.7, Engineering 11.3, HR 10.7, Finance 8.3, R and D 7.4.">
+        <defs>
+          <filter id="d8bSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="103" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d8bHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d8bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d8bH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d8bL { font: 700 11px Inter, sans-serif; fill: #2A1A1E; }
+          .d8bS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d8bB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d8bV { font: 800 11px Inter, sans-serif; fill: #4F1521; }
+          .d8bA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .04em; }
+          .d8bN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d8bH" x="30" y="26">HIRING NEED = GROWTH + REPLACEMENT, AND REPLACEMENT IS THE BIG PART</text>
+
+        <g filter="url(#d8bSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- legend swatches -->
+          <rect x="40" y="42" width="14" height="12" fill="url(#d8bHc)" stroke="#7A2334"/>
+          <rect x="258" y="42" width="14" height="12" fill="#3D6B2E" stroke="#3D6B2E"/>
+          <!-- baseline -->
+          <path d="M60 230 L400 230"/>
+          <!-- shrink: replacement above, negative growth below -->
+          <rect x="80" y="110" width="60" height="120" transform="rotate(-0.6 110 170)" fill="url(#d8bHc)" stroke="#7A2334"/>
+          <rect x="80" y="230" width="60" height="26" transform="rotate(0.5 110 243)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <!-- flat: replacement only -->
+          <rect x="190" y="104" width="60" height="126" transform="rotate(0.5 220 167)" fill="url(#d8bHc)" stroke="#7A2334"/>
+          <!-- grow: replacement plus growth -->
+          <rect x="300" y="98" width="60" height="132" transform="rotate(-0.4 330 164)" fill="url(#d8bHc)" stroke="#7A2334"/>
+          <rect x="300" y="66" width="60" height="32" transform="rotate(0.6 330 82)" fill="#3D6B2E" stroke="#3D6B2E"/>
+          <!-- department bars, start base, one half -->
+          <rect x="590" y="73" width="240" height="14" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="590" y="95" width="180" height="14" fill="#F9EEF0"/>
+          <rect x="590" y="117" width="121" height="14" fill="#F9EEF0"/>
+          <rect x="590" y="139" width="95" height="14" fill="#F9EEF0"/>
+          <rect x="590" y="161" width="54" height="14" fill="#F9EEF0"/>
+          <rect x="590" y="183" width="51" height="14" fill="#F9EEF0"/>
+          <rect x="590" y="205" width="40" height="14" fill="#F9EEF0"/>
+          <rect x="590" y="227" width="36" height="14" fill="#F9EEF0"/>
+          <path d="M590 64 L590 250" stroke="#DCC9CD"/>
+        </g>
+
+        <text class="d8bS" x="60" y="53">replacement: a x (H + T) / 2</text>
+        <text class="d8bS" x="278" y="53">growth: T - H</text>
+        <text class="d8bA" x="40" y="80">HIRES IN ONE HALF, SCHEMATIC</text>
+
+        <text class="d8bS" x="110" y="276" text-anchor="middle">shrink, g &lt; 0</text>
+        <text class="d8bS" x="220" y="276" text-anchor="middle">flat, g = 0</text>
+        <text class="d8bS" x="330" y="276" text-anchor="middle">grow, g &gt; 0</text>
+
+        <text class="d8bH" x="460" y="53">REPLACEMENT PER 100 HEADS, ONE HALF</text>
+        <text class="d8bL" x="580" y="84" text-anchor="end">Sales</text>
+        <text class="d8bL" x="580" y="106" text-anchor="end">Customer Service</text>
+        <text class="d8bL" x="580" y="128" text-anchor="end">Operations</text>
+        <text class="d8bL" x="580" y="150" text-anchor="end">Marketing</text>
+        <text class="d8bL" x="580" y="172" text-anchor="end">Engineering</text>
+        <text class="d8bL" x="580" y="194" text-anchor="end">HR</text>
+        <text class="d8bL" x="580" y="216" text-anchor="end">Finance</text>
+        <text class="d8bL" x="580" y="238" text-anchor="end">R&amp;D</text>
+        <text class="d8bV" x="836" y="84">50.0</text>
+        <text class="d8bV" x="776" y="106">37.6</text>
+        <text class="d8bV" x="717" y="128">25.2</text>
+        <text class="d8bV" x="691" y="150">19.7</text>
+        <text class="d8bV" x="650" y="172">11.3</text>
+        <text class="d8bV" x="647" y="194">10.7</text>
+        <text class="d8bV" x="636" y="216">8.3</text>
+        <text class="d8bV" x="632" y="238">7.4</text>
+        <text class="d8bB" x="460" y="276">if H2 repeats H1, Sales replaces half its start stock</text>
+
+        <text class="d8bN" x="30" y="312">Left: schematic heights; the target T and the growth g are invented, and your numbers will differ.</text>
+        <text class="d8bN" x="30" y="328">Right: Apex H1 leavers over the 1 January headcount by department, computed from the constructed table.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the moss block is what leaders argue about; the hachure is what recruiting actually spends the half on</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Growth plus replacement, and a flat plan still hires<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Write the target as <code>T = H x (1 + g)</code>, with g the planned growth for the half. Then <strong>growth = T - H</strong> and <strong>replacement = a x (H + T) / 2</strong>, the expected leavers at the measured rate on the average base. Hires are the sum. At g of zero the growth term vanishes and the hires equal the replacement, which at Apex's measured rate is more than a fifth of the stock every half. At a negative g the growth term is negative, and the plan still hires unless the planned shrinkage exceeds the expected leavers.</p>
+        <p>Two consequences follow. First, <strong>the attrition rate is the biggest input to the hiring number</strong>, bigger than the growth target in any plausible range, so it deserves more scrutiny than it gets. Second, a hiring freeze is a growth decision, not a replacement decision: it sets hires to zero and lets the stock fall at the rate, and the code can print exactly how far, half by half, before anybody signs it.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>One company rate, eight department rates, and the small tank<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A company plan built on one rate assumes every department leaves at it. Apex's departments, on the start base, ran from Sales at 50.0 percent (54 of 108) to R&amp;D at 7.4 (7 of 94) in the same half. A plan that grows Sales and holds R&amp;D flat needs far more hires than one that does the reverse, at the same company-level growth, and the company rate cannot see the difference. Split the tank by department and run the same function per department with its own rate.</p>
+        <p>Then watch the small tanks. HR's 10.7 percent is 8 leavers of 75; one more leaver moves it by more than a point. A department rate on a base that small is a very noisy estimate, and a plan built on it inherits the noise. The usual compromise is to use the department rate where the base is large and a pooled rate where it is not, and to say which departments got which. Deep-dive session 2's survival curves are the more careful version of the same question, asked per person rather than per tank.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The same flat plan in two industries.</strong> The BLS JOLTS survey put the 2025 mean monthly quits rate at 3.92 percent in US leisure and hospitality and 1.39 percent in manufacturing, computed from the public series in deep-dive session 3. Hold both headcounts flat and the hospitality plan needs nearly three times the voluntary replacement per head, before a single growth hire. Monthly is not annual and neither figure is a target for any one employer; the point is only that "flat" means very different recruiting loads, and the difference is entirely in the replacement term.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-3">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers scenarios as ranges and transition-rate planning</span>
+      <h2>Three bands, and a plan on one page</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">A plan with one growth rate and one attrition rate produces one number, and the number is wrong in a way nobody can see. Give each scenario a band for each rate instead, run the model across every combination in the band, and report the lowest and the highest hires. Three scenarios become three ranges; where they overlap, the scenario label matters less than the attrition assumption underneath it. Then split the tank by entity and let people move between the tanks: that is a transition-rate plan, and it fits in a four-by-five matrix.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 338" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Left, a hand-drawn fan chart starting from a single point, Apex's computed 861 on 1 July 2026, and opening into three widening bands over three half-years: grow above, flat in the middle drawn pale moss, and shrink below. The bands are built from invented rates. Right, an inset sketch of the US JOLTS total nonfarm quits rate: 2.32 in 2019, down to 1.5 in April 2020, up to 3.0 in November 2021, and 2.0 in December 2025, showing how far a rate moved inside two years.">
+        <defs>
+          <filter id="d8cSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="107" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d8cHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d8cAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d8cH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d8cL { font: 700 11.5px Inter, sans-serif; fill: #2A1A1E; }
+          .d8cS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d8cB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d8cA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .04em; }
+          .d8cN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d8cH" x="30" y="26">THREE SCENARIOS, THREE BANDS, ONE MEASURED STARTING POINT</text>
+        <text class="d8cB" x="60" y="50">each band is every mix of its invented inputs: report the band, never its middle</text>
+
+        <g filter="url(#d8cSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- axes -->
+          <path d="M60 244 L570 244" marker-end="url(#d8cAr)"/>
+          <path d="M60 244 L60 64" marker-end="url(#d8cAr)"/>
+          <!-- three bands -->
+          <path d="M90 152 L540 72 L540 104 Z" fill="#F9EEF0" stroke="#9A3A4C"/>
+          <path d="M90 152 L540 136 L540 172 Z" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <path d="M90 152 L540 198 L540 232 Z" fill="url(#d8cHc)" stroke="#7A2334"/>
+          <circle cx="90" cy="152" r="5" fill="#2A1A1E"/>
+          <!-- tick marks -->
+          <path d="M240 244 L240 250 M390 244 L390 250 M540 244 L540 250"/>
+          <!-- inset: the JOLTS quits line -->
+          <rect x="620" y="60" width="230" height="190" rx="6" transform="rotate(0.4 735 155)" fill="#FFFFFF"/>
+          <path d="M645 171 L690 225 L750 126 L835 192" stroke="#7A2334"/>
+          <circle cx="690" cy="225" r="4" fill="#7A2334" stroke="#7A2334"/>
+          <circle cx="750" cy="126" r="4" fill="#7A2334" stroke="#7A2334"/>
+        </g>
+
+        <text class="d8cL" x="96" y="196">861, computed</text>
+        <text class="d8cB" x="548" y="92">grow</text>
+        <text class="d8cB" x="548" y="158">flat</text>
+        <text class="d8cB" x="548" y="220">shrink</text>
+
+        <text class="d8cS" x="90" y="264" text-anchor="middle">1 Jul 2026</text>
+        <text class="d8cS" x="240" y="264" text-anchor="middle">+1 half</text>
+        <text class="d8cS" x="390" y="264" text-anchor="middle">+2 halves</text>
+        <text class="d8cS" x="540" y="264" text-anchor="middle">+3 halves</text>
+        <text class="d8cA" x="60" y="286">HEADCOUNT BY HALF, SCHEMATIC</text>
+
+        <text class="d8cL" x="632" y="80">US quits rate, JOLTS</text>
+        <text class="d8cS" x="632" y="96">monthly, percent of employment</text>
+        <text class="d8cS" x="640" y="160">2.32 in 2019</text>
+        <text class="d8cS" x="700" y="243">1.5, Apr 2020</text>
+        <text class="d8cS" x="760" y="122">3.0, Nov 2021</text>
+        <text class="d8cS" x="835" y="210" text-anchor="end">2.0, Dec 2025</text>
+
+        <text class="d8cN" x="30" y="310">861 is Apex's computed headcount; every band comes from invented rates, and your numbers will differ.</text>
+        <text class="d8cN" x="30" y="326">Inset: BLS JOLTS total nonfarm quits rate, US, seasonally adjusted, computed from the public series.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - one measured dot and three invented fans; the inset is why the fans have width, since a real rate doubled inside nineteen months</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Scenarios as ranges, not points<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A scenario is a named set of <em>bands</em>: the attrition rate somewhere between a low and a high, the growth somewhere between a low and a high. Run the model on a grid across both bands and keep the lowest and the highest total hires, and the lowest and highest end stock. Three scenarios give three ranges. That is the output. The middle of a range is not a forecast; it is the average of two guesses, and quoting it discards the only honest part of the work.</p>
+        <p>Two things become visible that a point plan hides. <strong>Overlap:</strong> if the flat range and the grow range overlap, the recruiting team cannot tell from the plan which world it is in, and the plan should say so. <strong>Which band is doing the work:</strong> narrow the growth band to a single value and see how much the range shrinks, then do the same for attrition. At Apex's rates the attrition band moves the hires more than the growth band does, which is Part 2's finding said again as a sensitivity.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The transition-rate (Markov) plan in one page<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Split the stock into states, here Apex's four entities, and add one more state, <em>left</em>. A transition matrix says, for a person in each state at the start of a half, the probability of being in each state at the end: stay, move to another entity, or leave. Each row sums to one. Multiply the start stock vector by the matrix and you get where everyone is at the end of the half, plus a count of leavers; add the hires vector and step again. That is the whole of a Markov workforce plan, and deep-dive session 1's identity holds inside it, row by row.</p>
+        <p>What is measured and what is invented must be kept apart. The exit column comes from Apex: every H1 leaver over the 1 January stock, by entity, Digital 25.0, Logistics 23.5, Manufacturing 19.3 and Retail 17.7 percent. Those rates count every leaver, including anyone who joined during the half and left before it ended, so as transition probabilities they are an approximation, and the code can split the two. The between-entity moves are invented: 291 Apex rows carry a transfer flag, but the snapshot does not say when most of them moved, so there is no measured half-year transfer rate to use. The hires vector is invented. Run the first half from 1 January and it is a back-test: the leavers must come out at 210, because the exit column was measured on that half.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The rate that doubled while the plan was in its binder.</strong> The US total nonfarm quits rate in the BLS JOLTS series averaged 2.32 percent a month in 2019, fell to 1.5 in April 2020 and reached 3.0 in November 2021, computed from the public series in deep-dive session 3. A plan built in 2019 on the 2019 rate, as a point, was overtaken in both directions inside two years: the rate fell a third below it, then rose nearly a third above it. A plan built on a band would not have contained 3.0 either, unless someone had been willing to write down a band that wide, and that willingness is most of the skill.</p>
+    </div>
+
+    <div class="tryrow" data-fn="wordcount" data-multiline="1" data-title="Write your plan's inputs, split in two" data-hint="For a team you plan for: the measured inputs (start stock, the rate, its base, the window it was measured in) on one line; the chosen inputs (growth band, attrition band, why) on the next. Mark every chosen one invented." data-seed="" data-cta="Count it"></div>
+  </section>
+
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>A plan from 861, in pandas and numpy</h2>
+      <span class="tag demo">★ 22 min · everyone builds</span>
+    </div>
+    <p class="lede">Seven steps on <code>materials/apex-staff.csv</code>, the constructed Apex table. Steps 1 and 2 print Apex's computed counts and rate, and those numbers are printed here because the table produces them. From step 3 on, every result depends on an invented input, so no output is printed: your numbers will differ, and the comment on each invented input says so.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The build-along as a hand-drawn track of seven stations: inputs, 1,022 and 861, 49 and 210; the rate, 22.3 percent a half and not 44.6; the need function, growth plus replacement; the scenarios, three bands, invented; the Markov step, four entities plus an exit state; the range, minimum to maximum and never a middle; and the sentence, rates named and invented inputs flagged.">
+        <defs>
+          <filter id="d8dSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="109" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d8dHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d8dAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d8dH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d8dL { font: 700 11px Inter, sans-serif; fill: #2A1A1E; }
+          .d8dS { font: 400 10.5px Inter, sans-serif; fill: #6B5459; }
+          .d8dB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d8dW { font: 800 11px Inter, sans-serif; fill: #FFFFFF; }
+          .d8dN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d8dH" x="30" y="26">SEVEN STATIONS</text>
+
+        <g filter="url(#d8dSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M40 120 L840 120" stroke="#DCC9CD"/>
+          <rect x="40" y="90" width="96" height="60" rx="8" transform="rotate(-0.6 88 120)" fill="#FFFFFF"/>
+          <rect x="156" y="90" width="96" height="60" rx="8" transform="rotate(0.5 204 120)" fill="#F9EEF0"/>
+          <rect x="272" y="90" width="96" height="60" rx="8" transform="rotate(-0.4 320 120)" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="388" y="90" width="96" height="60" rx="8" transform="rotate(0.6 436 120)" fill="#FFFFFF"/>
+          <rect x="504" y="90" width="96" height="60" rx="8" transform="rotate(-0.5 552 120)" fill="#F9EEF0"/>
+          <rect x="620" y="90" width="96" height="60" rx="8" transform="rotate(0.4 668 120)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="736" y="90" width="104" height="60" rx="8" transform="rotate(-0.5 788 120)" fill="#FFFFFF"/>
+          <path d="M138 120 L152 120" marker-end="url(#d8dAr)"/>
+          <path d="M254 120 L268 120" marker-end="url(#d8dAr)"/>
+          <path d="M370 120 L384 120" marker-end="url(#d8dAr)"/>
+          <path d="M486 120 L500 120" marker-end="url(#d8dAr)"/>
+          <path d="M602 120 L616 120" marker-end="url(#d8dAr)"/>
+          <path d="M718 120 L732 120" marker-end="url(#d8dAr)"/>
+        </g>
+
+        <text class="d8dL" x="52" y="112">1 · inputs</text>
+        <text class="d8dS" x="52" y="128">1,022 · 861</text>
+        <text class="d8dS" x="52" y="142">49 · 210</text>
+        <text class="d8dL" x="168" y="112">2 · rate</text>
+        <text class="d8dS" x="168" y="128">22.3% a half</text>
+        <text class="d8dS" x="168" y="142">not 44.6</text>
+        <text class="d8dW" x="284" y="112">3 · need()</text>
+        <text class="d8dW" x="284" y="128">growth +</text>
+        <text class="d8dW" x="284" y="142">replacement</text>
+        <text class="d8dL" x="400" y="112">4 · project</text>
+        <text class="d8dS" x="400" y="128">half by half</text>
+        <text class="d8dS" x="400" y="142">assert each</text>
+        <text class="d8dL" x="516" y="112">5 · bands</text>
+        <text class="d8dS" x="516" y="128">3 scenarios</text>
+        <text class="d8dS" x="516" y="142">invented</text>
+        <text class="d8dB" x="632" y="112">6 · Markov</text>
+        <text class="d8dS" x="632" y="128">4 entities</text>
+        <text class="d8dS" x="632" y="142">+ exit state</text>
+        <text class="d8dL" x="748" y="112">7 · sentence</text>
+        <text class="d8dS" x="748" y="128">rates named</text>
+        <text class="d8dS" x="748" y="142">flags shown</text>
+
+        <text class="d8dS" x="40" y="74">Stations 1 and 2 are measured on the constructed table; from station 3 on, a chosen input enters.</text>
+        <text class="d8dN" x="30" y="212">Save the plan with its inputs in the same file. Session 9 asks what a model may and may not be fed.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the wine station is the function every later station calls; get its base right and the rest is bookkeeping</figcaption>
+    </figure>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>The measured inputs.</strong> The same headcount function as deep-dive session 1, the same window, the same assert. These four numbers are the only ones in the plan that a planner did not choose.</p>
+        <div class="prompt-box good"><span class="label">★ Step 1 · inputs from Apex</span>import numpy as np, pandas as pd
+from itertools import product
+
+d = pd.read_csv("materials/apex-staff.csv", parse_dates=["Date Join", "Last Day"])
+START, END = pd.Timestamp("2026-01-01"), pd.Timestamp("2026-07-01")
+
+def headcount(df, date):
+    joined = df["Date Join"] &lt;= date
+    still  = df["Last Day"].isna() | (df["Last Day"] &gt;= date)
+    return int((joined &amp; still).sum())
+
+H0, H1 = headcount(d, START), headcount(d, END)
+joiners = int((d["Date Join"] &gt;= START).sum())
+leavers = int(((d["Last Day"] &gt;= START) &amp; (d["Last Day"] &lt; END)).sum())
+assert H0 + joiners - leavers == H1, "bridge does not reconcile"
+print(H0, joiners, leavers, H1)                  # 1022 49 210 861</div>
+      </div>
+      <div class="step">
+        <p><strong>The rate, at the grain it was measured.</strong> One half, average base. The annual figure is printed with its assumption and then never used again.</p>
+        <div class="prompt-box good"><span class="label">★ Step 2 · the rate with its base</span>avg_base = (H0 + H1) / 2                         # 941.5
+a_half = leavers / avg_base                      # attrition per half, average base, H1 2026 only
+print(f"H1 attrition, average base {avg_base}: {a_half * 100:.1f}%")
+# H1 attrition, average base 941.5: 22.3%
+print(f"annualised by doubling: {a_half * 200:.1f}%  (assumes H2 repeats H1)")
+# annualised by doubling: 44.6%  (assumes H2 repeats H1)
+
+print(round(a_half * H0))    # the average-base rate on the start stock alone: compare it with the 210 that left</div>
+      </div>
+      <div class="step">
+        <p><strong>Hiring need as a function.</strong> Growth and replacement returned separately, the rate applied to the base it was measured on.</p>
+        <div class="prompt-box good"><span class="label">★ Step 3 · need()</span>def hiring_need(H, g, a):
+    """One half. H: stock at the start. g: planned growth over the half. a: attrition per half, average base."""
+    T = H * (1 + g)                              # the target stock at the end of the half
+    growth = T - H
+    replacement = a * (H + T) / 2                # expected leavers on the average base, the base a came from
+    return {"target": T, "growth": growth, "replacement": replacement, "hires": growth + replacement}
+
+G_FLAT = 0.00                                    # invented: a flat plan; your numbers will differ
+print(hiring_need(H1, G_FLAT, a_half))           # at g = 0 the hires are all replacement</div>
+      </div>
+      <div class="step">
+        <p><strong>Run it forwards, and assert the identity every half.</strong> The target of one half is the start of the next.</p>
+        <div class="prompt-box good"><span class="label">★ Step 4 · project</span>def project(H, halves, a, g):
+    rows = []
+    for t in range(1, halves + 1):
+        n = hiring_need(H, g, a)
+        assert abs(H + n["hires"] - n["replacement"] - n["target"]) &lt; 1e-9   # start + in - out == end
+        rows.append({"half": t, "start": H, **n})
+        H = n["target"]
+    return pd.DataFrame(rows)
+
+plan = project(H1, 3, a_half, G_FLAT)            # three halves from 1 July 2026; g invented
+print(plan.round(1).to_string(index=False))      # your numbers will differ
+
+# a freeze: hires = 0, so T = H - a(H + T)/2, which solves to T = H(1 - a/2)/(1 + a/2)
+freeze = [H1 * ((1 - a_half / 2) / (1 + a_half / 2)) ** t for t in (1, 2, 3)]
+print([round(x) for x in freeze])                # what a freeze does, half by half, before anybody signs it</div>
+      </div>
+      <div class="step">
+        <p><strong>Three scenarios, each a pair of bands.</strong> Every combination on a five-by-five grid, and only the lowest and highest results are kept.</p>
+        <div class="prompt-box good"><span class="label">★ Step 5 · scenarios as ranges</span># every band below is invented; your numbers will differ
+SCENARIOS = {
+    "shrink": {"a": (0.18, 0.26), "g": (-0.04, -0.01)},
+    "flat":   {"a": (0.18, 0.26), "g": (-0.01,  0.01)},
+    "grow":   {"a": (0.18, 0.26), "g": ( 0.01,  0.04)},
+}
+
+def band(lo, hi, n=5):
+    return np.linspace(lo, hi, n)
+
+out = []
+for name, s in SCENARIOS.items():
+    runs  = [project(H1, 3, a, g) for a, g in product(band(*s["a"]), band(*s["g"]))]
+    hires = [r["hires"].sum() for r in runs]
+    end   = [r["target"].iloc[-1] for r in runs]
+    out.append((name, round(min(hires)), round(max(hires)), round(min(end)), round(max(end))))
+
+table = pd.DataFrame(out, columns=["scenario", "hires_low", "hires_high", "end_low", "end_high"])
+print(table.to_string(index=False))              # three ranges over three halves; your numbers will differ
+# then narrow one band to a single value and re-run: whichever band shrinks the range most is doing the work</div>
+      </div>
+      <div class="step">
+        <p><strong>The transition-rate plan, four entities and an exit.</strong> The exit column is measured; the moves and the hires are invented. The first half, run from 1 January, is a back-test.</p>
+        <div class="prompt-box good"><span class="label">★ Step 6 · Markov, one page</span>ents = ["Apex Digital", "Apex Logistics", "Apex Manufacturing", "Apex Retail"]
+in_start = (d["Date Join"] &lt;= START) &amp; (d["Last Day"].isna() | (d["Last Day"] &gt;= START))
+in_half  = (d["Last Day"] &gt;= START) &amp; (d["Last Day"] &lt; END)
+n0   = d.loc[in_start, "Company"].value_counts().reindex(ents).to_numpy()
+left = d.loc[in_half, "Company"].value_counts().reindex(ents).to_numpy()
+exit_rate = left / n0                            # every H1 leaver over the 1 January stock, by entity
+print(n0, (exit_rate * 100).round(1))            # [124 221 440 237] [25.  23.5 19.3 17.7]
+
+# invented: the share of each entity's stock moving to another entity in one half; your numbers will differ
+move = np.array([[0.00, 0.02, 0.01, 0.01],
+                 [0.01, 0.00, 0.02, 0.01],
+                 [0.01, 0.01, 0.00, 0.01],
+                 [0.01, 0.01, 0.02, 0.00]])
+stay = 1 - exit_rate - move.sum(axis=1)
+P = np.column_stack([move + np.diag(stay), exit_rate])    # 4 x 5; the last column is "left"
+assert np.allclose(P.sum(axis=1), 1), "a row does not sum to one"
+
+hires = np.array([10, 15, 25, 15])               # invented hires per half by entity; your numbers will differ
+n = n0.astype(float)
+for half in (1, 2):
+    flows = n @ P                                # where this half's stock is at the end of it
+    n = flows[:4] + hires
+    print(half, n.round(0), "leavers", round(flows[4]))
+# half 1 is H1 2026 again: its leavers must be 210, because the exit column was measured there;
+# its stock will not be 861, because the hires are invented. Half 2 is the plan; your numbers will differ</div>
+      </div>
+      <div class="step">
+        <p><strong>The sentence.</strong> Measured inputs with their base and window, the range and not its middle, and the word invented on everything chosen.</p>
+        <div class="prompt-box good"><span class="label">★ Step 7 · the plan sentence</span>lo, hi = table.set_index("scenario").loc["flat", ["hires_low", "hires_high"]]
+sentence = (f"Plan from Apex's {H1} people on 1 July 2026 (computed from a constructed table). "
+            f"Attrition is {a_half * 100:.1f}% per half on the average base, measured on H1 2026 only. "
+            f"The flat scenario needs between {lo} and {hi} hires over three halves. "
+            f"Every growth, transfer and hiring rate is invented; the range is the answer, not its middle.")
+print(sentence)                                  # your numbers will differ from the third sentence on
+table.to_csv("apex_plan_from_2026-07-01.csv", index=False)</div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Narrow the attrition band to 0.223 exactly and run step 5 again.</strong> The three ranges shrink to the width the growth band alone produces, and you can see how much of the plan's uncertainty was the rate. Then widen it to the full swing the JOLTS inset showed, a rate that fell to 1.5 and then rose to 3.0, and write down honestly whether your recruiting budget could absorb the high end.</p>
+    </div>
+  </section>
+
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before deep-dive session 9</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li><strong>Run the seven steps</strong> as written. Check that steps 1 and 2 print Apex's numbers exactly and that the back-test half in step 6 prints 210 leavers.</li>
+      <li><strong>Split the tank by department.</strong> Run <code>project</code> per department with its own start-base rate, and write which departments carry most of the replacement need and whether any base is too small to trust.</li>
+      <li><strong>Find the band doing the work.</strong> In step 5, fix growth at a single value and record the width of each range; then fix attrition instead. Write one sentence on which input deserves more scrutiny.</li>
+      <li><strong>For a team you plan for,</strong> write the measured inputs with their base and window on one line and the invented ones on the next, and bring both lines to session 9.</li>
+    </ol>
+  </section>
+
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+    <p>Clear all three and deep-dive session 8 gets stamped in your passport.</p>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · A leader says the headcount plan for next half is flat, so recruiting can pause. What does the model say?</p>
+      <button class="qopt" type="button">A · Recruiting can pause, because growth is zero</button>
+      <button class="qopt" type="button">B · Hires equal growth plus replacement; at zero growth the hires are all replacement, the expected leavers at the measured rate on the average base, and at Apex's rate that is more than a fifth of the stock every half, so a flat plan hires everyone who leaves</button>
+      <button class="qopt" type="button">C · Hires equal the attrition rate times the target headcount, whatever the growth</button>
+      <button class="qopt" type="button">D · A flat plan needs half the usual hires, because half the leavers are regretted</button>
+      <p class="qwhy">Growth is the part leaders argue about and replacement is the part recruiting spends the half on. A pause is a freeze, a growth decision, and the stock then falls at the rate.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="3">
+      <p class="qtext">2 · The model steps in half-years. Why does it use 22.3 percent per half rather than 44.6 percent a year divided by two?</p>
+      <button class="qopt" type="button">A · Because 44.6 is wrong and 22.3 is right</button>
+      <button class="qopt" type="button">B · Because annual rates cannot be used in Python</button>
+      <button class="qopt" type="button">C · Because the half-year rate is always lower than the annual rate</button>
+      <button class="qopt" type="button">D · Because 22.3 is what the table measured, on a stated base in a stated window, and 44.6 is that number doubled under the assumption that the second half repeats the first; dividing it back adds nothing and hides where it came from, so the plan uses the rate at the grain it was measured and prints the annual figure only with its assumption</button>
+      <p class="qwhy">Every conversion adds an assumption. A model that steps at the grain of the measurement needs none of them, and the rate keeps its base and window attached.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · Why does each scenario report a low and a high for total hires rather than one number?</p>
+      <button class="qopt" type="button">A · Because the rates that drive it are guesses, so each scenario is a band of rates and its honest output is the band of results; the middle is the average of two guesses, and the range shows both the overlap between scenarios and which input is doing the work</button>
+      <button class="qopt" type="button">B · Because finance teams prefer two numbers</button>
+      <button class="qopt" type="button">C · Because the low is the realistic case and the high is a stretch target</button>
+      <button class="qopt" type="button">D · Because a Markov model always outputs a range</button>
+      <p class="qwhy">A point plan is wrong in a way nobody can see. The US quits rate went from 1.5 to 3.0 inside two years; a band is how a plan admits that before it happens.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What this session teaches, and where it came from</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Apex inputs: 1,022 start, 49 joiners, 210 leavers, 861 end; 22.3 percent H1 attrition on the average base of 941.5; entity rates 25.0 / 23.5 / 19.3 / 17.7 and department rates Sales 50.0 to R&amp;D 7.4 on the start base</span><span class="note">Computed from the constructed Apex table that ships with these pages; Apex and everyone in it are invented</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">44.6 percent annualised</span><span class="note">Modelled: H1 doubled, which assumes H2 repeats H1; stated every time it appears</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The stock-flow model; hiring need as growth plus replacement; scenarios as ranges</span><span class="note">Standard practice, no single source</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Transition-rate (Markov) planning across four entities with an exit state</span><span class="note">Standard practice, no single source; the exit column is computed from Apex, the moves and hires are invented</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">JOLTS quits: total nonfarm 2.32 (2019 mean), 1.5 (April 2020), 3.0 (November 2021), 2.0 (December 2025); 2025 means 3.92 leisure and hospitality, 1.39 manufacturing</span><span class="note">Computed from the BLS JOLTS public series, seasonally adjusted; monthly, US, not a target for any employer</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Every growth rate, attrition band, transfer rate and hires vector</span><span class="note">Constructed; labelled invented in the code; no output printed</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">A cost of attrition, or of a hire</span><span class="note">Not claimed; the folk "1.5 to 2x salary" figure has no measured source</span></div>
+    </div>
+    <p class="mono" style="margin-top:14px">Every fact on this page, and its verification tier, is recorded in the course's source map.</p>
+  </section>
+
+  <section class="cheat" id="cheatsheet">
+    <h3>Deep-dive session 8 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>A plan is the identity forwards</b><span>Hires = end - start + leavers. The end is chosen; the leavers are a rate times a base.</span></div>
+      <div class="cheat-item"><b>Growth + replacement</b><span>Growth = T - H. Replacement = a x (H + T) / 2. Report them separately.</span></div>
+      <div class="cheat-item"><b>A flat plan still hires</b><span>At zero growth, hires are all replacement. A freeze is a growth decision.</span></div>
+      <div class="cheat-item"><b>Rate at its grain</b><span>22.3 per half, average base, H1 2026. 44.6 only with "assumes H2 repeats H1".</span></div>
+      <div class="cheat-item"><b>Scenarios are bands</b><span>Grid the bands, keep the low and the high. Never quote the middle.</span></div>
+      <div class="cheat-item"><b>Markov in one page</b><span>States plus "left", rows sum to one, n @ P + hires. Back-test the first half.</span></div>
+    </div>
+  </section>
+
+  <div class="callout next">
+    <span class="nx-pill">Next session</span>
+    <p>Eight sessions have fed people data into code. Deep-dive session 9 asks what the code may not be fed, and what the law says about the decision it produces: GDPR Article 22 on solely automated decisions and Article 9 on special categories such as health, the EU AI Act's Annex III point 4, which lists recruitment and promotion among high-risk uses, and New York City's Local Law 144 bias audit. Then the tool Reuters reported Amazon had scrapped, a study of what happens when managers override a hiring test, and Goodhart. No model is trained. The build-along writes the checklist and the list of what a model may not see.</p>
+  </div>
+
+  <footer class="pagefoot">
+    <span>Deep-dive session 8 of 10 · learn-people-analytics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="p7-survey-psychometrics.html">← Prev: Survey psychometrics</a> &nbsp;·&nbsp; <a href="p9-ai-on-people-data.html">Next: AI on people data, and what the law forbids →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

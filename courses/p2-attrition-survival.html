@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Deep-dive session 2 of 10. Tenure is a duration and most of it has not finished, so attrition is a time-to-event question: censoring, a Kaplan-Meier curve fitted by hand in pandas on a constructed 1,071-row table, 0.940 / 0.872 / 0.813 / 0.778 at one, two, three and five years, and the proof that every one of those numbers is too high because nobody who left before 2026 is in the table.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="Attrition as survival - learn people analytics with phoebe">
+<meta property="og:description" content="Deep-dive session 2 of 10. Kaplan-Meier by hand on a snapshot, and why a survivor table bends the curve upward.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/courses/p2-attrition-survival.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Attrition as survival - learn people analytics with phoebe">
+<meta name="twitter:description" content="Deep-dive session 2 of 10. Censoring, the staircase, and the photograph bias, in pandas.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Deep-dive session 2 · Attrition as survival - learn people analytics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-people-analytics-with-phoebe</a> / Deep-dive session 2 of 10</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn People Analytics with Phoebe · Deep-dive session 2 of 10</div>
+    <h1>Attrition as <span class="accent">survival</span></h1>
+    <p class="sub">"How long do people stay?" is not a question about an average. Most tenures in any staff table have not finished: the person is still employed, and all the table knows is that they have stayed at least this long. That is censoring, and it is the reason tenure is a time-to-event problem with its own arithmetic. Tonight fits a Kaplan-Meier survival curve by hand in pandas to the constructed Apex table, reads 0.940 at one year and 0.778 at five, and then does the more useful thing: proves that every one of those numbers is too high, because the table is a photograph of survivors and nobody who left before 2026 is in it. The direction of the bias is certain. Its size is not, and the honest report says both.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Core</span>
+      <span class="chip audience">HR analysts, people data teams, anyone asked "what is our average tenure"</span>
+      <span class="chip audience">Python, pandas</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-18 · Censoring, the staircase, the bias</span>
+      <span class="a3" style="flex:5">18-40 · Build-along: Kaplan-Meier in pandas</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we start</h2>
+    </div>
+    <p class="lede">Deep-dive session 1 ended with a bridge that reconciles and a table known to be a photograph: everyone employed on 1 January 2026, plus the 210 people who left between then and 17 June. Apex is constructed, nobody in it is real, and the shape is the point. Tonight asks that photograph a question about duration. It will answer, in numbers to three decimal places, and the numbers will be wrong in a direction that can be proved from the shape alone.</p>
+
+    <div class="legend">
+      <span class="pill">🎫 Clear all three quiz questions to stamp your passport</span>
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">★ Build-along = run the code yourself</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> Tenure as a duration with an event flag; the Kaplan-Meier product written as a loop you can read; a survival curve on Apex with its four values; the two-sentence proof that a survivor table biases the curve upward; and the specification of the event log that would fix it.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers tenure as time-to-event and censoring</span>
+      <h2>Tenure is a duration, and most of it has not finished</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">Ask an HR export for average tenure and it will give you the mean of a column. That column mixes two different things: for the 210 leavers, the length of a stay that ended; for the 861 still employed, the length of a stay that is still running and will end at some unknown later date. Averaging them is averaging finished races with races in progress. The fix is not a better average; it is a different object, the survival function, which asks at every tenure t what share of people are still there.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 342" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hand-drawn employment lines on a calendar axis from 2012 to mid 2026. A moss vertical line marks the snapshot at 1 July 2026. Lines that reach the snapshot end in an open circle, censored; lines that end with a wine dot in the first half of 2026 are exits the table can see; two faint lines end with faint dots in 2020 and 2023 and are people who left before 2026 and are absent from the table entirely. A clock doodle sits top right.">
+        <defs>
+          <filter id="d2aSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="61" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d2aHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d2aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d2aH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d2aL { font: 600 11px Inter, sans-serif; fill: #2A1A1E; }
+          .d2aS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d2aB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d2aA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .05em; }
+          .d2aN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d2aH" x="30" y="26">SEVEN STAYS, THREE FATES: SEEN TO END, STILL RUNNING, NEVER RECORDED</text>
+
+        <g filter="url(#d2aSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- calendar axis and the snapshot line -->
+          <path d="M60 236 L800 236" stroke="#7A2334" marker-end="url(#d2aAr)"/>
+          <path d="M756 50 L756 242" stroke="#3D6B2E" stroke-width="3"/>
+          <!-- censored stays: reach the snapshot, open circle -->
+          <path d="M108 70 L750 70"/>
+          <circle cx="756" cy="70" r="5" fill="#FFFFFF" stroke="#3D6B2E" stroke-width="2.4"/>
+          <path d="M252 95 L750 95"/>
+          <circle cx="756" cy="95" r="5" fill="#FFFFFF" stroke="#3D6B2E" stroke-width="2.4"/>
+          <path d="M722 170 L750 170"/>
+          <circle cx="756" cy="170" r="5" fill="#FFFFFF" stroke="#3D6B2E" stroke-width="2.4"/>
+          <!-- exits the table can see: dot inside the window -->
+          <path d="M396 120 L740 120"/>
+          <circle cx="740" cy="120" r="5" fill="#7A2334" stroke="#7A2334"/>
+          <path d="M660 145 L748 145"/>
+          <circle cx="748" cy="145" r="5" fill="#7A2334" stroke="#7A2334"/>
+          <!-- absent: left before 2026 -->
+          <path d="M300 195 L444 195" stroke="#DCC9CD" stroke-width="2.5"/>
+          <circle cx="444" cy="195" r="5" fill="#DCC9CD" stroke="#DCC9CD"/>
+          <path d="M540 220 L612 220" stroke="#DCC9CD" stroke-width="2.5"/>
+          <circle cx="612" cy="220" r="5" fill="#DCC9CD" stroke="#DCC9CD"/>
+          <!-- the window Jan to Jun 2026 -->
+          <rect x="732" y="50" width="24" height="180" fill="#F9EEF0" stroke="none"/>
+          <!-- clock doodle -->
+          <circle cx="836" cy="66" r="18" fill="#FFFFFF"/>
+          <path d="M836 66 L836 54 M836 66 L845 71"/>
+        </g>
+
+        <text class="d2aS" x="60" y="252">2012</text>
+        <text class="d2aS" x="252" y="252">2016</text>
+        <text class="d2aS" x="444" y="252">2020</text>
+        <text class="d2aS" x="636" y="252">2024</text>
+        <text class="d2aA" x="756" y="252" text-anchor="middle">1 JUL 2026</text>
+        <text class="d2aA" x="60" y="226">CALENDAR TIME</text>
+        <text class="d2aS" x="300" y="188">left 2020: absent</text>
+        <text class="d2aS" x="540" y="213">left 2023: absent</text>
+
+        <text class="d2aB" x="60" y="276">open circle: censored at 1 July 2026, 861 rows, the stay is still running</text>
+        <text class="d2aL" x="60" y="292">wine dot: an exit the table can see, 210 rows, all between January and June 2026</text>
+        <text class="d2aN" x="30" y="316">Faint stays ended before 2026 and are not rows at all.</text>
+        <text class="d2aN" x="30" y="332">Constructed Apex table; the seven stays are drawn to show the three fates.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the open circle is the whole subject: a stay that has not ended yet is information, not a gap</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Three kinds of row, and what each one knows<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Every row in Apex becomes two numbers: a duration <strong>t</strong>, and an event flag. For the 210 with a last day, t is the years from join to exit and the flag is 1: the stay ended and we saw it end. For the 861 without one, t is the years from join to the snapshot date, 1 July 2026, and the flag is 0: the stay is at least t long, and that is all we know. The second kind is <strong>censored</strong>. A censored row is not missing data; it is a lower bound, and the survival arithmetic uses it as one.</p>
+        <p>There is a third kind of row, and it is the one that matters most tonight: the row that does not exist. Anyone who joined Apex and left before 1 January 2026 is not in the table. Their stay ended, we would have seen it end, and we never will, because the export was taken after they had gone. The figure draws two of them faint. Deep-dive session 1 called the export a photograph; the survival curve is where the photograph starts to lie in a measurable direction.</p>
+        <p>The two medians already disagree. Among the 210 exits the table can see, tenure at exit has a median of <strong>1.52 years</strong>: 29.5 percent left inside their first year and 61.0 percent inside two. Among the 861 still employed, tenure so far has a median of 5.01 years. Whatever the true curve looks like, the people who leave are leaving early, and the people who stay have stayed long. The curve has to reconcile both.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Why the mean of a tenure column is not a tenure<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Take the mean of Apex's tenure column and you get a number that goes up every month nobody leaves, because every censored stay grows by a month while the finished ones stay fixed. Take the mean of tenure at exit instead and you get 1.52 years as a median, which describes the leavers and says nothing about the 861 who have not left. Neither number is the average length of a stay at Apex. The survival function sidesteps the problem by never asking "how long" of any one person; it asks, at each t, "of the people who reached t, how many were seen to leave at t", and a censored person counts in the first group at every t up to their own and never in the second. The customer version of the same arithmetic, on subscriptions instead of staff, is in the <a href="https://phoebefu6.github.io/learn-customer-retention-with-phoebe/">Customer Retention course</a>; the mechanics are identical and the data there has the shape this one lacks.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>"Our average tenure is 5.0 years."</strong> A people team reports this from an export, and it is true of the people in the export on the day it was taken. It says the survivors have survived a while. It does not say that a person joining today should expect five years, and in Apex's constructed table it sits beside a median exit tenure of 1.52 years for the people who did leave. The two numbers describe two different populations, and the sentence "our average tenure is 5.0 years" quietly picks the flattering one. Constructed setting; the habit is common.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers Kaplan-Meier by hand</span>
+      <h2>The staircase: one step down per exit, sized by who was still at risk</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">Kaplan and Meier's 1958 estimator is a product. Sort every stay by t. Walk up through them. At each exit, multiply the running survival by one minus one over the number of people still at risk just before it; at each censored stay, multiply by nothing and simply remove the person from the at-risk count. The result is a staircase that only steps down at an exit, with each step sized by how many people were still there to take it. On Apex the staircase reads 0.940 at one year, 0.872 at two, 0.813 at three and 0.778 at five.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn survival staircase on axes of tenure in years, zero to six, against survival from 1.00 down to 0.70. The staircase steps down from 1.00 at zero to 0.940 at one year, 0.872 at two, 0.813 at three and 0.778 at five, each labelled with a wine dot. A faint dashed curve below it is labelled as the true curve, lower by an unknown amount. Notes give the step rule and the reading at four tenures.">
+        <defs>
+          <filter id="d2bSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="73" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d2bHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d2bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d2bH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d2bL { font: 600 11px Inter, sans-serif; fill: #2A1A1E; }
+          .d2bS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d2bB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d2bV { font: 800 13px Inter, sans-serif; fill: #4F1521; }
+          .d2bA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .05em; }
+          .d2bN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d2bH" x="30" y="26">THE STAIRCASE ONLY STEPS AT AN EXIT, AND THE STEP IS 1 / (PEOPLE STILL AT RISK)</text>
+        <text class="d2bA" x="800" y="44" text-anchor="end">TENURE, YEARS</text>
+        <text class="d2bA" x="30" y="40">S(t)</text>
+
+        <g filter="url(#d2bSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- axes -->
+          <path d="M80 50 L80 230 L806 230" marker-end="url(#d2bAr)"/>
+          <path d="M76 110 L84 110 M76 170 L84 170" />
+          <path d="M200 226 L200 234 M320 226 L320 234 M440 226 L440 234 M560 226 L560 234 M680 226 L680 234 M800 226 L800 234"/>
+          <!-- the true curve, unknown, lower -->
+          <path d="M80 50 Q150 150 300 180 T800 225" stroke="#DCC9CD" stroke-width="2.5" stroke-dasharray="6 6"/>
+          <!-- the staircase (each year band drawn as four hand steps) -->
+          <path d="M80 50 L110 50 L110 57 L140 57 L140 66 L170 66 L170 76 L200 76 L200 86 L230 86 L230 96 L260 96 L260 107 L290 107 L290 117 L320 117 L320 127 L350 127 L350 136 L380 136 L380 145 L410 145 L410 154 L440 154 L440 162 L500 162 L500 170 L560 170 L560 176 L620 176 L620 180 L680 180 L680 183 L740 183 L740 185 L800 185" stroke="#7A2334" stroke-width="2.6"/>
+          <circle cx="200" cy="86" r="5" fill="#7A2334" stroke="#7A2334"/>
+          <circle cx="320" cy="127" r="5" fill="#7A2334" stroke="#7A2334"/>
+          <circle cx="440" cy="162" r="5" fill="#7A2334" stroke="#7A2334"/>
+          <circle cx="680" cy="183" r="5" fill="#7A2334" stroke="#7A2334"/>
+          <!-- a magnifier doodle on one step -->
+          <circle cx="262" cy="80" r="11" fill="#FFFFFF"/>
+          <path d="M270 88 L280 98"/>
+        </g>
+
+        <text class="d2bS" x="70" y="54" text-anchor="end">1.00</text>
+        <text class="d2bS" x="70" y="114" text-anchor="end">0.90</text>
+        <text class="d2bS" x="70" y="174" text-anchor="end">0.80</text>
+        <text class="d2bS" x="70" y="234" text-anchor="end">0.70</text>
+        <text class="d2bS" x="80" y="248" text-anchor="middle">0</text>
+        <text class="d2bS" x="200" y="248" text-anchor="middle">1</text>
+        <text class="d2bS" x="320" y="248" text-anchor="middle">2</text>
+        <text class="d2bS" x="440" y="248" text-anchor="middle">3</text>
+        <text class="d2bS" x="560" y="248" text-anchor="middle">4</text>
+        <text class="d2bS" x="680" y="248" text-anchor="middle">5</text>
+        <text class="d2bS" x="800" y="248" text-anchor="middle">6</text>
+
+        <text class="d2bV" x="210" y="80">0.940</text>
+        <text class="d2bV" x="330" y="121">0.872</text>
+        <text class="d2bV" x="450" y="156">0.813</text>
+        <text class="d2bV" x="690" y="177">0.778</text>
+        <text class="d2bS" x="300" y="72">each step: S times (1 - 1/at risk)</text>
+        <text class="d2bS" x="90" y="218">dashed: the true curve is lower; how much, this table cannot say</text>
+
+        <text class="d2bN" x="30" y="276">Read at 1, 2, 3 and 5 years: 0.940 / 0.872 / 0.813 / 0.778. Year one alone holds 62 of the 210 visible exits.</text>
+        <text class="d2bN" x="30" y="292">Constructed Apex table, 1,071 stays. Part 3 shows why every one of the four readings is too high.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the step size is the whole method: an exit when 1,071 are at risk moves the curve less than an exit when 441 are</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The product, in words, then in one loop<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Start with S = 1 and everyone at risk: 1,071. Take the shortest stay. If it ended in an exit, S becomes S times (1 - 1/1,071). Either way, one fewer person is at risk. Take the next shortest, and so on. By the end of the first year, the table has seen 62 exits, S has fallen to 0.940, and 946 people are still at risk. By two years: 128 exits seen, S 0.872, 803 at risk. By three: 180 exits, 0.813, 670 at risk. By five: 206 of the 210 exits have been used, S is 0.778, and 441 people remain at risk, all censored stays that will each remove one from the count and none from S.</p>
+        <p>Two properties follow from the arithmetic and are worth saying aloud. <strong>Censoring never moves the curve down</strong>, it only shrinks the denominator for the next exit, which is why a censored stay is information and not a gap. And <strong>the curve is only defined as far as the longest stay</strong>; Apex's longest is a little over fourteen years, so "median tenure" from this curve does not exist, because S never reaches 0.5.</p>
+        <p>The at-risk counts and exit counts above are computed from the constructed table in the build-along; they are the numbers the loop passes through on its way to the four readings.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Cox, named once, and where the customer version lives<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Kaplan-Meier describes one curve. The moment the question becomes "does Sales leave faster than R&amp;D, adjusting for entity and join cohort", the tool is Cox's proportional hazards regression, "Regression Models and Life-Tables", Journal of the Royal Statistical Society Series B 34(2) 187-202, 1972. It models the hazard, the instantaneous rate of leaving at each t, as a baseline shared by everyone times a multiplier per covariate. It is named tonight and not fitted, for a reason that is the subject of Part 3: a regression on a biased curve inherits the bias, and a hazard ratio between two departments computed from a survivor table compares two distorted hazards. Fit it on an event log. The <a href="https://phoebefu6.github.io/learn-customer-retention-with-phoebe/">Customer Retention course</a> fits the same curve to customers, where the event log usually exists, and is the place to see the estimator on data that can bear it.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="section" id="part-3">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers the survivor-table bias</span>
+      <h2>Why every number on the staircase is too high</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">The estimator is fine. The input is not. Apex's rows are the people employed on 1 January 2026 plus six months of leavers, and that shape does something specific to the fraction inside every step. The proof takes two sentences and needs no number that is not already on the page.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two hand-drawn piles. Left, in the table: a hachured block of 861 people still employed at 1 July 2026 and a wine block of 210 exits, all January to June 2026. Right, a faint dashed panel: the people who left before 1 January 2026, not one row, count unknown, tenure at exit unknown, with a door doodle. Below, the hazard fraction: exits at tenure t over people at risk at tenure t, with notes that the denominator keeps every survivor's past years while the numerator can only see the first half of 2026.">
+        <defs>
+          <filter id="d2cSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="89" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d2cHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d2cAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d2cH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d2cL { font: 700 11.5px Inter, sans-serif; fill: #2A1A1E; }
+          .d2cS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .d2cB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d2cV { font: 800 16px Inter, sans-serif; fill: #4F1521; }
+          .d2cW { font: 800 12px Inter, sans-serif; fill: #FFFFFF; }
+          .d2cN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d2cH" x="30" y="26">WHO THE PHOTOGRAPH KEPT, AND WHO IT LOST</text>
+
+        <g filter="url(#d2cSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- left: in the table -->
+          <rect x="30" y="50" width="390" height="170" rx="6" transform="rotate(-0.4 225 135)" fill="#FFFFFF"/>
+          <rect x="50" y="84" width="350" height="52" rx="6" transform="rotate(0.5 225 110)" fill="url(#d2cHc)"/>
+          <rect x="50" y="154" width="350" height="52" rx="6" transform="rotate(-0.5 225 180)" fill="#7A2334" stroke="#7A2334"/>
+          <!-- right: not in the table -->
+          <rect x="470" y="50" width="380" height="170" rx="6" transform="rotate(0.4 660 135)" fill="#F9EEF0" stroke="#DCC9CD" stroke-dasharray="7 5"/>
+          <!-- door doodle with an arrow out -->
+          <rect x="790" y="96" width="34" height="90" rx="3" fill="#FFFFFF"/>
+          <circle cx="816" cy="142" r="2.5" fill="#2A1A1E"/>
+          <path d="M770 141 L812 141" stroke="#7A2334" marker-end="url(#d2cAr)"/>
+          <!-- the fraction -->
+          <rect x="30" y="246" width="820" height="66" rx="8" transform="rotate(0.2 440 279)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <path d="M60 279 L250 279" stroke="#3D6B2E" stroke-width="2.4"/>
+        </g>
+
+        <text class="d2cL" x="42" y="72">IN THE TABLE: 1,071 rows</text>
+        <text class="d2cL" x="62" y="106">861 still employed at 1 July 2026</text>
+        <text class="d2cS" x="62" y="124">tenure so far: median 5.01 y, all of it in the at-risk count</text>
+        <text class="d2cW" x="62" y="176">210 exits, all between January and June 2026</text>
+        <text class="d2cW" x="62" y="194">tenure at exit, median 1.52 years</text>
+
+        <text class="d2cL" x="482" y="72">NOT IN THE TABLE: left before 1 January 2026</text>
+        <text class="d2cS" x="482" y="98">count: unknown</text>
+        <text class="d2cS" x="482" y="116">tenure at exit: unknown</text>
+        <text class="d2cS" x="482" y="134">their exits: not in any numerator</text>
+        <text class="d2cS" x="482" y="152">their years at risk: not in any denominator</text>
+        <text class="d2cB" x="482" y="190">every stay that ended before 2026, gone</text>
+
+        <text class="d2cS" x="60" y="272">exits seen at tenure t</text>
+        <text class="d2cS" x="60" y="296">people at risk at tenure t</text>
+        <text class="d2cB" x="270" y="272">the denominator counts every year the survivors spent at t, back to 2012</text>
+        <text class="d2cB" x="270" y="296">the numerator can only count exits between January and June 2026</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - years of exposure that had no chance of producing a visible exit push every hazard down and every survival number up</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The proof, in two sentences, and what it does not tell you<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>Sentence one.</strong> At any tenure t, the estimator's denominator counts everyone in the table who reached t, and the 861 survivors reached t in 2015, 2019, 2023, whenever, so the denominator contains years of exposure from long before the export. <strong>Sentence two.</strong> The numerator at t counts exits at t, and the only exits in the table happened between January and June 2026, so every year of exposure before 2026 is in the denominator with no possibility of contributing to the numerator. A fraction whose denominator includes exposure that cannot produce an event is too small at every t; a hazard that is too small at every t gives a survival curve that is too high at every t. The direction is certain.</p>
+        <p><strong>What the proof does not tell you is the size.</strong> The size depends on how many people left before 2026 and when, and those are the rows that are not there. The curve could be a little too high or a great deal too high; the table cannot distinguish the two. So the honest report of this curve is: "on the people present in 2026, 0.940 at one year, biased upward by an amount this table cannot measure". Both halves of that sentence are findings.</p>
+        <p>There is a hint of the size in a number already on the page. Half of the 210 visible exits happened inside 1.52 years, and 61.0 percent inside two, while the curve says 87.2 percent of stays survive two years. Those two facts can coexist only if a great many people who would have left early are not in the table to be counted. That is exactly what the photograph did.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>What an event log would fix, and what it would have to contain<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The fix is not a different estimator; Kaplan-Meier is doing its job. The fix is the input: one row per join and one row per exit, for everyone who ever joined, back to a start date that is stated. Then a person who joined in 2019 and left in 2022 is two rows, contributes three years to the denominator and one exit to the numerator, and the fraction at every t is exposure against events that could actually happen. The minimum event log for this session is four columns: person id, event date, event type (joined, left), and the reason if any. With it, the only censoring is the honest kind at the right edge, where stays are still running on the day of the export.</p>
+        <p>Two practical routes to that log. Ask the HR system for the change history of the status field rather than the employee export; most systems keep it and few are asked. Or, from today, keep every monthly export with its date, and diff consecutive months: ids that vanish left, ids that appear joined. Twelve months of that habit gives a real first-year hazard for the cohort that joined in the first month, which is one true number more than the photograph can ever give.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The board pack that said "first-year attrition is under 6 percent".</strong> The number came from a curve like tonight's, read at one year from an export like Apex's: 1 - 0.940. Nobody lied. The analyst had the estimator right and the table had quietly excluded everyone whose first year had already ended badly. When a cohort log was built from monthly exports the following year, the first-year figure for the tracked cohort was the first honest one the company had, and it was not under 6 percent. Constructed setting; the mechanism is the one drawn above.</p>
+    </div>
+
+    <div class="tryrow" data-fn="wordcount" data-multiline="1" data-title="Write the honest sentence" data-hint="Report the one-year survival on your own export in one sentence that names the population it describes, the direction of the bias, and the fact that its size is unknown." data-seed="" data-cta="Count it"></div>
+  </section>
+
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>Kaplan-Meier in pandas, on 1,071 constructed stays</h2>
+      <span class="tag demo">★ 22 min · everyone builds</span>
+    </div>
+    <p class="lede">Seven steps on <code>materials/apex-staff.csv</code>. No survival library: the estimator is one loop, and writing it once is the fastest way to understand what a library does with a censored row. Every printed number is what the code produces on the constructed table; the four readings match the ones in Part 2 exactly.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 256" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The build-along as seven hand-drawn stations: load, tenure t, event flag, sort with the at-risk count counting down, the product one minus one over at risk per exit, read at one two three and five years, and say the bias. Above the stations two input boxes feed station one: input A the Apex snapshot, biased, and input B an event log, unbiased. A note says the seven stations are identical for both inputs and only the input decides whether station six is a finding or a warning.">
+        <defs>
+          <filter id="d2dSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="97" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="d2dHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="d2dAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .d2dH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .d2dL { font: 700 11px Inter, sans-serif; fill: #2A1A1E; }
+          .d2dS { font: 400 10.5px Inter, sans-serif; fill: #6B5459; }
+          .d2dB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .d2dW { font: 800 11px Inter, sans-serif; fill: #FFFFFF; }
+          .d2dN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="d2dH" x="30" y="26">SEVEN STATIONS, AND THE INPUT THAT DECIDES WHAT THEY MEAN</text>
+
+        <g filter="url(#d2dSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- the two inputs -->
+          <rect x="40" y="44" width="210" height="30" rx="6" transform="rotate(-0.6 145 59)" fill="#F9EEF0"/>
+          <rect x="280" y="44" width="210" height="30" rx="6" transform="rotate(0.5 385 59)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <path d="M120 78 L96 96" marker-end="url(#d2dAr)"/>
+          <path d="M360 78 L126 96" stroke="#3D6B2E" marker-end="url(#d2dAr)"/>
+          <!-- the track -->
+          <path d="M40 130 L840 130" stroke="#DCC9CD"/>
+          <rect x="40" y="100" width="96" height="60" rx="8" transform="rotate(-0.6 88 130)" fill="#FFFFFF"/>
+          <rect x="156" y="100" width="96" height="60" rx="8" transform="rotate(0.5 204 130)" fill="#F9EEF0"/>
+          <rect x="272" y="100" width="96" height="60" rx="8" transform="rotate(-0.4 320 130)" fill="#F9EEF0"/>
+          <rect x="388" y="100" width="96" height="60" rx="8" transform="rotate(0.6 436 130)" fill="url(#d2dHc)"/>
+          <rect x="504" y="100" width="96" height="60" rx="8" transform="rotate(-0.5 552 130)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="620" y="100" width="96" height="60" rx="8" transform="rotate(0.4 668 130)" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="736" y="100" width="104" height="60" rx="8" transform="rotate(-0.5 788 130)" fill="#FFFFFF"/>
+          <path d="M138 130 L152 130" marker-end="url(#d2dAr)"/>
+          <path d="M254 130 L268 130" marker-end="url(#d2dAr)"/>
+          <path d="M370 130 L384 130" marker-end="url(#d2dAr)"/>
+          <path d="M486 130 L500 130" marker-end="url(#d2dAr)"/>
+          <path d="M602 130 L616 130" marker-end="url(#d2dAr)"/>
+          <path d="M718 130 L732 130" marker-end="url(#d2dAr)"/>
+        </g>
+
+        <text class="d2dL" x="52" y="63">input A · Apex snapshot, biased</text>
+        <text class="d2dB" x="292" y="63">input B · an event log, unbiased</text>
+
+        <text class="d2dL" x="52" y="122">1 · load</text>
+        <text class="d2dS" x="52" y="138">1,071 rows</text>
+        <text class="d2dS" x="52" y="152">210 last days</text>
+        <text class="d2dL" x="168" y="122">2 · tenure t</text>
+        <text class="d2dS" x="168" y="138">years from join</text>
+        <text class="d2dS" x="168" y="152">to exit or SNAP</text>
+        <text class="d2dL" x="284" y="122">3 · event flag</text>
+        <text class="d2dS" x="284" y="138">1 = exit seen</text>
+        <text class="d2dS" x="284" y="152">0 = censored</text>
+        <text class="d2dL" x="400" y="122">4 · sort by t</text>
+        <text class="d2dS" x="400" y="138">at risk counts</text>
+        <text class="d2dS" x="400" y="152">down from 1,071</text>
+        <text class="d2dB" x="516" y="122">5 · the product</text>
+        <text class="d2dS" x="516" y="138">S *= 1 - 1/n</text>
+        <text class="d2dS" x="516" y="152">per exit only</text>
+        <text class="d2dW" x="632" y="122">6 · read S(t)</text>
+        <text class="d2dW" x="632" y="138">0.940 · 0.872</text>
+        <text class="d2dW" x="632" y="152">0.813 · 0.778</text>
+        <text class="d2dL" x="748" y="122">7 · the bias</text>
+        <text class="d2dS" x="748" y="138">direction: up</text>
+        <text class="d2dS" x="748" y="152">size: unknown</text>
+
+        <text class="d2dS" x="40" y="196">Stations 1 to 7 are the same code for both inputs. Only the input decides whether station 6 is a finding or a warning.</text>
+        <text class="d2dN" x="30" y="228">Save the curve with the snapshot date and the words "survivor table" in the filename.</text>
+        <text class="d2dN" x="30" y="244">Deep-dive session 8 plans from the honest version.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - station 7 is one printed sentence, and it is the only station a survivor table lets you get exactly right</figcaption>
+    </figure>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Load, and name the snapshot date.</strong> The date the export was taken is the censoring date for every stay without a last day. It goes at the top, as a constant, with the window the table can see written beside it.</p>
+        <div class="prompt-box good"><span class="label">★ Step 1 · load</span>import numpy as np, pandas as pd
+
+d = pd.read_csv("materials/apex-staff.csv", parse_dates=["Date Join", "Last Day"])
+SNAP = pd.Timestamp("2026-07-01")   # export date; censoring date for every open stay
+# the table can see exits from 2026-01-01 to 2026-06-17 and NO exit before that
+print(len(d), d["Last Day"].notna().sum(), d["Last Day"].isna().sum())   # 1071 210 861</div>
+      </div>
+      <div class="step">
+        <p><strong>Tenure as a duration, in years.</strong> Exit date if there is one, otherwise the snapshot date, minus the join date. Clip at zero so a join after the snapshot cannot produce a negative stay.</p>
+        <div class="prompt-box good"><span class="label">★ Step 2 · tenure t</span>end = d["Last Day"].fillna(SNAP)
+d["t"] = ((end - d["Date Join"]).dt.days / 365.25).clip(lower=0)
+print(d["t"].describe()[["min", "50%", "max"]].round(2).to_dict())
+# {'min': 0.07, '50%': 4.2, 'max': 14.37}   -&gt; the curve is defined out to about 14 years</div>
+      </div>
+      <div class="step">
+        <p><strong>The event flag.</strong> One if the stay was seen to end, zero if it is still running at the snapshot. This column is what separates survival analysis from a tenure average.</p>
+        <div class="prompt-box good"><span class="label">★ Step 3 · event flag</span>d["event"] = d["Last Day"].notna().astype(int)
+print(d["event"].value_counts().to_dict())        # {0: 861, 1: 210}
+exits = d.loc[d["event"] == 1, "t"]
+print(round(exits.median(), 2), round((exits &lt; 1).mean(), 3), round((exits &lt; 2).mean(), 3))
+# 1.52 0.295 0.61   -&gt; tenure at exit: median 1.52 y, 29.5% under one year, 61.0% under two</div>
+      </div>
+      <div class="step">
+        <p><strong>Sort, and let the at-risk count fall.</strong> Every row, exit or censored, removes one person from the at-risk count after it is processed. Only exits change S.</p>
+        <div class="prompt-box good"><span class="label">★ Step 4 · sort and walk</span>km = d[["t", "event"]].sort_values("t").reset_index(drop=True)
+at_risk = len(km)                                  # 1071 at t = 0
+S = 1.0
+surv = []
+for t, e in zip(km["t"], km["event"]):
+    if e == 1:
+        S *= 1 - 1 / at_risk                       # one step down, sized by who was still there
+    at_risk -= 1                                   # exit or censored, one fewer at risk
+    surv.append(S)
+km["S"] = surv</div>
+      </div>
+      <div class="step">
+        <p><strong>Read the curve at four tenures.</strong> S at t is the last value at or before t. These are the four numbers in Part 2, and they are correct for the table and wrong for Apex.</p>
+        <div class="prompt-box good"><span class="label">★ Step 5 · read S(t)</span>for h in (1, 2, 3, 5):
+    seen = km.loc[km["t"] &lt;= h]
+    print(f"S({h}) = {seen['S'].iloc[-1]:.3f}   exits seen so far {int(seen['event'].sum()):3d}   at risk after {len(km) - len(seen):4d}")
+# S(1) = 0.940   exits seen so far  62   at risk after  946
+# S(2) = 0.872   exits seen so far 128   at risk after  803
+# S(3) = 0.813   exits seen so far 180   at risk after  670
+# S(5) = 0.778   exits seen so far 206   at risk after  441</div>
+      </div>
+      <div class="step">
+        <p><strong>Show the shape that causes the bias.</strong> Every exit's date falls inside one six-month window, while the at-risk years stretch back to 2012. Print both facts; they are the proof.</p>
+        <div class="prompt-box good"><span class="label">★ Step 6 · the shape of the input</span>print(d["Last Day"].min().date(), d["Last Day"].max().date())    # 2026-01-01 2026-06-17
+print(d["Date Join"].min().date())                                # 2012-02-16
+print("person-years at risk in the denominator:", round(d["t"].sum()))   # 5059
+print("months in which an exit could be seen:", 6)
+# every year of exposure before 2026 is in the denominator and could not reach the numerator</div>
+      </div>
+      <div class="step">
+        <p><strong>Print the honest sentence, and save the curve with its warning in the filename.</strong> The sentence has three parts and the code writes all three, so that nobody downstream sees the number without them.</p>
+        <div class="prompt-box good"><span class="label">★ Step 7 · the sentence</span>s1 = km.loc[km["t"] &lt;= 1, "S"].iloc[-1]
+print(f"On the people present in 2026, one-year survival is {s1:.3f}, "
+      f"biased UPWARD because no exit before 2026-01-01 is in the table; "
+      f"the size of the bias cannot be measured from this table.")
+km.to_csv("km_survivor-table_snapshot-2026-07-01.csv", index=False)</div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Keep the word "survivor-table" in the filename.</strong> A curve saved as <code>km.csv</code> will be read next quarter as the truth. A curve saved with the snapshot date and the words "survivor table" carries its own warning into every spreadsheet that opens it. When the event log exists, the same seven steps produce <code>km_event-log_from-2012-02-16.csv</code>, and the two files can sit side by side, which is the first time the size of the bias becomes a number.</p>
+    </div>
+  </section>
+
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before deep-dive session 3</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li><strong>Run the seven steps</strong> on Apex, then on your own export. Before running it on yours, write down the snapshot date and the earliest exit the export can see; the gap between the earliest join and the earliest exit is the span of exposure that cannot reach the numerator.</li>
+      <li><strong>Move the snapshot date</strong> to 1 April 2026 and re-run. Exits after 1 April become censored stays. Write down which of the four readings moved and in which direction, and why the at-risk counts did not change at t = 0.</li>
+      <li><strong>Split the curve</strong> by entity, four staircases from the same loop. Write one sentence on why comparing them is still a comparison of four biased curves, and what would have to be true for the ranking to survive the bias.</li>
+      <li><strong>Specify the event log.</strong> Four columns, a start date, and the two routes to get it. Bring the specification; deep-dive session 3 turns the same 210 exits into reasons and puts them beside a national benchmark.</li>
+    </ol>
+  </section>
+
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+    <p>Clear all three and deep-dive session 2 gets stamped in your passport.</p>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · A person joined in 2021 and is still employed at the snapshot on 1 July 2026. In the Kaplan-Meier loop, what does their row do?</p>
+      <button class="qopt" type="button">A · Nothing; a stay that has not ended is missing data and is dropped</button>
+      <button class="qopt" type="button">B · It stays in the at-risk count for every exit at a tenure shorter than its own, shrinking the denominator of each later step, and it never moves S down itself, because the flag is zero; that is what a censored row contributes</button>
+      <button class="qopt" type="button">C · It steps S down by 1 over the at-risk count, like any other row</button>
+      <button class="qopt" type="button">D · It is counted as an exit at the snapshot date, since the stay is over as far as the table knows</button>
+      <p class="qwhy">Censoring is a lower bound, not a gap. The row is at risk up to its own t and is then removed from the count without an event, which is why censoring alone can never lower a survival curve.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · The curve on Apex reads 0.940 at one year. Why is that number too high, and by how much?</p>
+      <button class="qopt" type="button">A · Because 210 exits is too few for a curve; more data would fix it</button>
+      <button class="qopt" type="button">B · Because 365.25 days per year overstates tenure; using 365 would correct it</button>
+      <button class="qopt" type="button">C · Because the denominator at every tenure includes years the survivors spent before 2026, when no exit could be recorded, so every hazard is too small and every survival number too large; the direction is certain and the size cannot be measured from the table, since the missing people are the ones who would fix it</button>
+      <button class="qopt" type="button">D · Because Kaplan-Meier always overstates survival on small samples, by a known factor</button>
+      <p class="qwhy">The estimator is fine; the input is a survivor table. Exposure that cannot produce a visible event drives the fraction down at every t. The size depends on rows that do not exist.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · Tenure at exit has a median of 1.52 years, and the curve says 87.2 percent of stays survive two years. What does the pair tell you?</p>
+      <button class="qopt" type="button">A · That the two can only coexist if many people who left early are not in the table; the 210 visible leavers left early, the 861 survivors have stayed long, and the early leavers of earlier years, who would pull the curve down, are exactly the rows a photograph taken in 2026 does not hold</button>
+      <button class="qopt" type="button">B · That one of the two numbers was computed wrongly and the script should be checked</button>
+      <button class="qopt" type="button">C · That leavers and stayers are drawn from different companies</button>
+      <button class="qopt" type="button">D · That 1.52 should be reported as the average tenure at Apex</button>
+      <p class="qwhy">Both numbers are correct for the rows present. The tension between them is a signature of the missing rows, and it is the nearest thing to a size estimate the table can offer: not a number, but a direction with weight behind it.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What this session teaches, and where it came from</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Kaplan and Meier 1958, "Nonparametric Estimation from Incomplete Observations", Journal of the American Statistical Association 53(282) 457-481</span><span class="note">Primary; the product-limit estimator, written as a loop in the build-along</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Tenure as time-to-event; censoring as a lower bound; the at-risk count</span><span class="note">Standard practice, no single source</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Apex survival 0.940 / 0.872 / 0.813 / 0.778 at 1 / 2 / 3 / 5 years; tenure at exit median 1.52, 29.5 percent under one year, 61.0 under two; active tenure median 5.01</span><span class="note">Computed from the constructed Apex table that ships with these pages; the curve is biased upward and the page says so</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The survivor-table bias: direction proved from the shape of the export, size not measurable</span><span class="note">Standard practice; the argument uses only rows present in the table and the span of dates they carry</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Cox 1972, "Regression Models and Life-Tables", Journal of the Royal Statistical Society Series B 34(2) 187-202</span><span class="note">Named in self-study as the regression on the hazard; not fitted, because a survivor table would bias it</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">The customer version of survival, and the event log that fixes the input</span><span class="note">Linked to the Customer Retention course; the log is specified, not built</span></div>
+    </div>
+    <p class="mono" style="margin-top:14px">Every fact on this page, and its verification tier, is recorded in the course's source map.</p>
+  </section>
+
+  <section class="cheat" id="cheatsheet">
+    <h3>Deep-dive session 2 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Two columns per stay</b><span>t = years from join to exit or to the snapshot; event = 1 if the exit was seen, 0 if censored.</span></div>
+      <div class="cheat-item"><b>Censored is a lower bound</b><span>At risk up to its own t, removed without an event. Never moves S down.</span></div>
+      <div class="cheat-item"><b>The step</b><span>At each exit, S *= 1 - 1/at_risk. Then at_risk -= 1 for every row.</span></div>
+      <div class="cheat-item"><b>Apex reads</b><span>0.940 / 0.872 / 0.813 / 0.778 at 1 / 2 / 3 / 5 years. All too high.</span></div>
+      <div class="cheat-item"><b>The proof</b><span>Denominator holds years before 2026; numerator can only hold H1 2026 exits. Hazard low, S high.</span></div>
+      <div class="cheat-item"><b>The honest sentence</b><span>Population, direction of bias, size unknown. Then name the event log that would fix it.</span></div>
+    </div>
+  </section>
+
+  <div class="callout next">
+    <span class="nx-pill">Next session</span>
+    <p>The curve told you when people leave. Deep-dive session 3 asks why, and finds that "why" is a classification somebody chose: eleven reason categories on the 210 exits, five of them declared regretted for a share of 65.2 percent that moves the moment the list changes. Then the department rates with their bases printed, and the first outside number of the track, the US quits rate from BLS JOLTS fetched live in Python, with the arithmetic that keeps a monthly rate from being read as an annual one.</p>
+  </div>
+
+  <footer class="pagefoot">
+    <span>Deep-dive session 2 of 10 · learn-people-analytics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="p1-the-people-data-model.html">← Prev: The people data model</a> &nbsp;·&nbsp; <a href="p3-regretted-and-benchmarked.html">Next: Regretted, and benchmarked →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- social:start -->
+<meta name="description" content="Foundations session 6 of 6. The people dashboard as rows, each with one stock and one flow, its base and its date, and one honest sentence. Constructed Apex numbers for headcount, attrition, regretted leavers, tenure and the survey, an empty pay row that is empty on purpose, what happens to a metric the moment it becomes a target, and the fence of rules a people dashboard sits inside: GDPR Articles 9 and 22, the EU AI Act Annex III point 4 and New York City Local Law 144, named and linked.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Learn with Phoebe">
+<meta property="og:title" content="The people dashboard - learn people analytics with phoebe">
+<meta property="og:description" content="Foundations session 6 of 6. One stock and one flow per row, a base and a date under every number, the target that stops measuring, and the fence.">
+<meta property="og:url" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/courses/a6-the-people-dashboard.html">
+<meta property="og:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The people dashboard - learn people analytics with phoebe">
+<meta name="twitter:description" content="Foundations session 6 of 6. Rows with bases, the honest sentence, Goodhart on people metrics, and the fence.">
+<meta name="twitter:image" content="https://phoebefu6.github.io/learn-people-analytics-with-phoebe/assets/og-cover.png">
+<!-- social:end -->
+<title>Foundations session 6 · The people dashboard - learn people analytics with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-people-analytics-with-phoebe</a> / Foundations session 6 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn People Analytics with Phoebe · Foundations session 6 of 6</div>
+    <h1>The people <span class="accent">dashboard</span></h1>
+    <p class="sub">Most people dashboards are a grid of tiles, each with a big number, a coloured arrow and no date. Tonight rebuilds one as rows instead. Every row answers one question, carries one stock and one flow, prints its base and its date under the number, and ends in a sentence a board could repeat without being wrong. The rows use constructed Apex numbers from the first five sessions: 861 people on 1 July, 22.3 percent attrition on the average base, 137 regretted leavers of 210, tenure of survivors against tenure at exit, and 600 survey answers from 1,022 invited. One row stays empty on purpose. Then two things that happen to dashboards in the wild: a row that becomes somebody's target and stops measuring, and a set of rows that should never exist without a lawyer in the room.</p>
+    <div class="chip-row">
+      <span class="chip level">🟢 Foundations</span>
+      <span class="chip audience">Leaders, HR partners, anyone who owns or reads a people dashboard</span>
+      <span class="chip audience">No code</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-18 · Rows with bases, the target, the fence</span>
+      <span class="a3" style="flex:5">18-40 · Build-along: the Apex dashboard worksheet</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we start</h2>
+    </div>
+    <p class="lede">Five sessions have each produced one habit: a stock needs a date and a flow needs a period, a rate needs its base, a funnel stage is a ratio of the stage before it, a pay gap has two mechanisms, and a survey score is a mean over volunteers. A dashboard is where all five habits either survive or quietly disappear, because a tile has room for a number and not much else. Apex is still the running company, constructed from end to end: four entities, 1,071 staff rows, 210 leavers in the first half of 2026, and nobody in it is real. The dashboard built tonight is small on purpose. Six rows, each of which can be defended line by line, beat twenty tiles of which nobody can say what four of them are divided by.</p>
+
+    <div class="legend">
+      <span class="pill">🎫 Clear all three quiz questions to stamp your passport</span>
+      <span class="pill">Live = presented in the 45 minutes</span>
+      <span class="pill">Self-study = the full depth, after class</span>
+      <span class="pill">★ Build-along = everyone works it through</span>
+    </div>
+
+    <div class="callout win">
+      <p><strong>★ What you walk out with tonight.</strong> A dashboard row format you can apply to any people number: the question, the stock and its date, the flow and its period, the base, the number and one honest sentence. The habit of leaving a row empty rather than filling it with a guess. A partner metric for every row that becomes a target. And the names of the four rules that decide which rows a people dashboard may not have, with the places to learn them properly.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-1">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers one stock and one flow per row</span>
+      <h2>Every row has a stock, a flow, a base and a date</h2>
+      <span class="tag concept">6 min live</span>
+    </div>
+    <p class="lede">A tile that says "Attrition 22.3%" has dropped three things on the way to the screen: how many people left, divided by which headcount, over which period. Put them back and the tile becomes a row: 210 leavers, 1 January to 17 June 2026, over an average headcount of 941.5, 22.3 percent for the half-year. Every row on a people dashboard can be written the same way, and the ones that cannot are the ones to worry about.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 368" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn dashboard of six rows for constructed Apex, first half of 2026, with columns for the metric, the stock on a date, the flow over a period, the number, and the base in a moss strip. Headcount: 861 on 1 July 2026, 49 in and 210 out, base 1,022 plus 49 minus 210. Attrition: average of 941.5, 210 leavers from 1 January to 17 June, 22.3 percent on the average base. Regretted: 137 of 210 leavers, 65.2 percent. Tenure: active staff median 5.01 years, leavers median 1.52 at exit, 61.0 percent of leavers under two years. Survey: 1,022 invited, 600 answered, 58.7 percent. Pay gap: no salary column, the row is empty.">
+        <defs>
+          <filter id="s6aSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="149" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="s6aHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="s6aAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .s6aH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s6aL { font: 600 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s6aS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .s6aB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .s6aV { font: 800 16px Inter, sans-serif; fill: #4F1521; }
+          .s6aA { font: 700 11px Inter, sans-serif; fill: #7A2334; letter-spacing: .05em; }
+          .s6aN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="s6aH" x="30" y="26">THE DASHBOARD AS ROWS</text>
+        <text class="s6aS" x="218" y="26">constructed Apex, first half of 2026 · every number carries its stock, its flow and its base</text>
+
+        <g filter="url(#s6aSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- the dashboard frame -->
+          <rect x="30" y="44" width="820" height="276" rx="10" transform="rotate(-0.2 440 182)" fill="#FFFFFF"/>
+          <!-- the base column, the thing the figure is about -->
+          <rect x="706" y="50" width="138" height="264" rx="6" transform="rotate(0.3 775 182)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <!-- row rules -->
+          <path d="M40 78 L840 78 M40 116 L840 116 M40 154 L840 154 M40 192 L840 192 M40 230 L840 230 M40 268 L840 268" stroke="#EADDE0" stroke-width="1.6"/>
+          <!-- the empty row, hatched as the data that is not there -->
+          <rect x="604" y="274" width="90" height="28" rx="4" transform="rotate(-1 649 288)" fill="url(#s6aHc)" stroke="#DCC9CD"/>
+          <!-- a calendar doodle: every row has a date -->
+          <rect x="808" y="10" width="30" height="26" rx="3" fill="#FFFFFF"/>
+          <path d="M808 18 L838 18 M816 6 L816 14 M830 6 L830 14"/>
+        </g>
+
+        <text class="s6aA" x="44" y="68">METRIC</text>
+        <text class="s6aA" x="176" y="68">STOCK, ON A DATE</text>
+        <text class="s6aA" x="396" y="68">FLOW, OVER A PERIOD</text>
+        <text class="s6aA" x="604" y="68">NUMBER</text>
+        <text class="s6aA" x="716" y="68">BASE</text>
+
+        <text class="s6aL" x="44" y="102">Headcount</text>
+        <text class="s6aS" x="176" y="102">861 · 1 July 2026</text>
+        <text class="s6aS" x="396" y="102">+49 in, -210 out · Jan to Jun</text>
+        <text class="s6aV" x="604" y="103">861</text>
+        <text class="s6aB" x="716" y="102">1,022 + 49 - 210</text>
+
+        <text class="s6aL" x="44" y="140">Attrition</text>
+        <text class="s6aS" x="176" y="140">941.5 · avg of 1 Jan, 1 Jul</text>
+        <text class="s6aS" x="396" y="140">210 leavers · 1 Jan to 17 Jun</text>
+        <text class="s6aV" x="604" y="141">22.3%</text>
+        <text class="s6aB" x="716" y="140">average base, H1</text>
+
+        <text class="s6aL" x="44" y="178">Regretted</text>
+        <text class="s6aS" x="176" y="178">1,022 · 1 January 2026</text>
+        <text class="s6aS" x="396" y="178">137 of 210 leavers · H1</text>
+        <text class="s6aV" x="604" y="179">65.2%</text>
+        <text class="s6aB" x="716" y="178">share of the 210</text>
+
+        <text class="s6aL" x="44" y="216">Tenure</text>
+        <text class="s6aS" x="176" y="216">active 1 Jan · median 5.01 yrs</text>
+        <text class="s6aS" x="396" y="216">leavers · median 1.52 at exit</text>
+        <text class="s6aV" x="604" y="217">61.0%</text>
+        <text class="s6aB" x="716" y="216">of 210, under 2 yrs</text>
+
+        <text class="s6aL" x="44" y="254">Survey</text>
+        <text class="s6aS" x="176" y="254">1,022 invited · 1 Jan 2026</text>
+        <text class="s6aS" x="396" y="254">600 answered · constructed</text>
+        <text class="s6aV" x="604" y="255">58.7%</text>
+        <text class="s6aB" x="716" y="254">response rate</text>
+
+        <text class="s6aL" x="44" y="292">Pay gap</text>
+        <text class="s6aS" x="176" y="292">no salary column in the table</text>
+        <text class="s6aS" x="396" y="292">nothing to count</text>
+        <text class="s6aB" x="716" y="292">honest, not zero</text>
+
+        <text class="s6aN" x="30" y="344">Six rows, one period, and a base under every number. The empty row is honest: Apex has no salary column.</text>
+        <text class="s6aN" x="30" y="360">Every value is computed from the constructed Apex table, or from the constructed survey on it.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the moss strip is the column most dashboards leave out, and the hatched cell is a number nobody invented</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>One stock and one flow per row<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>Every row is one question.</strong> How many people do we have; how many left; which leavers hurt; how long do people stay; what do people say; what do we pay. A row that answers two questions at once, "headcount and attrition by entity with the trend", is two rows pretending to be one, and the second question always loses its base.</p>
+        <p><strong>Every row carries a stock and a flow.</strong> The stock is a count on a date: 861 on 1 July 2026, 1,022 invited on 1 January. The flow is a count over a period: 49 in and 210 out between January and June, 600 answers in the survey window. Where the row shows a rate, the base goes in its own column so nobody has to guess: the average of 1 January and 1 July for attrition, the 210 leavers for the regretted share and the tenure share, the 1,022 invited for the response rate.</p>
+        <p><strong>The tenure row is the one to read twice.</strong> Active staff have a median tenure of 5.01 years and the 210 leavers had a median of 1.52 at exit, with 61.0 percent under two years. Both numbers are right and they describe different people: the survivors on the date of the photograph, and the people who left. Foundations session 1 called this the survivor table. A dashboard that shows only the 5.01 has quietly answered "how long do people stay" with the people who stayed.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The honest sentence, one per row<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Under every row goes one sentence, written so that a board member could repeat it in a meeting without saying anything false. It names the flow, the base, the period, and any assumption. For constructed Apex:</p>
+        <ul>
+          <li><strong>Headcount.</strong> "Apex had 861 people on 1 July 2026, from 1,022 on 1 January: 49 joined and 210 left."</li>
+          <li><strong>Attrition.</strong> "210 people left between 1 January and 17 June against an average headcount of 941.5: 22.3 percent for the half-year, not annualised."</li>
+          <li><strong>Regretted.</strong> "137 of the 210, 65.2 percent, left for one of five reasons we classify as regretted; all 11 categories are shown beneath."</li>
+          <li><strong>Tenure.</strong> "Staff employed on 1 January had a median tenure of 5.01 years; the 210 who left had a median of 1.52 at exit, and 61.0 percent had been with us under two years."</li>
+          <li><strong>Survey.</strong> "600 of the 1,022 invited answered, 58.7 percent; results are favourable and unfavourable shares, and groups under 8 are not shown."</li>
+          <li><strong>Pay gap.</strong> "No pay row yet: the table has no salary column, and a pay number without one would be invented."</li>
+        </ul>
+        <p>If a row's sentence cannot be written, the row is not ready. That is not a formatting problem. It means somebody does not know what the number is divided by.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The empty row, the ratings row, and what a trend arrow hides<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>An empty row is a finding.</strong> Apex's table has no salary column, so the pay row says so rather than borrowing a national figure or last year's number. Foundations session 4 showed what a pay row needs, the six filing figures and the four bands, and deep-dive session 6 builds a constructed salary table to fill it. Until the data exists, "empty, because" is the honest cell.</p>
+        <p><strong>A ratings row, if the dashboard has one, is a distribution, not a mean.</strong> The share of people at each rating point, with the count, for the same reason Foundations session 5 showed two teams at 3.8. How ratings are made and calibrated is its own subject, taught in <a href="https://phoebefu6.github.io/learn-performance-management-with-phoebe/">Learn Performance Management with Phoebe ↗</a>.</p>
+        <p><strong>A trend arrow compares two rows, and both need their bases.</strong> Attrition up from last half-year means nothing until both halves are on the same base and the same definition of leaver. An arrow drawn between a start-base figure and an average-base figure measures the change of method.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>Twelve tiles and no dates.</strong> A leadership team reviews a people dashboard every month: twelve tiles, each a number and an arrow. Asked what the attrition tile is divided by, the analyst who built it has left; nobody else knows whether it is monthly or annual, or whether transfers are in it. The team has been making decisions from it for a year. Rebuilt as rows, three of the twelve cannot be given a base at all and are dropped, and two turn out to be the same number computed twice. Constructed example; the rebuild takes one afternoon and the questions it asks are the ones in this Part.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-2">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers Goodhart on people metrics</span>
+      <h2>When a number becomes a target</h2>
+      <span class="tag concept">5 min live</span>
+    </div>
+    <p class="lede">A dashboard row is a measurement until somebody's bonus depends on it. Then it becomes a target, and the people closest to it discover every way to move the number that does not require moving the thing. Take the regretted row. Apex classifies 137 of its 210 constructed leavers as regretted, because their reason is one of five categories. Set a target to reduce regretted attrition, and the fastest way to meet it is not to keep anybody: it is to change which category a leaver's reason goes into.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 328" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two hand-drawn bars of the same 210 constructed Apex leavers. Before the target: 114 other regretted leavers hatched, 23 Management/Culture leavers in wine counted as regretted, and 73 not regretted, so regretted is 137 of 210, 65.2 percent. An arrow says the 23 were recoded from Management/Culture to Unknown. After a target on regretted attrition, in a red wrong-way panel: the same bar, but the 23 now sit with the not regretted, so regretted is 114 of 210, 54.3 percent, and Unknown has grown from 17 to 40. A note says the rate fell 11.0 points and nobody's reason for leaving changed.">
+        <defs>
+          <filter id="s6bSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="151" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="s6bHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="s6bAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .s6bH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s6bL { font: 600 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s6bS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .s6bB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .s6bW { font: 800 12px Inter, sans-serif; fill: #FFFFFF; }
+          .s6bR { font: 800 12px Inter, sans-serif; fill: #991B1B; }
+          .s6bN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="s6bH" x="30" y="26">THE SAME 210 LEAVERS, RECODED</text>
+        <text class="s6bS" x="250" y="26">constructed Apex reasons · a target set on regretted attrition · nobody's reason changed</text>
+
+        <g filter="url(#s6bSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- before panel -->
+          <rect x="30" y="44" width="820" height="104" rx="10" transform="rotate(-0.3 440 96)" fill="#FFFFFF"/>
+          <!-- 210 leavers at 3.43px each: 114 other regretted, 23 Management/Culture, 73 not regretted -->
+          <rect x="40" y="76" width="391" height="40" rx="3" fill="url(#s6bHc)"/>
+          <rect x="431" y="76" width="79" height="40" rx="3" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="510" y="76" width="250" height="40" rx="3" fill="#FFFFFF"/>
+          <!-- a door with somebody leaving -->
+          <rect x="784" y="58" width="32" height="64" rx="2" transform="rotate(1 800 90)" fill="#F9EEF0"/>
+          <circle cx="810" cy="92" r="2" fill="#2A1A1E"/>
+          <path d="M820 110 L842 110" marker-end="url(#s6bAr)"/>
+          <!-- the recode -->
+          <path d="M470 120 L470 192" stroke="#7A2334" stroke-width="2.5" marker-end="url(#s6bAr)"/>
+          <!-- after panel: the wrong way -->
+          <rect x="30" y="172" width="820" height="104" rx="10" transform="rotate(0.3 440 224)" fill="#FEF2F2" stroke="#991B1B"/>
+          <rect x="40" y="204" width="391" height="40" rx="3" fill="url(#s6bHc)"/>
+          <rect x="431" y="204" width="79" height="40" rx="3" fill="#7A2334" stroke="#7A2334"/>
+          <rect x="510" y="204" width="250" height="40" rx="3" fill="#FFFFFF"/>
+          <!-- the regretted boundary, before and after -->
+          <path d="M510 70 L510 122" stroke="#3D6B2E" stroke-width="3"/>
+          <path d="M431 198 L431 250" stroke="#991B1B" stroke-width="3"/>
+        </g>
+
+        <text class="s6bH" x="44" y="66">BEFORE THE TARGET</text>
+        <text class="s6bW" x="470" y="101" text-anchor="middle">23</text>
+        <text class="s6bS" x="524" y="101">not regretted 73</text>
+        <text class="s6bL" x="44" y="136">regretted 137 of 210 = 65.2%</text>
+        <text class="s6bB" x="524" y="136">moss line: where regretted ends</text>
+
+        <text class="s6bS" x="484" y="166">recoded from Management/Culture to Unknown</text>
+
+        <text class="s6bR" x="44" y="194">AFTER A TARGET ON REGRETTED ATTRITION</text>
+        <text class="s6bW" x="470" y="229" text-anchor="middle">23</text>
+        <text class="s6bS" x="524" y="229">not regretted 96</text>
+        <text class="s6bL" x="44" y="264">regretted 114 of 210 = 54.3%</text>
+        <text class="s6bR" x="524" y="264">Unknown was 17, now 40</text>
+
+        <text class="s6bB" x="30" y="300">The rate fell 11.0 points, 23 of 210, and not one person's reason for leaving changed.</text>
+        <text class="s6bN" x="30" y="318">Constructed recoding of constructed Apex reasons. The measure became a target, and stopped measuring.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the wine block never moved; the line that decides what counts as regretted did</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Goodhart on people metrics<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The popular wording is "when a measure becomes a target, it ceases to be a good measure". It is usually called Goodhart's law, after the economist Charles Goodhart's point about monetary targets, but the sentence most people quote is Marilyn Strathern's generalisation of it: Strathern 1997, "'Improving ratings': audit in the British University system", European Review 5(3) 305-321. It bites hardest on people metrics, because the people being measured are also the people who record the measurement.</p>
+        <p><strong>In the figure, nothing about any leaver changed.</strong> Twenty-three constructed leavers whose reason was Management/Culture were recoded to Unknown, and regretted attrition fell from 65.2 to 54.3 percent, 11.0 points. The same pattern shows up on every people row that gets a target:</p>
+        <ul>
+          <li><strong>Time to fill</strong> as a target: requisitions get closed with the first acceptable candidate, or reopened under a new number so the clock restarts.</li>
+          <li><strong>Survey response rate</strong> as a target: managers chase answers, and the people who would have skipped answer to get it over with, which is a different kind of answer.</li>
+          <li><strong>Engagement score</strong> as a target: teams learn which answers are expected, and the distribution moves before the experience does.</li>
+          <li><strong>Attrition</strong> as a target: leavers get classified as transfers, retirements or "mutual agreement", and the flow moves between columns instead of stopping.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Every target gets a partner metric<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The defence is not to stop setting targets. It is to put beside every targeted row a second row that moves the wrong way when the first is gamed. For regretted attrition, the partner is <strong>the count in Unknown and every non-regretted category</strong>, shown with all 11 categories: in the figure, Unknown going from 17 to 40 is the gaming made visible. For time to fill, the partner is how many of those hires are still there a year later. For response rate, the share of answers that are all the same point. For attrition, the counts of transfers and retirements beside the leavers.</p>
+        <p>The second defence is to <strong>freeze the definition and log every recode</strong>: which reason category, changed from what to what, by whom and when. A row whose definition can be changed by the person it measures is a row that will be changed. How targets are set and measured fairly is its own discipline, taught in <a href="https://phoebefu6.github.io/learn-okr-with-phoebe/">Learn OKRs and Fair Measurement with Phoebe ↗</a>.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The quarter regretted attrition fell.</strong> A business unit is given a target to cut regretted attrition, and meets it in one quarter. The exit volume did not change and neither did the reasons people gave in their exit interviews; what changed was that the leaving form gained a new default option, "Other", and most managers stopped choosing a category. The partner row, the share of leavers in Other, went from almost nothing to a third. Constructed example; the mechanism is the one in the figure, and the partner row caught it.</p>
+    </div>
+  </section>
+
+  <section class="section" id="part-3">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers the fence around a people dashboard</span>
+      <h2>The fence: rows that need a lawyer before they exist</h2>
+      <span class="tag concept">4 min live</span>
+    </div>
+    <p class="lede">Some rows are not an analytics question at all. A tile of sickness absence by named team, a ranking of staff by a model's predicted chance of leaving, a filter that shows trade union members, an automated screen that decides who reaches interview: each of these is a legal question first. Four rules sit on the fence around a people dashboard. They are named here so you recognise them, not taught; each has its own conditions and exceptions, and the courses linked below teach them properly.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn fence around a moss-coloured dashboard area listing what sits inside: headcount, joiners, leavers and rates; regretted with its 11 categories; tenure, active and at exit; the survey as a distribution above the minimum group; every row with its base and date, aggregates not individuals. Four signs stand on the fence. GDPR Article 9: special categories of data, health and trade union membership among them, processing restricted. GDPR Article 22: decisions based solely on automated processing with legal or similarly significant effects. EU AI Act, Regulation (EU) 2024/1689, Annex III point 4: AI used in recruitment, selection, promotion, termination, task allocation and monitoring is high-risk. New York City Local Law 144, enforced from 5 July 2023: annual independent bias audit of automated employment decision tools, published.">
+        <defs>
+          <filter id="s6cSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="157" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="s6cHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="s6cAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .s6cH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s6cS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .s6cB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .s6cN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="s6cH" x="30" y="26">THE FENCE</text>
+        <text class="s6cS" x="120" y="26">what may be computed sits inside; four rules sit on the fence · named here, taught elsewhere</text>
+
+        <g filter="url(#s6cSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- the inside: the dashboard -->
+          <rect x="300" y="76" width="280" height="190" rx="8" transform="rotate(-0.4 440 171)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <!-- the fence: two rails with a gate gap at the bottom -->
+          <path d="M420 290 L270 290 L270 54 L610 54 L610 290 L460 290"/>
+          <path d="M420 284 L276 284 L276 60 L604 60 L604 284 L460 284" stroke-width="1.6"/>
+          <!-- posts -->
+          <path d="M270 46 L270 66 M304 46 L304 66 M338 46 L338 66 M372 46 L372 66 M406 46 L406 66 M440 46 L440 66 M474 46 L474 66 M508 46 L508 66 M542 46 L542 66 M576 46 L576 66 M610 46 L610 66" stroke-width="2.5"/>
+          <path d="M270 278 L270 298 M304 278 L304 298 M338 278 L338 298 M372 278 L372 298 M406 278 L406 298 M474 278 L474 298 M508 278 L508 298 M542 278 L542 298 M576 278 L576 298 M610 278 L610 298" stroke-width="2.5"/>
+          <circle cx="270" cy="122" r="3" fill="#2A1A1E"/><circle cx="270" cy="190" r="3" fill="#2A1A1E"/><circle cx="270" cy="258" r="3" fill="#2A1A1E"/>
+          <circle cx="610" cy="122" r="3" fill="#2A1A1E"/><circle cx="610" cy="190" r="3" fill="#2A1A1E"/><circle cx="610" cy="258" r="3" fill="#2A1A1E"/>
+          <!-- the gate, swung open -->
+          <path d="M420 284 L402 304 L402 312 L420 292 Z" fill="#FFFFFF"/>
+          <!-- four signs -->
+          <rect x="30" y="50" width="218" height="110" rx="8" transform="rotate(-0.8 139 105)" fill="#F9EEF0"/>
+          <rect x="30" y="190" width="218" height="110" rx="8" transform="rotate(0.7 139 245)" fill="#F9EEF0"/>
+          <rect x="632" y="50" width="218" height="124" rx="8" transform="rotate(0.8 741 112)" fill="#F9EEF0"/>
+          <rect x="632" y="190" width="218" height="110" rx="8" transform="rotate(-0.7 741 245)" fill="#F9EEF0"/>
+          <!-- each sign points at the fence -->
+          <path d="M250 105 L266 105 M250 245 L266 245" marker-end="url(#s6cAr)"/>
+          <path d="M630 112 L614 112" marker-end="url(#s6cAr)"/>
+          <path d="M630 245 L614 245" marker-end="url(#s6cAr)"/>
+        </g>
+
+        <text class="s6cH" x="316" y="100">INSIDE THE FENCE</text>
+        <text class="s6cS" x="316" y="122">headcount, joiners, leavers, rates</text>
+        <text class="s6cS" x="316" y="140">regretted, with its 11 categories</text>
+        <text class="s6cS" x="316" y="158">tenure, active and at exit</text>
+        <text class="s6cS" x="316" y="176">survey, as a distribution</text>
+        <text class="s6cS" x="316" y="194">above the minimum group</text>
+        <text class="s6cB" x="316" y="222">every row with its base and date</text>
+        <text class="s6cB" x="316" y="240">aggregates, not individuals</text>
+
+        <text class="s6cH" x="44" y="72">GDPR ARTICLE 9</text>
+        <text class="s6cS" x="44" y="92">special categories of data,</text>
+        <text class="s6cS" x="44" y="108">health and trade union</text>
+        <text class="s6cS" x="44" y="124">membership among them:</text>
+        <text class="s6cS" x="44" y="140">processing is restricted</text>
+
+        <text class="s6cH" x="44" y="212">GDPR ARTICLE 22</text>
+        <text class="s6cS" x="44" y="232">decisions based solely on</text>
+        <text class="s6cS" x="44" y="248">automated processing, with</text>
+        <text class="s6cS" x="44" y="264">legal or similarly</text>
+        <text class="s6cS" x="44" y="280">significant effects</text>
+
+        <text class="s6cH" x="646" y="72">EU AI ACT, ANNEX III 4</text>
+        <text class="s6cS" x="646" y="92">Regulation (EU) 2024/1689:</text>
+        <text class="s6cS" x="646" y="108">AI used in recruitment,</text>
+        <text class="s6cS" x="646" y="124">selection, promotion,</text>
+        <text class="s6cS" x="646" y="140">termination, task allocation</text>
+        <text class="s6cS" x="646" y="156">and monitoring: high-risk</text>
+
+        <text class="s6cH" x="646" y="212">NYC LOCAL LAW 144</text>
+        <text class="s6cS" x="646" y="232">enforced from 5 July 2023:</text>
+        <text class="s6cS" x="646" y="248">annual independent bias audit</text>
+        <text class="s6cS" x="646" y="264">of automated employment</text>
+        <text class="s6cS" x="646" y="280">decision tools, published</text>
+
+        <text class="s6cN" x="30" y="334">Named, not taught: each rule has its own conditions and exceptions, and the governance courses teach them.</text>
+        <text class="s6cN" x="30" y="350">A row that would sit outside the fence is a legal question first and an analytics question second.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the moss yard is where a people dashboard lives; each sign on the fence is a reason a proposed row goes to the legal team before it goes to the analyst</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The four signs on the fence, named<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>GDPR Article 9</strong> covers special categories of personal data, health and trade union membership among them, and restricts processing them to specific conditions. A sickness absence tile, a disability flag in a filter, a union membership column: each needs its legal basis settled before it reaches a dashboard, and many will never belong on one.</p>
+        <p><strong>GDPR Article 22</strong> concerns decisions based solely on automated processing that produce legal or similarly significant effects on a person. A dashboard that only informs a human decision is a different thing from a score that decides a bonus, a shortlist or a dismissal on its own, and the difference is the article's subject.</p>
+        <p><strong>The EU AI Act, Regulation (EU) 2024/1689, Annex III point 4,</strong> lists AI systems used in employment as high-risk: recruitment and selection, decisions on promotion and termination, task allocation, and monitoring of workers. A model behind a people dashboard that does any of those carries the Act's obligations for high-risk systems.</p>
+        <p><strong>New York City Local Law 144,</strong> enforced from 5 July 2023, requires an annual independent bias audit of automated employment decision tools, with a published summary that reports impact ratios by sex and by race/ethnicity.</p>
+        <p>Where to learn each properly: <a href="https://phoebefu6.github.io/learn-gdpr-with-phoebe/">Learn GDPR with Phoebe ↗</a>, <a href="https://phoebefu6.github.io/learn-pdpa-dnc-with-phoebe/">Learn PDPA and DNC with Phoebe ↗</a>, <a href="https://phoebefu6.github.io/learn-ai-governance-with-phoebe/">Learn AI Governance and the EU AI Act with Phoebe ↗</a>, <a href="https://phoebefu6.github.io/learn-data-governance-with-phoebe/">Learn Data Governance with Phoebe ↗</a>, and for impact ratios, screening and the legal map across the people lifecycle, <a href="https://phoebefu6.github.io/learn-ai-hr-with-phoebe/">Learn AI + HR with Phoebe ↗</a>.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The flight-risk tile: the row to argue about<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The most requested row that should start at the fence is a ranking of named staff by a model's predicted chance of leaving. It can touch every sign at once. Its inputs may include special-category data such as sickness records, which is Article 9. If the ranking triggers retention offers or excludes people from them without a human decision, that is Article 22's question. And a model used for monitoring workers is listed as high-risk in Annex III point 4 of the EU AI Act.</p>
+        <p>None of that means the analysis can never be done. It means the order of work is legal basis first, then data, then model, then dashboard, and the dashboard version is usually an aggregate: leaving risk by group, above the minimum group size, with no names. Deep-dive session 9 takes the question further: what a model on people data may not see, and the audit as a standing habit.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>A rule that turned a tool into a published audit.</strong> Since 5 July 2023, an employer using an automated employment decision tool in New York City has needed an annual independent bias audit of it, with a published summary reporting impact ratios by sex and by race/ethnicity. Under a rule of that kind, a screening model's selection rates by group are no longer an internal curiosity: they are a line somebody has to be able to publish. The impact ratio itself, and the four-fifths rule of thumb, are taught in Foundations session 3 and in depth in AI + HR.</p>
+    </div>
+
+    <div class="tryrow" data-fn="wordcount" data-multiline="1" data-title="Which of your rows sits on the fence?" data-hint="For a people dashboard you know: name one row or filter that uses health, union or other special-category data, or a score that decides something on its own. Which sign does it touch, and who would you ask before keeping it? Three lines." data-seed="" data-cta="Count it"></div>
+  </section>
+
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Build-along</span>
+      <h2>The Apex dashboard, on paper</h2>
+      <span class="tag demo">★ 22 min · everyone works it through</span>
+    </div>
+    <p class="lede">No code tonight. Six worksheet steps that turn a list of people questions into a dashboard whose every row can be defended: the questions, the stocks with their dates, the flows with their periods, the numbers with their bases, one honest sentence each, and the partner metric and fence check. The worked example is constructed Apex, with the attrition row filled in the figure; deep-dive session 1 builds the table behind every row in pandas. Work each step for your own dashboard as we go.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 346" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A hand-drawn worksheet for one dashboard row, the attrition row for constructed Apex, with six slots. Slot 1, the stock and its date: 941.5, the average of 1 January and 1 July 2026. Slot 2, the flow and its period: 210 leavers, 1 January to 17 June 2026. Slot 3, the number and its base: 22.3 percent, average base, half-year. Slot 4, the partner metric: 65.2 percent regretted, 137 of 210. Slot 5, in moss, the honest sentence: 210 left against an average of 941.5, 22.3 percent for the half-year. Slot 6, the fence check: no special-category data, no decision made by it alone.">
+        <defs>
+          <filter id="s6dSk" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="163" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+          <pattern id="s6dHc" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(-38)"><line x1="0" y1="0" x2="0" y2="7" stroke="#7A2334" stroke-width="1" opacity=".5"/></pattern>
+          <marker id="s6dAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2A1A1E" stroke-width="1.6" stroke-linecap="round"/></marker>
+        </defs>
+        <style>
+          .s6dH { font: 800 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s6dL { font: 600 12px Inter, sans-serif; fill: #2A1A1E; }
+          .s6dS { font: 400 11px Inter, sans-serif; fill: #6B5459; }
+          .s6dB { font: 800 11px Inter, sans-serif; fill: #2B4D20; }
+          .s6dV { font: 800 18px Inter, sans-serif; fill: #4F1521; }
+          .s6dN { font: 400 12px Inter, sans-serif; fill: #6B5459; }
+        </style>
+
+        <text class="s6dH" x="30" y="26">ONE ROW, SIX SLOTS</text>
+        <text class="s6dS" x="180" y="26">the attrition row for constructed Apex, filled in the order the worksheet asks</text>
+
+        <g filter="url(#s6dSk)" fill="none" stroke="#2A1A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- the worksheet -->
+          <rect x="40" y="46" width="800" height="250" rx="10" transform="rotate(-0.2 440 171)" fill="#FFFFFF"/>
+          <!-- six slots, 3 x 2 -->
+          <rect x="60" y="90" width="240" height="84" rx="6" transform="rotate(0.5 180 132)" fill="#F9EEF0"/>
+          <rect x="320" y="90" width="240" height="84" rx="6" transform="rotate(-0.4 440 132)" fill="#F9EEF0"/>
+          <rect x="580" y="90" width="240" height="84" rx="6" transform="rotate(0.4 700 132)" fill="#F9EEF0"/>
+          <rect x="60" y="190" width="240" height="84" rx="6" transform="rotate(-0.5 180 232)" fill="#F9EEF0"/>
+          <rect x="320" y="190" width="240" height="84" rx="6" transform="rotate(0.4 440 232)" fill="#E9F1E4" stroke="#3D6B2E"/>
+          <rect x="580" y="190" width="240" height="84" rx="6" transform="rotate(-0.4 700 232)" fill="#FFFFFF" stroke-dasharray="6 4"/>
+          <!-- a calendar doodle -->
+          <rect x="806" y="10" width="30" height="26" rx="3" fill="#FFFFFF"/>
+          <path d="M806 18 L836 18 M814 6 L814 14 M828 6 L828 14"/>
+        </g>
+
+        <text class="s6dH" x="60" y="74">DASHBOARD ROW · Attrition, all Apex</text>
+        <text class="s6dS" x="420" y="74">slot 5 is written from slots 1 to 4; slot 6 is checked last</text>
+
+        <text class="s6dS" x="72" y="110">1 · the stock, and its date</text>
+        <text class="s6dV" x="72" y="140">941.5</text>
+        <text class="s6dS" x="72" y="162">average of 1 Jan and 1 Jul 2026</text>
+        <text class="s6dS" x="332" y="110">2 · the flow, and its period</text>
+        <text class="s6dV" x="332" y="140">210 leavers</text>
+        <text class="s6dS" x="332" y="162">1 January to 17 June 2026</text>
+        <text class="s6dS" x="592" y="110">3 · the number, and its base</text>
+        <text class="s6dV" x="592" y="140">22.3%</text>
+        <text class="s6dS" x="592" y="162">average base, half-year</text>
+
+        <text class="s6dS" x="72" y="210">4 · the partner metric</text>
+        <text class="s6dV" x="72" y="240">65.2%</text>
+        <text class="s6dS" x="72" y="262">regretted, 137 of 210</text>
+        <text class="s6dB" x="332" y="210">5 · the honest sentence</text>
+        <text class="s6dL" x="332" y="232">210 left against an average</text>
+        <text class="s6dL" x="332" y="248">of 941.5: 22.3 percent for</text>
+        <text class="s6dL" x="332" y="264">the half-year, 1 Jan to 17 Jun</text>
+        <text class="s6dS" x="592" y="210">6 · the fence check</text>
+        <text class="s6dL" x="592" y="232">no special-category data</text>
+        <text class="s6dL" x="592" y="250">no decision made by it alone</text>
+        <text class="s6dS" x="592" y="266">GDPR 9 and 22: clear</text>
+
+        <text class="s6dN" x="30" y="320">Slots 1 and 2 are the evidence, slot 3 is the arithmetic, slot 5 is what a board reads.</text>
+        <text class="s6dN" x="30" y="336">Every value is from the constructed Apex table; the same six slots work for any row on any dashboard.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the moss slot is the only one that goes on the slide, and it cannot be written until the four slots before it are full</figcaption>
+    </figure>
+
+    <div class="steps">
+      <div class="step">
+        <p><strong>Step 1 · Write the questions, one per row.</strong> Not the metrics your tool offers: the questions leadership actually asks. Six is plenty. Apex's six are how many, how many left, which leavers hurt, how long people stay, what people say, and what we pay.</p>
+        <div class="prompt-box good"><span class="label">★ Step 1 · the rows</span>1  how many people do we have?        headcount
+2  how many left?                     attrition
+3  which leavers hurt?                regretted share
+4  how long do people stay?           tenure, active and at exit
+5  what do people say?                survey
+6  what do we pay, and to whom?       pay gap
+yours:  ____________________________________________</div>
+      </div>
+      <div class="step">
+        <p><strong>Step 2 · Give each row its stock and its date.</strong> A count at an instant, with the date written beside it. If a row has no stock, it is not yet a row.</p>
+        <div class="prompt-box good"><span class="label">★ Step 2 · stocks, on dates</span>headcount:   861 on 1 July 2026           (from 1,022 on 1 January)
+attrition:   941.5, average of 1 January and 1 July
+survey:      1,022 invited, 1 January 2026
+pay gap:     no salary column: the row stays empty
+yours:       ________  on  ________</div>
+      </div>
+      <div class="step">
+        <p><strong>Step 3 · Give each row its flow and its period.</strong> A count over a period, with both ends of the period written. The same period for every row, or the rows cannot be read together.</p>
+        <div class="prompt-box good"><span class="label">★ Step 3 · flows, over periods</span>joiners:     49      1 January to 30 June 2026
+leavers:     210     1 January to 17 June 2026
+regretted:   137 of the 210, same period
+answers:     600     survey window, constructed
+yours:       ________  from ________  to ________</div>
+      </div>
+      <div class="step">
+        <p><strong>Step 4 · Write the number with its base under it.</strong> Every rate says what it is divided by. Annualising is labelled as an assumption or not done at all.</p>
+        <div class="prompt-box good"><span class="label">★ Step 4 · numbers and bases</span>attrition:   210 / 941.5    = 22.3 percent   average base, half-year
+regretted:   137 / 210      = 65.2 percent   share of leavers, 5 of 11 categories
+tenure:      61.0 percent of leavers under 2 years   (active median 5.01, exit median 1.52)
+survey:      600 / 1,022    = 58.7 percent   response rate
+annualised:  only if labelled "doubled H1, assumes H2 repeats": 44.6 percent</div>
+      </div>
+      <div class="step">
+        <p><strong>Step 5 · Write the honest sentence for each row.</strong> Flow, base, period, and any assumption, in words a board member could repeat. If you cannot write it, the row is not ready.</p>
+        <div class="prompt-box good"><span class="label">★ Step 5 · the sentence</span>"210 people left between 1 January and 17 June 2026 against an average
+ headcount of 941.5: 22.3 percent for the half-year, not annualised.
+ 137 of them, 65.2 percent, gave one of the five reasons we classify as regretted."
+yours:  ______________________________________________________________</div>
+      </div>
+      <div class="step">
+        <p><strong>Step 6 · Name the partner metric, and check the fence.</strong> For any row that is or may become a target, write the row that moves the wrong way when it is gamed. Then ask of every row whether it uses special-category data or decides anything on its own.</p>
+        <div class="prompt-box good"><span class="label">★ Step 6 · partner and fence</span>row:              regretted share
+partner:          count in Unknown and every non-regretted category (Unknown: 17)
+recode log:       yes / no      owner: ______________
+special-category data (GDPR 9)?          no
+decides anything alone (GDPR 22)?        no
+AI used for workers (AI Act Annex III 4)? no
+if any answer is yes:  legal review before the row exists</div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <p><strong>Print the base column.</strong> If there is room on the dashboard for one more column, it is the base. A board that sees "22.3 percent, 210 of an average 941.5, half-year" will ask better questions than a board that sees 22.3 in red, and it will not be surprised when the next report uses the same numbers.</p>
+    </div>
+  </section>
+
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before deep-dive session 1</h2>
+      <span class="tag exercise">30 min</span>
+    </div>
+    <ol>
+      <li><strong>Rebuild one real dashboard as rows.</strong> Take a people dashboard you use and write every tile as a row: stock and date, flow and period, base, number. Mark the tiles you cannot complete; that list is your first finding.</li>
+      <li><strong>Write the honest sentence</strong> for the three rows your leadership quotes most, in words they could repeat without being wrong.</li>
+      <li><strong>Find one target.</strong> For a row that is somebody's target, name its partner metric, and check whether the definition can be changed by the person it measures.</li>
+      <li><strong>Walk the fence.</strong> List any row or filter that touches health, union or other special-category data, or a score that decides something on its own, and who you would ask about it. Then bring the dashboard to deep-dive session 1, where the table behind every row is built in code.</li>
+    </ol>
+  </section>
+
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions</h2>
+    </div>
+    <p>Clear all three and Foundations session 6 gets stamped in your passport.</p>
+
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · A dashboard tile reads "Attrition 22.3%" in red. What does the row need before anyone acts on it?</p>
+      <button class="qopt" type="button">A · A national benchmark beside it, so the red has a reason</button>
+      <button class="qopt" type="button">B · The annualised figure, 44.6 percent, because boards think in years</button>
+      <button class="qopt" type="button">C · Its flow, base and period: 210 leavers between 1 January and 17 June 2026 over an average headcount of 941.5, a half-year figure not annualised, and one sentence saying so</button>
+      <button class="qopt" type="button">D · A trend arrow against last year</button>
+      <p class="qwhy">A rate is a flow over a stock, and a tile drops both. The row puts them back, with the date, so the number means one thing to everyone who reads it.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · After a target is set on regretted attrition, the regretted share falls from 65.2 to 54.3 percent in the same 210 leavers, and Unknown rises from 17 to 40. What happened?</p>
+      <button class="qopt" type="button">A · The measure became a target and stopped measuring: 23 Management/Culture leavers were recoded to Unknown, nobody's reason changed, and the partner metric, the count in Unknown, shows it; freeze the definition, log recodes and show all 11 categories</button>
+      <button class="qopt" type="button">B · Retention improved by 11.0 points</button>
+      <button class="qopt" type="button">C · Fewer people left</button>
+      <button class="qopt" type="button">D · The base changed from start to average headcount</button>
+      <p class="qwhy">The popular wording is Strathern's, 1997, of Goodhart's point. Every targeted row needs a partner row that moves the wrong way when the first is gamed. The recoding here is constructed.</p>
+    </div>
+
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · A leader asks for a tile ranking named staff by a model's predicted chance of leaving, built partly from sickness records, that automatically decides who gets a retention offer. What is the first step?</p>
+      <button class="qopt" type="button">A · Build it, but hide the names</button>
+      <button class="qopt" type="button">B · Treat it as a legal question first: sickness records are health data under GDPR Article 9, an offer decided by the score alone is Article 22's question, and the EU AI Act lists AI for monitoring workers as high-risk in Annex III point 4; legal basis before data, model or dashboard</button>
+      <button class="qopt" type="button">C · Check the model's accuracy on last year's leavers</button>
+      <button class="qopt" type="button">D · Apply the minimum group size of 8</button>
+      <p class="qwhy">Some rows sit on the fence. Naming the rules is enough to know who to ask; the governance courses and deep-dive session 9 go further.</p>
+    </div>
+
+    <p class="quiz-score"></p>
+  </section>
+
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Sources covered</span>
+      <h2>What this session teaches, and where it came from</h2>
+    </div>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">One stock and one flow per row, each with its base and date; the honest sentence; the partner metric</span><span class="note">Standard practice, no single source</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The Apex rows: 1,022 + 49 - 210 = 861; 22.3 percent on the average base 941.5; 137 of 210 regretted, 65.2 percent; active median tenure 5.01, exit median 1.52, 61.0 percent under two years; Unknown 17 of 210</span><span class="note">Computed from the constructed Apex table; Apex and everyone in it are invented</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Survey row: 600 of 1,022 invited, 58.7 percent; minimum group 8</span><span class="note">Constructed survey on the constructed table; 8 is a stated choice</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">The recoding: 23 Management/Culture leavers to Unknown, regretted 65.2 to 54.3 percent, Unknown 17 to 40</span><span class="note">Modelled on constructed reasons; nobody's reason changed, which is the point</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Strathern 1997, "'Improving ratings': audit in the British University system", European Review 5(3) 305-321</span><span class="note">The popular wording of Goodhart's law; named, not quoted beyond one sentence</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">GDPR Article 9 (special categories: health, trade union membership among them) and Article 22 (solely automated decisions with legal or similarly significant effects)</span><span class="note">Primary; named, taught in the GDPR course</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">EU AI Act, Regulation (EU) 2024/1689, Annex III point 4: recruitment, selection, promotion, termination, task allocation and monitoring are high-risk</span><span class="note">Primary (EUR-Lex); named, taught in AI Governance</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">New York City Local Law 144 of 2021, enforced from 5 July 2023: annual independent bias audit of automated employment decision tools, published summary, impact ratios by sex and race/ethnicity</span><span class="note">Primary; named, taught with impact ratios in AI + HR</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">The pay row, left empty</span><span class="note">Apex has no salary column; a constructed salary table is built in deep-dive session 6</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">A ratings row as a distribution</span><span class="note">Named and linked; ratings belong to Performance Management</span></div>
+    </div>
+    <p class="mono" style="margin-top:14px">Every fact on this page, and its verification tier, is recorded in the course's source map.</p>
+  </section>
+
+  <section class="cheat" id="cheatsheet">
+    <h3>Foundations session 6 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>One row, one question</b><span>A stock on a date, a flow over a period, the base in its own column, the number, one sentence.</span></div>
+      <div class="cheat-item"><b>The honest sentence</b><span>"210 left against an average of 941.5: 22.3 percent for the half-year, not annualised." If it cannot be written, the row is not ready.</span></div>
+      <div class="cheat-item"><b>Empty is honest</b><span>No salary column, no pay row. An empty cell with its reason beats a borrowed number.</span></div>
+      <div class="cheat-item"><b>Target, then partner</b><span>A measure made a target stops measuring (Strathern 1997). Pair it: regretted 65.2 to 54.3 while Unknown went 17 to 40.</span></div>
+      <div class="cheat-item"><b>The fence, GDPR</b><span>Article 9: health, union membership and other special categories. Article 22: decisions made solely by automated processing.</span></div>
+      <div class="cheat-item"><b>The fence, AI rules</b><span>EU AI Act 2024/1689 Annex III point 4: AI in hiring, promotion, termination, allocation, monitoring is high-risk. NYC LL144 audits since 5 July 2023.</span></div>
+    </div>
+  </section>
+
+  <div class="callout next">
+    <span class="nx-pill">Next session</span>
+    <p>That completes the Foundations track: a stock and a flow, a rate and its base, the funnel, pay and fairness, surveys as evidence, and the dashboard that holds them. The deep-dive track starts where every row on tonight's dashboard came from. Deep-dive session 1, <a href="p1-the-people-data-model.html">The people data model</a>, builds the three tables every people question needs, employee, position and event, and computes 1,022, 49, 210 and 861 and the three bases from the 1,071 constructed Apex rows in pandas, so that every number on the dashboard can be traced to the rows that produced it.</p>
+  </div>
+
+  <footer class="pagefoot">
+    <span>Foundations session 6 of 6 · learn-people-analytics-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="a5-surveys-as-evidence.html">← Prev: Surveys as evidence</a> &nbsp;·&nbsp; <a href="../index.html">Course home →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>
