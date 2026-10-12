@@ -55,15 +55,19 @@
     if (state.broken) mode = "scatter";
     if (mode === "bars") {
       s += 'Four bars, the median female share of each pay band from bottom to top.">';
-      var names = ["bottom band", "lower middle", "upper middle", "top band"];
+      var names = ["bottom band", "lower middle", "upper middle", "top band"], gaps = [];
       for (var q = 0; q < 4; q++) {
         var x = 90 + q * 200, h = st.bandMedian[q] * 380, y = 250 - h;
         s += '<rect x="' + x + '" y="' + y.toFixed(1) + '" width="120" height="' + h.toFixed(1) + '" rx="6" fill="' + (q === 0 ? "#7A2334" : "#E6C7CD") + '"/>';
         s += '<text x="' + (x + 60) + '" y="' + (y - 10).toFixed(1) + '" text-anchor="middle" class="mb-lab" fill="#4F1521" font-weight="800">' + pct(st.bandMedian[q]) + ' women</text>';
         s += '<text x="' + (x + 60) + '" y="272" text-anchor="middle" class="mb-lab" fill="#6B5459">' + names[q] + '</text>';
+        if (y - 10 > 50 && y - 10 < 76) gaps.push([x + 12, x + 108]);
       }
       s += '<line x1="60" y1="250" x2="' + (W - 20) + '" y2="250" stroke="#DCC9CD" stroke-width="1.5"/>';
-      s += '<line x1="60" y1="60" x2="' + (W - 20) + '" y2="60" stroke="#EADDE0" stroke-dasharray="4 4"/><text x="' + (W - 24) + '" y="56" text-anchor="end" class="mb-lab" fill="#6B5459">50 percent</text>';
+      /* the 50 percent guide breaks around any band label it would cross (a share near 47 to 50 percent) */
+      var gx = 60;
+      gaps.forEach(function (g) { s += '<line x1="' + gx + '" y1="60" x2="' + g[0] + '" y2="60" stroke="#EADDE0" stroke-dasharray="4 4"/>'; gx = g[1]; });
+      s += '<line x1="' + gx + '" y1="60" x2="' + (W - 20) + '" y2="60" stroke="#EADDE0" stroke-dasharray="4 4"/><text x="' + (W - 24) + '" y="56" text-anchor="end" class="mb-lab" fill="#6B5459">50 percent</text>';
     } else if (mode === "anti") {
       s += 'Three bars: the median employer\'s composition-only gap, the gap after adding women at the bottom band, and after adding them at the top band.">';
       var vals = [anti.base, anti.bottom, anti.top], labs = ["as filed", "women added at the bottom", "women added at the top"], cols = ["#9A3A4C", "#991B1B", "#3D6B2E"];
